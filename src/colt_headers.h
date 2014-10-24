@@ -36,6 +36,7 @@
 #include "colt_out_vertical.h"
 #include "colt_skip_limit.h"
 #include "colt_select.h"
+#include "coltadd.h"
 #include "colt_to_json.h"
 #include "coltcounter.h"
 

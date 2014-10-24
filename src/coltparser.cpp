@@ -25,6 +25,67 @@ int colt_parser::is_a(Colt_Class c)
 	return c == colt_class_parser;
 }
 
+int colt_parser::find_insertions(char **cols)
+{
+	for(char *a=input_buffer; *a; a++) {
+		if(*a == '$') {
+			for(int j=0; j<5; j++) {
+				int col_len = strlen(cols[j]);
+				if(strncmp(a+1, cols[j], col_len) == 0) {
+					a += col_len;
+					substrings[numfrags].index = j;
+					break;
+				}
+			}
+			numfrags++;
+			substrings[numfrags].index = -1;
+		}  else if (strncmp(a, "&{", 2) == 0) {
+			for (int j=0; j<5; j++) {
+				int col_len = strlen(cols[j]);
+				if(strncmp(a+2, cols[j], col_len) == 0 && a[col_len+2] == '}') {
+					a += col_len+2;
+					substrings[numfrags].index = j;
+					numfrags++;
+					break;
+				}
+			}
+		} else {
+			char *str = substrings[numfrags].substring;
+			str[strlen(str)] = *a;
+			str[strlen(str)+1] = '\0';
+		}
+	}
+
+	return numfrags;
+}
+
+char *colt_parser::replace_strings(char **vals)
+{
+	compiled_string[0] = '\0';
+
+	for(int i=0; i<numfrags+1; i++) {
+		strcat(compiled_string, substrings[i].substring);
+		if(substrings[i].index >= 0) {
+			strcat(compiled_string, vals[substrings[i].index]);
+		}
+	}
+
+	return compiled_string;
+}
+
+//char *colt_parser::replace_strings(colt_datatypes **types)
+//{
+//	compiled_string[0] = '\0';
+//
+//	for(int i=0; i<numfrags+1; i++) {
+//		strcat(compiled_string, substrings[i].substring);
+//		if(substrings[i].index >= 0) {
+//			char tmp[COLT_MAX_STRING_SIZE];
+//			strcat(compiled_string, types[substrings[i].index]->format(tmp));
+//		}
+//	}
+//}
+
 void colt_parser::fatal_error(char const *err)
 {
 	cerr<< err;
@@ -273,6 +334,47 @@ colt_if *colt_parser::ifx()
 	consume_code_segment(in);
 
 	return new colt_if(*return_value, in);
+}
+
+colt_add *colt_parser::add()
+{
+	char repl_str[COLT_MAX_STRING_SIZE];
+	char label[COLT_MAX_STRING_SIZE];
+	chat type_str[COLT_MAX_STRING_SIZE];
+
+	input_buffer += 4;
+	char *a = input_buffer;
+	char *b = label;
+	while(*a != ',') *b++ == *a++;
+	*b = '\0';
+
+	b = type_str;
+	a++;
+	while(*a != ',') *b++ == *a++;
+
+	consume_keyword(type_str);
+
+	int type = 0;
+	if(strcmp(type_str, "string") == 0)
+		type = COLT_DATATYPE;
+	else if(strcmp(type_str, "int") == 0)
+		type = COLT_DT_INTEGER;
+	else if(strcmp(type_str, "date") == 0)
+		type = COLT_DT_DATE;
+	else if(strcmp(type_str, "index") == 0)
+		type = COLT_DT_INDEX;
+	else if(strcmp(type_str, "range") == 0)
+		type = COLT_DT_RANGE;
+	else if(strcmp(type_str, "set") == 0)
+		type = COLT_DT_BITMAP;
+	else {
+		perror("sort type parameter expected either 'a' for alpha or'n' numeric.\n");
+		exit(-1);
+	}
+
+	consume_keyword(repl_str);
+
+	return new colt_add(*return_value, label, type, repl_str);
 }
 
 colt_aggregate *colt_parser::aggregate()
