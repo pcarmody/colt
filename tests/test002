@@ -1,0 +1,1 @@
+./colt++ data.csv each:[select:state,name,id]
