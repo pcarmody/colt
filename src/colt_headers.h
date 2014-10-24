@@ -6,6 +6,8 @@
 #include <limits.h>
 #include <bitset>
 
+#include "coltdatatype.h"
+
 #include "coltbase.h"
 #include "coltcsv.h"
 #include "coltsequentialcsv.h"

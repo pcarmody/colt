@@ -340,7 +340,7 @@ colt_add *colt_parser::add()
 {
 	char repl_str[COLT_MAX_STRING_SIZE];
 	char label[COLT_MAX_STRING_SIZE];
-	chat type_str[COLT_MAX_STRING_SIZE];
+	char type_str[COLT_MAX_STRING_SIZE];
 
 	input_buffer += 4;
 	char *a = input_buffer;
