@@ -8,17 +8,30 @@
 #ifndef COLTPARSER_H_
 #define COLTPARSER_H_
 
+struct StrFragment {
+	char substring[100];
+	int index;
+};
+
 class colt_parser {
 public:
 	colt_base	*return_value;
 	char		*input_buffer;
+	struct StrFragment substrings[10];
+	int 		numfrags;
+	char		compiled_string[COLT_MAX_STRING_SIZE];
 
 	colt_parser(char *);
 	virtual ~colt_parser();
 
+	int find_insertions(char **cols);
+	char *replace_strings(char **vals);
+//	char *replace_strings(colt_datatype **types);
+
 	int is_a(Colt_Class c);
 	void fatal_error(char const *err);
 	int consume_whitespace();
+	int consume_word(char *t);
 	int is_token(const char *);
 	int consume_token(char *);
 	char *consume_keyword(char *);
@@ -35,6 +48,7 @@ public:
 	colt_select 		*select();
 	colt_skip_limit		*skip_limit();
 	colt_if				*ifx();
+	colt_add			*add();
 	colt_aggregate		*aggregate();
 	colt_aggregate_row	*aggregate_row();
 	colt_sort			*sort();

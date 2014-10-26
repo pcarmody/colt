@@ -7,11 +7,13 @@
 #include "colt_headers.h"
 
 colt_parser::colt_parser(char *x):
-	input_buffer(x),
-	return_value(NULL)
+	input_buffer(),
+	return_value(NULL),
+	numfrags(0)
 {
 	// TODO Auto-generated constructor stub
-
+	input_buffer = new char[strlen(x)+1];
+	strcpy(input_buffer, x);
 }
 
 colt_parser::~colt_parser()
@@ -24,6 +26,71 @@ int colt_parser::is_a(Colt_Class c)
 {
 	return c == colt_class_parser;
 }
+
+int colt_parser::find_insertions(char **cols)
+{
+	substrings[numfrags].index = -1;
+	substrings[numfrags].substring[0] = '\0';
+	for(char *a=input_buffer; *a; a++) {
+		if(*a == '$') {
+			for(int j=0; j<5; j++) {
+				int col_len = strlen(cols[j]);
+				if(strncmp(a+1, cols[j], col_len) == 0) {
+					a += col_len;
+					substrings[numfrags].index = j;
+					break;
+				}
+			}
+			numfrags++;
+			substrings[numfrags].index = -1;
+		}  else if (strncmp(a, "&{", 2) == 0) {
+			for (int j=0; j<5; j++) {
+				int col_len = strlen(cols[j]);
+				if(strncmp(a+2, cols[j], col_len) == 0 && a[col_len+2] == '}') {
+					a += col_len+2;
+					substrings[numfrags].index = j;
+					numfrags++;
+					substrings[numfrags].index = -1;
+					substrings[numfrags].substring[0] = '\0';
+					break;
+				}
+			}
+		} else {
+			char *str = substrings[numfrags].substring;
+			str[strlen(str)] = *a;
+			str[strlen(str)+1] = '\0';
+		}
+	}
+
+	return numfrags;
+}
+
+char *colt_parser::replace_strings(char **vals)
+{
+	compiled_string[0] = '\0';
+
+	for(int i=0; i<numfrags+1; i++) {
+		strcat(compiled_string, substrings[i].substring);
+		if(substrings[i].index >= 0) {
+			strcat(compiled_string, vals[substrings[i].index]);
+		}
+	}
+
+	return compiled_string;
+}
+
+//char *colt_parser::replace_strings(colt_datatypes **types)
+//{
+//	compiled_string[0] = '\0';
+//
+//	for(int i=0; i<numfrags+1; i++) {
+//		strcat(compiled_string, substrings[i].substring);
+//		if(substrings[i].index >= 0) {
+//			char tmp[COLT_MAX_STRING_SIZE];
+//			strcat(compiled_string, types[substrings[i].index]->format(tmp));
+//		}
+//	}
+//}
 
 void colt_parser::fatal_error(char const *err)
 {
@@ -119,6 +186,18 @@ int colt_parser::consume_integer()
 	while(*input_buffer == '-' || (*input_buffer >= '0' && *input_buffer <= '9')) input_buffer++;
 
 	return retval;
+}
+
+int colt_parser::consume_word(char *out)
+{
+	char *a = input_buffer;
+	while(isalnum(*a)
+		|| *a == '.'
+		|| *a == '_') *out++ = *a++;
+
+	input_buffer = a;
+	*out = '\0';
+	 return 1;
 }
 
 colt_counter *colt_parser::count()
@@ -273,6 +352,51 @@ colt_if *colt_parser::ifx()
 	consume_code_segment(in);
 
 	return new colt_if(*return_value, in);
+}
+
+colt_add *colt_parser::add()
+{
+	char repl_str[COLT_MAX_STRING_SIZE];
+	char label[COLT_MAX_STRING_SIZE];
+	char type_str[COLT_MAX_STRING_SIZE];
+
+	consume_token("add:");
+
+	consume_word(label);
+
+	if(!is_token(","))
+		fatal_error("Expected add:label,type,value.  Comma missing after label.\n");
+
+	consume_token(",");
+
+	consume_word(type_str);
+
+	if(!is_token(","))
+		fatal_error("Expected add:label,type,value.  Comma missing after type.\n");
+
+	consume_token(",");
+
+	int type = 0;
+	if(strcmp(type_str, "string") == 0)
+		type = COLT_DATATYPE;
+	else if(strcmp(type_str, "int") == 0)
+		type = COLT_DT_INTEGER;
+	else if(strcmp(type_str, "date") == 0)
+		type = COLT_DT_DATE;
+	else if(strcmp(type_str, "index") == 0)
+		type = COLT_DT_INDEX;
+	else if(strcmp(type_str, "range") == 0)
+		type = COLT_DT_RANGE;
+	else if(strcmp(type_str, "set") == 0)
+		type = COLT_DT_BITMAP;
+	else
+		fatal_error("Expected datatype in add expression.\n");
+
+	consume_keyword(repl_str);
+
+	cout << "qqq " << label << ":" << type_str << ":" << repl_str << "\n";
+
+	return new colt_add(*return_value, label, type, repl_str);
 }
 
 colt_aggregate *colt_parser::aggregate()
@@ -689,6 +813,8 @@ colt_base *colt_parser::unary_expression()
 		object = threadx();
 	else if(is_token("sync"))
 		object = sync();
+	else if(is_token("add"))
+		object = add();
 
 	consume_whitespace();
 

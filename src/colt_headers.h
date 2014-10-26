@@ -6,6 +6,8 @@
 #include <limits.h>
 #include <bitset>
 
+#include "coltdatatype.h"
+
 #include "coltbase.h"
 #include "coltcsv.h"
 #include "coltsequentialcsv.h"
@@ -36,6 +38,7 @@
 #include "colt_out_vertical.h"
 #include "colt_skip_limit.h"
 #include "colt_select.h"
+#include "coltadd.h"
 #include "colt_to_json.h"
 #include "coltcounter.h"
 

@@ -15,6 +15,7 @@ CPP_SRCS += \
 ../src/colt_select.cpp \
 ../src/colt_skip_limit.cpp \
 ../src/colt_to_json.cpp \
+../src/coltadd.cpp \
 ../src/coltaggregagerow.cpp \
 ../src/coltaggregate.cpp \
 ../src/coltbase.cpp \
@@ -23,6 +24,7 @@ CPP_SRCS += \
 ../src/coltcounter.cpp \
 ../src/coltcsv.cpp \
 ../src/coltcthru.cpp \
+../src/coltdatatype.cpp \
 ../src/colteach.cpp \
 ../src/coltif.cpp \
 ../src/coltisect.cpp \
@@ -54,6 +56,7 @@ OBJS += \
 ./src/colt_select.o \
 ./src/colt_skip_limit.o \
 ./src/colt_to_json.o \
+./src/coltadd.o \
 ./src/coltaggregagerow.o \
 ./src/coltaggregate.o \
 ./src/coltbase.o \
@@ -62,6 +65,7 @@ OBJS += \
 ./src/coltcounter.o \
 ./src/coltcsv.o \
 ./src/coltcthru.o \
+./src/coltdatatype.o \
 ./src/colteach.o \
 ./src/coltif.o \
 ./src/coltisect.o \
@@ -93,6 +97,7 @@ CPP_DEPS += \
 ./src/colt_select.d \
 ./src/colt_skip_limit.d \
 ./src/colt_to_json.d \
+./src/coltadd.d \
 ./src/coltaggregagerow.d \
 ./src/coltaggregate.d \
 ./src/coltbase.d \
@@ -101,6 +106,7 @@ CPP_DEPS += \
 ./src/coltcounter.d \
 ./src/coltcsv.d \
 ./src/coltcthru.d \
+./src/coltdatatype.d \
 ./src/colteach.d \
 ./src/coltif.d \
 ./src/coltisect.d \

@@ -31,6 +31,7 @@ enum Colt_Class {
 	// row operations
 	colt_class_skip_limit,
 	colt_class_select,
+	colt_class_add,
 	colt_class_if,
 	colt_class_aggregate,
 	colt_class_aggregate_row,

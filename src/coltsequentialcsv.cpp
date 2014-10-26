@@ -24,6 +24,7 @@ colt_sequential_csv::colt_sequential_csv(char *file_name, int pl):
 	i_am = colt_class_sequential_csv;
 	for(int i=0; i<COLT_MAX_STRING_SIZE; i++)
 		sequential_file_buffer[0] = '\0';
+	preload = 0;
 }
 
 colt_sequential_csv::~colt_sequential_csv()
