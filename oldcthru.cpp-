@@ -1,0 +1,39 @@
+/*
+ * coltcthru.cpp
+ *
+ *  Created on: May 19, 2014
+ *      Author: paulcarmody
+ */
+
+#include "coltcthru.h"
+
+colt_cthru::Titem *colt_cthru::AVLtree::null_titem;
+
+colt_cthru::colt_cthru(colt_base &in, int col_num):
+	colt_operator(in),
+	column_number(col_num)
+{
+	// TODO Auto-generated constructor stub
+	tree.column_number = column_number;
+	for(int i=0; i<operand->num_lines(); i++)
+		tree.add(i);
+}
+
+colt_cthru::~colt_cthru() {
+	// TODO Auto-generated destructor stub
+}
+
+char *colt_cthru::record(int line_num)
+{
+	return operand->record(tree.record_num(line_num));
+}
+
+char *colt_cthru::field_val(int rec_num, int col_num)
+{
+	return operand->field_val(tree.record_num(rec_num), col_num);
+}
+
+int colt_cthru::num_lines()
+{
+	return tree.num_nodes();
+}
