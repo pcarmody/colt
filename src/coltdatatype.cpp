@@ -15,7 +15,7 @@
 
 colt_datatype::colt_datatype() {
 	// TODO Auto-generated constructor stub
-
+	type = COLT_DATATYPE;
 }
 
 colt_datatype::~colt_datatype() {
@@ -50,6 +50,13 @@ char *colt_datatype::consume(char *x)
 	return x+len;
 }
 
+int colt_datatype::gen_header(char *x)
+{
+	memcpy(x, &type, sizeof(type));
+
+	return sizeof(type);
+}
+
 //
 //  COLT_INTEGER
 //
@@ -57,7 +64,7 @@ char *colt_datatype::consume(char *x)
 colt_integer::colt_integer():
 		colt_datatype()
 {
-
+	type = COLT_DT_INTEGER;
 }
 
 colt_integer::~colt_integer()

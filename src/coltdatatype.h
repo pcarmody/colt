@@ -20,6 +20,7 @@ enum Colt_DataType_Enum {
 class colt_datatype {
 public:
 	char	*buffer;
+	short	type;
 
 	colt_datatype();
 	virtual ~colt_datatype();
@@ -28,6 +29,7 @@ public:
 	virtual	int format(char *x);
 	virtual int generate(char *x);
 	virtual	char *consume(char *x);
+	virtual int gen_header(char *x);
 };
 
 class colt_integer : public colt_datatype {
