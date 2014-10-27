@@ -105,6 +105,16 @@ char **colt_operator::fields(int rec_num)
 	return operand->fields(rec_num);
 }
 
+void colt_operator::set_coltype(int num, colt_datatype *x)
+{
+	return operand->set_coltype(num,  x);
+}
+
+colt_datatype **colt_operator::cells(int rec_num)
+{
+	return operand->cells(rec_num);
+}
+
 int colt_operator::get_next_row()
 {
 	return operand->get_next_row();

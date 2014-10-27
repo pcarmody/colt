@@ -8,8 +8,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include "coltbase.h"
-#include "coltoperator.h"
+#include "colt_headers.h"
 #include "colt_cross.h"
 
 colt_cross::colt_cross(colt_base &in, colt_base &rite):
@@ -65,6 +64,23 @@ char **colt_cross::fields(int rec_num)
 		field_list[i++] = rite[j];
 
 	return field_list;
+}
+
+colt_datatype **colt_cross::cells(int rec_num)
+{
+	colt_datatype **left = colt_operator::cells(current_rec_num);
+	colt_datatype **rite = right->cells(rec_num);
+
+	if(!cell_list)
+		cell_list = (colt_datatype **) malloc(sizeof(colt_datatype *) * num_cols());
+
+	int i;
+	for(i=0; i<colt_operator::num_cols(); i++)
+		cell_list[i] = left[i];
+	for(int j=0; j<right->num_cols(); j++)
+		cell_list[i++] = rite[j];
+
+	return cell_list;
 }
 
 int colt_cross::process(int rec_num)

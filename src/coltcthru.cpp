@@ -257,6 +257,11 @@ char **colt_cthru::fields(int rec_num)
 	return operand->fields(node_list[rec_num].record_number);
 }
 
+colt_datatype **colt_cthru::cells(int rec_num)
+{
+	return operand->cells(node_list[rec_num].record_number);
+}
+
 void colt_cthru::save(char *file_name)
 {
 //	FILE *out = fopen(file_name, "wb");

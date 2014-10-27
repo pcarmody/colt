@@ -93,6 +93,8 @@ public:
 	virtual int max_size();
 	virtual	char *field_val(int rec_num, int col_num);
 	virtual	char **fields(int rec_num);
+	virtual void set_coltype(int num, colt_datatype *x);
+	virtual	colt_datatype **cells(int rec_num);
 	virtual char *extract_str(char *in, char sep_char='\t', char eol_char='\n', char quote_char = '\0');
 	virtual char find_sep_char(char *row, char end_char='\n');
 	virtual char sep_char();

@@ -20,6 +20,7 @@ public:
     char	quote_char;
     int 	col_count;
     char	**headers;
+    colt_datatype	**cell_objects;
     int		col_iterator;
 	char 	**fields_retval;
 	int		line_counter;
@@ -51,6 +52,8 @@ public:
 	virtual	int max_size();
 	virtual	char *field_val(int rec_num, int col_num);
 	virtual	char **fields(int rec_num);
+	virtual void set_coltype(int num, colt_datatype *x);
+	virtual	colt_datatype **cells(int rec_num);
 	virtual	bool sort_func(int i, int j);
 	virtual	int show_status(int indent_level=0);
 

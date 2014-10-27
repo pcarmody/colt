@@ -57,6 +57,7 @@ public:
 	virtual int show_status(char *baseptr, int indent=0);
 
 	char **fields(int rec_num);
+	colt_datatype **cells(int rec_num);
 	int get_next_row();
 	void process_all();
 	int preprocess();

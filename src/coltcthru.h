@@ -87,6 +87,7 @@ public:
 	char *record(int line_num);
 	char *field_val(int rec_num, int col_num);
 	char **fields(int rec_num);
+	colt_datatype **cells(int rec_num);
 
 	virtual void push_back(int i);
 	virtual int *read_config(int *);

@@ -6,9 +6,7 @@
  */
 #include <stdlib.h>
 #include <string.h>
-#include "coltoperator.h"
-#include "coltout.h"
-#include "colt_html.h"
+#include "colt_headers.h"
 #include <iostream>
 #include <sstream>
 

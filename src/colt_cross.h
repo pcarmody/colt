@@ -12,6 +12,7 @@ class colt_cross : public colt_operator {
 	colt_base		*right;
 	int				current_rec_num;
 	char			**field_list;
+	colt_datatype	**cell_list;
 public:
 	colt_cross(colt_base &in, colt_base &rite);
 	~colt_cross();
@@ -21,6 +22,7 @@ public:
 	int	num_cols();
 	char *col_header(int n);
 	char **fields(int rec_num);
+	colt_datatype **cells(int rec_num);
 
 //	int preprocess();
 	int process(int rec_num);

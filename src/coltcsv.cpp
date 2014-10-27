@@ -15,6 +15,7 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include "coltdatatype.h"
 #include "coltbase.h"
 #include "coltcsv.h"
 
@@ -377,6 +378,33 @@ char **colt_csv::fields(int rec_num)
 	return fields_retval;
 }
 
+void colt_csv::set_coltype(int num, colt_datatype *x)
+{
+	if(!cell_objects) {
+		cell_objects = (colt_datatype **) malloc( sizeof(colt_datatype *) * num_cols());
+		for(int i=0; i<num_cols(); i++) cell_objects[i] = NULL;
+	}
+
+	if(num >= num_cols())
+		throw "Attempted to set the data type of a column that doesn't exist.\n";
+
+	cell_objects[num] = x;
+}
+
+colt_datatype **colt_csv::cells(int rec_num)
+{
+	if(rec_num > num_lines())
+		rec_num = num_lines();
+
+	if(!cell_objects)
+		return cell_objects;
+
+	char **strings = fields(rec_num);
+	for(int i = 0; i<num_cols(); i++)
+		if(cell_objects[i])
+			cell_objects[i]->set_buffer(strings[i]);
+	return cell_objects;
+}
 
 bool colt_csv::sort_func(int i, int j)
 {

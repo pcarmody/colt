@@ -60,6 +60,24 @@ char **colt_add::fields(int rec_num)
 	return colt_add_out;
 }
 
+colt_datatype **colt_add::cells(int rec_num)
+{
+	colt_datatype **rec = colt_operator::cells(rec_num);
+
+	if(!rec)
+		return NULL;
+
+	int i;
+	for(i=0; i<colt_operator::num_cols(); i++) {
+		colt_add_cell[i] = rec[i];
+	}
+
+	colt_parser *parse = (colt_parser *) template_str;
+//	colt_add_cell[i] = parse->replace_strings(colt_add_cell);
+
+	return colt_add_cell;
+}
+
 char *colt_add::col_header(int n)
 {
 	if(n < colt_operator::num_cols())

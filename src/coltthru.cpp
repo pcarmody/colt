@@ -310,6 +310,11 @@ char **coltthru::fields(int rec_num)
 	return operand->fields(index_list[rec_num]);
 }
 
+colt_datatype **coltthru::cells(int rec_num)
+{
+	return operand->cells(index_list[rec_num]);
+}
+
 int coltthru::get_next_row()
 {
 	if(iterate_count > end_index)

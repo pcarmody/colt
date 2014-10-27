@@ -31,6 +31,8 @@ public:
 	virtual int num_cols();
 	virtual int max_size();
 	virtual char **fields(int rec_num);
+	virtual void set_coltype(int num, colt_datatype *x);
+	virtual	colt_datatype **cells(int rec_num);
 	virtual char *source_file_name();
 
 	virtual	int get_next_row();

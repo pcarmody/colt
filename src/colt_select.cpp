@@ -66,6 +66,21 @@ char **colt_select::fields(int rec_num)
 	return colt_select_out;
 }
 
+colt_datatype **colt_select::cells(int rec_num)
+{
+	colt_datatype **rec = colt_operator::cells(rec_num);
+
+	if(!rec)
+		return NULL;
+
+	for(int i=0; i<count; i++) {
+		colt_select_cells[i] = rec[list[i]];
+	}
+
+	return colt_select_cells;
+}
+
+
 char *colt_select::col_header(int n)
 {
 	return colt_operator::col_header(list[n]);

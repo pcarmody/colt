@@ -12,8 +12,7 @@
 #include <dlfcn.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include "coltbase.h"
-#include "coltoperator.h"
+#include "colt_headers.h"
 #include "coltif.h"
 
 

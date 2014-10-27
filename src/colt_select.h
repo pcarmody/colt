@@ -14,6 +14,7 @@ public:
 	int		*list;
 	int		count;
 	char	*colt_select_out[100];
+	colt_datatype	*colt_select_cells[100];
 
 	colt_select(colt_base &in, char **l, int c);
 	virtual ~colt_select();
@@ -21,6 +22,7 @@ public:
 	virtual colt_base *copy(colt_base *op=NULL);
 
 	char **fields(int rec);
+	colt_datatype **cells(int rec);
 	int num_cols();
 	char *col_header(int n);
 	int preprocess();

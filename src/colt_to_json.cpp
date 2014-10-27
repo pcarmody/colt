@@ -7,8 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <limits.h>
-#include "coltoperator.h"
-#include "coltout.h"
+#include "colt_headers.h"
 #include "colt_to_json.h"
 #include <iostream>
 #include <sstream>
