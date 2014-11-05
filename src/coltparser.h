@@ -43,6 +43,7 @@ public:
 	colt_html 			*html();
 	colt_to_json		*json();
 	colt_out			*csv();
+	colt_out_cbf		*cbf();
 	colt_base			*output_expression();
 
 	colt_select 		*select();

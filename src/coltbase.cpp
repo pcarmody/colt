@@ -128,6 +128,16 @@ char **colt_base::fields(int rec_num)
 	//	field[col] = field_val(rec_num, col)
 }
 
+colt_datatype **colt_base::cells(int rec_num)
+{
+	return NULL;
+}
+
+void colt_base::set_coltype(int num, colt_datatype *x)
+{
+
+}
+
 char colt_base::sep_char()
 {
 	return '\0';

@@ -9,7 +9,7 @@
 #include "coltdatatype.h"
 
 #include "coltbase.h"
-#include "coltcsv.h"
+#include "coltcsv.h""
 #include "coltsequentialcsv.h"
 #include "coltoperator.h"
 #include "coltthru.h"
@@ -34,6 +34,7 @@
 #include "coltsync.h"
 
 #include "coltout.h"
+#include "coltoutcbf.h"
 #include "colt_html.h"
 #include "colt_out_vertical.h"
 #include "colt_skip_limit.h"

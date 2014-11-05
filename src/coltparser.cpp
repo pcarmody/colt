@@ -254,6 +254,23 @@ colt_out *colt_parser::csv()
 	return retval;
 }
 
+colt_out_cbf *colt_parser::cbf()
+{
+	colt_out_cbf *retval;
+	char *in = input_buffer;
+
+	if(in[3] != ':')
+		retval = new colt_out_cbf(*return_value);
+	else
+		retval = new colt_out_cbf(*return_value, in+4);
+
+	while(*in != ' ' && *in != '\t' && *in != '\n') in++;
+
+	input_buffer = in;
+
+	return retval;
+}
+
 colt_base *colt_parser::file_name()
 {
 	char file_name[COLT_MAX_STRING_SIZE];
@@ -850,6 +867,9 @@ colt_base *colt_parser::output_expression()
 
 	if(is_token("csv"))
 		return csv();
+
+	if(is_token("cbf"))
+		return cbf();
 
 	return new colt_out(*return_value, "\t");
 }
