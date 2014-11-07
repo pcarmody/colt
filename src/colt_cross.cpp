@@ -19,6 +19,14 @@ colt_cross::colt_cross(colt_base &in, colt_base &rite):
 {
 	i_am = colt_class_cross;
 }
+colt_cross::colt_cross(colt_base &in, colt_base *rite):
+	colt_operator(in),
+	right(rite),
+	current_rec_num(-1),
+	field_list(NULL)
+{
+	i_am = colt_class_cross;
+}
 
 colt_cross::~colt_cross()
 {

@@ -9,12 +9,14 @@
 #define COLT_CROSS_H_
 
 class colt_cross : public colt_operator {
+public:
 	colt_base		*right;
 	int				current_rec_num;
 	char			**field_list;
 	colt_datatype	**cell_list;
-public:
+
 	colt_cross(colt_base &in, colt_base &rite);
+	colt_cross(colt_base &in, colt_base *rite);
 	~colt_cross();
 
 	colt_base *copy(colt_base *op=NULL);
