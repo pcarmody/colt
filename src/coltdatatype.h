@@ -31,6 +31,7 @@ public:
 	virtual int generate(char *x);
 	virtual	char *consume(char *x);
 	virtual int gen_header(char *x);
+	virtual int	isa_container() { return type >= COLT_DT_INDEX; };
 };
 
 class colt_integer : public colt_datatype {
