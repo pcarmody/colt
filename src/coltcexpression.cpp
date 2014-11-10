@@ -5,6 +5,14 @@
  *      Author: paulcarmody
  */
 
+#include <stdlib.h>
+#include <string.h>
+#include <iostream>
+#include <fstream>
+#include <dlfcn.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include "colt_headers.h"
 #include "coltcexpression.h"
 #define regex_match "\
 int match(const char *string, char *pattern)\n\
@@ -26,7 +34,15 @@ int match(const char *string, char *pattern)\n\
 
 colt_cexpression::colt_cexpression(colt_base &b, char *in):
 	colt_operator(b),
-	condition(NULL)
+	function_ptr(NULL)
+{
+	i_am = colt_class_c_expression;
+	return_type = "int";
+}
+
+colt_cexpression::colt_cexpression(colt_base &in, COLT_C_FUNC func):
+	colt_operator(in),
+	function_ptr(func)
 {
 	i_am = colt_class_c_expression;
 	return_type = "int";
@@ -54,7 +70,7 @@ void colt_cexpression::compile_and_link()
 	c_code << "extern \"C\" " << return_type << " " << fn_name << "(char **row)\n";
 	c_code << "{\n";
 	//	c_code << "\t std::cout << \"if\" << row[name] << '\\n';";
-	c_code << "\treturn " << in << ";\n";
+	c_code << "\treturn " << code_string << ";\n";
 	c_code << "}\n";
 	c_code.close();
 
@@ -65,7 +81,7 @@ void colt_cexpression::compile_and_link()
 	FILE *pipe = popen(pipe_string, "r");
 
 	if(pclose(pipe)) {
-		perror("IF error: unable to compile the if conditions.\n");
+		perror("IF error: unable to compile the if function_ptrs.\n");
 		exit(1);
 	}
 
@@ -76,7 +92,7 @@ void colt_cexpression::compile_and_link()
 		exit(1);
 	}
 
-	condition = (COLT_C_FUNC) dlsym(handle, fn_name);
+	function_ptr = (COLT_C_FUNC) dlsym(handle, fn_name);
 }
 
 
@@ -88,6 +104,6 @@ int colt_cexpression::preprocess()
 {
 	compile_and_link();
 
-	return colt_operand::preprocess();
+	return colt_operator::preprocess();
 }
 

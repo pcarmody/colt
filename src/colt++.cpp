@@ -48,8 +48,9 @@ int main(int argc, char **argv)
 {
 	colt_base *base_obj = NULL;
 
-	if(strcmp(argv[1], "-h") == 0
-	|| strcmp(argv[1], "help") == 0) {
+	if(argc > 1 &&
+			(strcmp(argv[1], "-h") == 0
+			|| strcmp(argv[1], "help") == 0) ) {
 
 		if(argv[2]) {
 			colt_load_thru(argv[2], 1);

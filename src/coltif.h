@@ -8,13 +8,11 @@
 #ifndef COLTIF_H_
 #define COLTIF_H_
 
-typedef int(*COLT_IF_FUNC)(char **row);
+//typedef int(*COLT_IF_FUNC)(char **row);
 
-class colt_if : public colt_operator {
-	COLT_IF_FUNC	condition;
-	char		*code_string;
+class colt_if : public colt_cexpression {
 public:
-	colt_if(colt_base &b, COLT_IF_FUNC cond);
+	colt_if(colt_base &b, COLT_C_FUNC cond);
 	colt_if(colt_base &b, char *c);
 	virtual ~colt_if();
 

@@ -19,8 +19,8 @@ colt_expand::colt_expand(colt_base &in, char *cname, char *exp):
 	// TODO Auto-generated constructor stub
 	col_name = new char[strlen(cname)+1];
 	strcpy(col_name, cname);
-	col_name = new char[strlen(cname)+1];
-	strcpy(col_name, cname);
+	expression = new char[strlen(exp)+1];
+	strcpy(expression, cname);
 }
 
 colt_expand::~colt_expand() {
@@ -56,7 +56,7 @@ int colt_expand::preprocess()
 
 int colt_expand::process(int rec_num)
 {
-	colt_each tmp(*dt_thru, expression);
-	right = &tmp
+	colt_each tmp(*right, (char *) expression);
+	right = &tmp;
 	return colt_cross::process(rec_num);
 }

@@ -16,6 +16,7 @@
 #include "coltsort.h"
 #include "coltkeyspace.h"
 #include "coltcthru.h"
+#include "coltcexpression.h"
 #include "coltif.h"
 #include "coltaggregate.h"
 #include "coltaggregagerow.h"

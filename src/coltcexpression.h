@@ -11,11 +11,13 @@
 typedef int(*COLT_C_FUNC)(char **row);
 
 class colt_cexpression : public colt_operator {
+public:
 	COLT_C_FUNC		function_ptr;
 	char		*code_string;
 	char		*return_type;
-public:
+
 	colt_cexpression(colt_base &in, char *exp);
+	colt_cexpression(colt_base &in, COLT_C_FUNC func);
 	virtual ~colt_cexpression();
 
 	void compile_and_link();
