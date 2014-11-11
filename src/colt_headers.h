@@ -23,6 +23,8 @@
 #include "colteach.h"
 #include "coltonchange.h"
 
+#include "coltdtindex.h"
+
 #include "avl.h"
 #include "AssocArray.h"
 #include "coltpartition.h"
@@ -45,6 +47,7 @@
 #include "coltcounter.h"
 
 #include "colt_cross.h"
+#include "coltexpand.h"
 #include "colt_range.h"
 #include "colt_range_list.h"
 #include "coltbitmap.h"

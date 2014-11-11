@@ -32,6 +32,7 @@ public:
 	void fatal_error(char const *err);
 	int consume_whitespace();
 	int consume_word(char *t);
+	int consume_colt_expression(char *out);
 	int is_token(const char *);
 	int consume_token(char *);
 	char *consume_keyword(char *);
@@ -50,6 +51,7 @@ public:
 	colt_skip_limit		*skip_limit();
 	colt_if				*ifx();
 	colt_add			*add();
+	colt_operator		*link();
 	colt_aggregate		*aggregate();
 	colt_aggregate_row	*aggregate_row();
 	colt_sort			*sort();
@@ -59,6 +61,7 @@ public:
 	coltbitmap			*set();
 	colt_each			*each();
 	colt_partition		*partition();
+	colt_expand			*expand();
 	colt_onchange		*onchange();
 	colt_share			*share();
 	colt_thread 		*threadx();

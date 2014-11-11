@@ -200,6 +200,21 @@ int colt_parser::consume_word(char *out)
 	 return 1;
 }
 
+int colt_parser::consume_colt_expression(char *out)
+{
+	if(!consume_token("["))
+		fatal_error("Syntax error: expected [ colt-expression ]\n");
+
+	char *b = input_buffer;
+	char exp[COLT_MAX_STRING_SIZE];
+	char *a = out;
+	while(*b && *b != ']') *a++ = *b++;
+	*a = '\0';
+	input_buffer = b+1;
+
+	return 1;
+}
+
 colt_counter *colt_parser::count()
 {
 	consume_token("count");
@@ -414,6 +429,32 @@ colt_add *colt_parser::add()
 	cout << "qqq " << label << ":" << type_str << ":" << repl_str << "\n";
 
 	return new colt_add(*return_value, label, type, repl_str);
+}
+
+colt_operator *colt_parser::link()
+{
+	consume_token("link:");
+
+	char col_name[COLT_MAX_STRING_SIZE];
+	consume_word(col_name);
+
+	if(!consume_token(","))
+		fatal_error("Link syntax error expected ',' after column name.\n");
+
+	char type[COLT_MAX_STRING_SIZE];
+	consume_word(type);
+
+	if(!consume_token(","))
+		fatal_error("Link syntax error expected ',' after link type.\n");
+
+	char *b = input_buffer;
+	char exp[COLT_MAX_STRING_SIZE];
+	char *a = exp;
+	while(*b && *b != ']') *a++ = *b++;
+	*a = '\0';
+	input_buffer = b+1;
+
+	return new colt_operator(*return_value);
 }
 
 colt_aggregate *colt_parser::aggregate()
@@ -725,6 +766,35 @@ colt_partition *colt_parser::partition()
 	return retval;
 }
 
+colt_expand *colt_parser::expand()
+{
+	consume_token("expand");
+
+	if(*input_buffer != ':')
+		fatal_error("expand expected a key and a colt expression.\n");
+
+	char *b = input_buffer+1;
+	char key[100];
+	char *a=key;
+	while(*b && *b != ',' && *b != ' ') *a++ = *b++;
+	*a = '\0';
+
+	if(*b != ',')
+		fatal_error("Expected comma after key in expand expression.\n");
+
+	b += 2;
+
+	char exp[COLT_MAX_STRING_SIZE];
+	a = exp;
+	while(*b && *b != ']') *a++ = *b++;
+	*a = '\0';
+	input_buffer = b+1;
+
+	colt_expand *retval = new colt_expand(*return_value, key, exp);
+
+	return retval;
+}
+
 colt_onchange *colt_parser::onchange()
 {
 	consume_token("onchange:");
@@ -818,6 +888,8 @@ colt_base *colt_parser::unary_expression()
 		object = each();
 	else if(is_token("part"))
 		object = partition();
+	else if(is_token("expand"))
+		object = expand();
 	else if(is_token("onchange"))
 		object = onchange();
 	else if(is_token("aggrow"))
