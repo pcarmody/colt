@@ -51,7 +51,7 @@ public:
 	colt_skip_limit		*skip_limit();
 	colt_if				*ifx();
 	colt_add			*add();
-	colt_operator		*link();
+	colt_link			*link();
 	colt_aggregate		*aggregate();
 	colt_aggregate_row	*aggregate_row();
 	colt_sort			*sort();
@@ -62,6 +62,7 @@ public:
 	colt_each			*each();
 	colt_partition		*partition();
 	colt_expand			*expand();
+	colt_reduce			*reduce();
 	colt_onchange		*onchange();
 	colt_share			*share();
 	colt_thread 		*threadx();

@@ -55,6 +55,8 @@ public:
 //	virtual int index(int i);
 	virtual void set_begin_end_index(int beg, int end=-1);
 	virtual int show_status(char *baseptr, int indent=0);
+	virtual colt_base *get_datasource(int count=0);
+	virtual int reduce_to(int level, int rec_num);
 
 	char **fields(int rec_num);
 	colt_datatype **cells(int rec_num);

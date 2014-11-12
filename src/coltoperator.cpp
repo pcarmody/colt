@@ -45,6 +45,16 @@ char *colt_operator::source_file_name()
 	return operand->source_file_name();
 }
 
+colt_base *colt_operator::get_datasource(int count)
+{
+	return operand->get_datasource(count);
+}
+
+int colt_operator::reduce_to(int level, int rec_num)
+{
+	return operand->reduce_to(level, rec_num);
+}
+
 void colt_operator::set_operand(colt_base *op)
 {
 	operand = op;

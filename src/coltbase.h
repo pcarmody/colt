@@ -100,6 +100,8 @@ public:
 	virtual char find_sep_char(char *row, char end_char='\n');
 	virtual char sep_char();
 	virtual char *source_file_name();
+	virtual	colt_base *get_datasource(int count=0);
+	virtual int	reduce_to(int level, int rec_num);
 
 	virtual	void process_all();
 	virtual	int get_next_row();

@@ -12,6 +12,7 @@
 #include "coltcsv.h""
 #include "coltsequentialcsv.h"
 #include "coltoperator.h"
+#include "coltreduce.h"
 #include "coltthru.h"
 #include "coltsort.h"
 #include "coltkeyspace.h"
@@ -25,6 +26,7 @@
 
 #include "coltdtindex.h"
 
+#include "coltlink.h"
 #include "avl.h"
 #include "AssocArray.h"
 #include "coltpartition.h"

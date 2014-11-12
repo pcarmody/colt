@@ -431,7 +431,7 @@ colt_add *colt_parser::add()
 	return new colt_add(*return_value, label, type, repl_str);
 }
 
-colt_operator *colt_parser::link()
+colt_link *colt_parser::link()
 {
 	consume_token("link:");
 
@@ -441,20 +441,32 @@ colt_operator *colt_parser::link()
 	if(!consume_token(","))
 		fatal_error("Link syntax error expected ',' after column name.\n");
 
-	char type[COLT_MAX_STRING_SIZE];
-	consume_word(type);
+	int coltype;
+
+	if(consume_token("index"))
+		coltype = COLT_DT_INDEX;
+	else if(consume_token("list"))
+		coltype = COLT_DT_INDEX_LIST;
+	else if(consume_token("range"))
+		coltype = COLT_DT_RANGE;
+	else if(consume_token("bitmap"))
+		coltype = COLT_DT_BITMAP;
+	else
+		fatal_error("Link expected one of 'index', 'list', 'range', or 'bitmap'.\n");
 
 	if(!consume_token(","))
 		fatal_error("Link syntax error expected ',' after link type.\n");
 
-	char *b = input_buffer;
-	char exp[COLT_MAX_STRING_SIZE];
-	char *a = exp;
-	while(*b && *b != ']') *a++ = *b++;
-	*a = '\0';
-	input_buffer = b+1;
+	char filename[COLT_MAX_STRING_SIZE];
+	consume_word(filename);
 
-	return new colt_operator(*return_value);
+	char exp[COLT_MAX_STRING_SIZE];
+	consume_colt_expression(exp);
+
+	if(!consume_token(","))
+		fatal_error("Link syntax error expected ',' after file name.\n");
+
+	return new colt_link(*return_value, col_name, coltype, filename, exp);
 }
 
 colt_aggregate *colt_parser::aggregate()
@@ -795,6 +807,22 @@ colt_expand *colt_parser::expand()
 	return retval;
 }
 
+colt_reduce *colt_parser::reduce()
+{
+	consume_token("reduce");
+	if(!consume_token(":"))
+		return new colt_reduce(*return_value, 0);
+
+	if(isdigit(*input_buffer))
+		return new colt_reduce(*return_value, consume_integer());
+
+	char filename[COLT_MAX_STRING_SIZE];
+	if(!consume_word(filename))
+		fatal_error("Reduce expression expected an integer or a datasource.\n");
+
+	return new colt_reduce(*return_value, filename);
+}
+
 colt_onchange *colt_parser::onchange()
 {
 	consume_token("onchange:");
@@ -904,6 +932,10 @@ colt_base *colt_parser::unary_expression()
 		object = sync();
 	else if(is_token("add"))
 		object = add();
+	else if(is_token("link"))
+		object = link();
+	else if(is_token("reduce"))
+		object = reduce();
 
 	consume_whitespace();
 

@@ -189,6 +189,20 @@ char *coltthru::source_file_name()
 	return colt_operator::source_file_name();
 }
 
+colt_base *coltthru::get_datasource(int count)
+{
+	if(count == 0)
+		return this;
+	return operand->get_datasource(count-1);
+}
+
+int coltthru::reduce_to(int level, int rec_num)
+{
+	int retval = index_list[rec_num];
+	if(level == 0)
+		return retval;
+	return operand->reduce_to(level-1, retval);
+}
 int coltthru::write_config(FILE *out)
 {
 	colt_thru_identifier ident;

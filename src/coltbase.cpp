@@ -91,6 +91,13 @@ int colt_base::max_size() { return 0; };
 
 char *colt_base::source_file_name() { return NULL; }
 
+colt_base *colt_base::get_datasource(int count) { return this; }
+
+int colt_base::reduce_to(int level, int rec_num)
+{
+	return rec_num;
+}
+
 char *colt_base::extract_str(char *in, char sep_char, char eol_char, char quote_char) {
 	return in;
 //	extraction_string[0] = '\0';
