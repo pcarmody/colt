@@ -69,11 +69,6 @@ int main(int argc, char **argv)
 
 		exit(0);
 	}
-//	if(argv[1][0] == '-')
-//		base_obj = colt_stdin;
-//	else
-//
-//	extern colt_base *colt_expression(char *);
 
 	char command_line[1000];
 	command_line[0] ='\0';

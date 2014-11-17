@@ -12,16 +12,18 @@ colt_reduce::colt_reduce(colt_base &in, int n):
 	colt_operator(in),
 	level(n),
 	source(NULL),
-	datasource(NULL)
+	datasource(NULL),
+	current_rec_num(1)
 {
 	// TODO Auto-generated constructor stub
 
 }
 colt_reduce::colt_reduce(colt_base &in, char *dsource):
-		colt_operator(in),
-		level(99),
-		source(NULL),
-		datasource(NULL)
+	colt_operator(in),
+	level(99),
+	source(NULL),
+	datasource(NULL),
+	current_rec_num(1)
 {
 	// TODO Auto-generated constructor stub
 	source = new char[strlen(dsource)+1];
@@ -34,12 +36,12 @@ colt_reduce::~colt_reduce() {
 
 char **colt_reduce::fields(int rec_num)
 {
-	return datasource->fields(rec_num);
+	return colt_operator::fields(current_rec_num);
 }
 
 colt_datatype **colt_reduce::cells(int rec_num)
 {
-	return datasource->cells(rec_num);
+	return colt_operator::cells(current_rec_num);
 }
 
 int colt_reduce::preprocess()
@@ -51,6 +53,7 @@ int colt_reduce::preprocess()
 
 int colt_reduce::process(int rec_num)
 {
+	current_rec_num = rec_num;
 	int new_rec_num = reduce_to(level, rec_num);
 	return colt_operator::process(new_rec_num);
 }

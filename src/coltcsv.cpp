@@ -68,11 +68,10 @@ colt_csv::colt_csv(char *fname, char col_sep, char eol_sep, char q_char)
 
 int colt_csv::open_and_load()
 {
-	if(open_file(1)) {
-		load_headers();
-		if(preload)
-			preload_data();
-	}
+	if(colt_index_file_exists(file_name))
+		preload_data();
+	else
+		open_file(1);
 }
 
 colt_csv::~colt_csv() {
@@ -157,7 +156,7 @@ char *colt_csv::extract_str(char *in, char sep_char, char eol_char, char q_char)
 
 int colt_csv::open_file (int set_sep_chars)
 {
-      struct stat sb;
+	struct stat sb;
       char *p;
       int fd;
 
@@ -188,27 +187,30 @@ int colt_csv::open_file (int set_sep_chars)
       size = sb.st_size;
 
       file_size = sb.st_size;
-      find_sep_chars(set_sep_chars);
-      load_headers();
 
-      int curr_index = 0;
-      int next_index;
+      if(!preload) {
+		  find_sep_chars(set_sep_chars);
+		  load_headers();
 
-      while((next_index = get_next_index(curr_index, file_size, base_ptr)) > 0) {
-    	  lines.push_back(next_index);
-    	  curr_index = next_index;
+		  int curr_index = 0;
+		  int next_index;
+
+		  while((next_index = get_next_index(curr_index, file_size, base_ptr)) > 0) {
+			  lines.push_back(next_index);
+			  curr_index = next_index;
+		  }
+
+		  // save the index file
+
+		  char index_file_name[100];
+		  strcpy(index_file_name, file_name);
+		  strcat(index_file_name, ".ndx");
+
+		  ofstream os(index_file_name, ios::binary);
+		  os.write((const char *) &col_count, sizeof(int));
+		  os.write((const char *)&lines[0], lines.size() * sizeof(int));
+		  os.close();
       }
-
-      // save the index file
-
-  	  char index_file_name[100];
-  	  strcpy(index_file_name, file_name);
-  	  strcat(index_file_name, ".ndx");
-
-  	  ofstream os(index_file_name, ios::binary);
-  	  os.write((const char *) &col_count, sizeof(int));
-  	  os.write((const char *)&lines[0], lines.size() * sizeof(int));
-  	  os.close();
 
       return 1;
 }
@@ -307,6 +309,7 @@ int colt_csv::preload_data()
 
 	close(fd);
 
+	preload = 1;
 	open_file();
 
 	char *tmp_array[COLT_MAX_NUM_COLS];

@@ -12,6 +12,7 @@ class colt_reduce : public colt_operator {
 	int 	level;
 	char	*source;
 	colt_base	*datasource;
+	int		current_rec_num;
 public:
 	colt_reduce(colt_base &in, int n);
 	colt_reduce(colt_base &in, char *dsource);

@@ -325,7 +325,7 @@ colt_base *colt_parser::file_name()
 		if(col_sep)
 			retval = new colt_csv(file_name, col_sep, eol_sep, quote_sep);
 		else
-			retval = new colt_csv(file_name, 1);
+			retval = new colt_csv(file_name, 0);
 
 	retval->open_and_load();
 	return retval;
@@ -425,8 +425,6 @@ colt_add *colt_parser::add()
 		fatal_error("Expected datatype in add expression.\n");
 
 	consume_keyword(repl_str);
-
-	cout << "qqq " << label << ":" << type_str << ":" << repl_str << "\n";
 
 	return new colt_add(*return_value, label, type, repl_str);
 }
