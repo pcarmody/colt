@@ -83,9 +83,9 @@ colt_csv::~colt_csv() {
 
 	if(fields_retval)
 		free(fields_retval);
-
-	if(headers)
-		free(headers);
+//
+//	if(headers)
+//		free(headers);
 
 	char index_file_name[100];
 	strcpy(index_file_name, file_name);
@@ -253,26 +253,24 @@ int	colt_csv:: find_sep_chars(int set_sep_chars)
 
 int  colt_csv::load_headers()
 {
-	char tmp_header[COLT_MAX_STRING_SIZE];
-	char *b = tmp_header;
+	char *b = base_ptr;
+	char *tmp_header = b;
 	char *tmp_array[COLT_MAX_NUM_COLS];
 
 	for(char *x = base_ptr; *x != end_of_line_sep_char; x++) {
 		if(col_count > COLT_MAX_NUM_COLS)
 			continue;
 		if(*x == column_sep_char) {
-			*b = '\0';
-			tmp_array[col_count] = (char *) malloc(strlen(tmp_header)+1);
-			strcpy(tmp_array[col_count], tmp_header);
+			*b++ = '\0';
+			tmp_array[col_count] = tmp_header;
 			col_count++;
-			b = tmp_header;
+			tmp_header = b;
 		} else
 			*b++ = *x;
 	}
 
-	*--b = '\0';
-	tmp_array[col_count] = (char *) malloc(strlen(tmp_header));
-	strcpy(tmp_array[col_count], tmp_header);
+	*b = '\0';
+	tmp_array[col_count] = tmp_header;
 	col_count++;
 
 	headers = (char **) malloc(sizeof(char*)*col_count);

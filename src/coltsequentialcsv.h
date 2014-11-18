@@ -18,6 +18,7 @@ public:
 	virtual ~colt_sequential_csv();
 
 	int open_file(int set_sep_chars=0);
+	int  load_headers();
 	char *record(int line_num);
 	int num_lines();
 	int max_size();

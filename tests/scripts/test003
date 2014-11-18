@@ -1,1 +1,11 @@
-./colt++ data.csv sort:name
+source ./env.sh
+
+TESTNAME=$(basename "$0")_vertical
+
+rm $SCRATCHDIR/$TESTNAME.csv
+rm $DESTDIR/$TESTNAME.csv
+
+cp $DATADIR/data.old $SCRATCHDIR/$TESTNAME.csv
+$PROGRAM $SCRATCHDIR/$TESTNAME.csv vertical > $DESTDIR/$TESTNAME.csv
+[[ -n $RESETTEST ]] && cp $DESTDIR/$TESTNAME.csv $EXPECTEDDIR
+echo $TESTNAME `diff $DESTDIR/$TESTNAME.csv $EXPECTEDDIR/$TESTNAME.csv | wc -l`

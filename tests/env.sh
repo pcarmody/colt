@@ -1,5 +1,7 @@
-PROGRAM=
+RESETTEST=
+PROGRAM=/Users/paulcarmody/csv/Debug/csv
 TESTDIR=`pwd`
-DATAFILES=$TESTDIR/data
+DATADIR=$TESTDIR/data
 DESTDIR=$TESTDIR/last_output
 EXPECTEDDIR=$TESTDIR/valid_output
+SCRATCHDIR=$TESTDIR/scratch

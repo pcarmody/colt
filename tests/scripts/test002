@@ -1,1 +1,11 @@
-./colt++ data.csv each:[select:state,name,id]
+source ./env.sh
+
+TESTNAME=$(basename "$0")_comma_csv
+
+rm $SCRATCHDIR/$TESTNAME.csv
+rm $DESTDIR/$TESTNAME.csv
+
+cp $DATADIR/data.old $SCRATCHDIR/$TESTNAME.csv
+$PROGRAM $SCRATCHDIR/$TESTNAME.csv csv:, > $DESTDIR/$TESTNAME.csv
+[[ -n $RESETTEST ]] && cp $DESTDIR/$TESTNAME.csv $EXPECTEDDIR
+echo $TESTNAME `diff $DESTDIR/$TESTNAME.csv $EXPECTEDDIR/$TESTNAME.csv | wc -l`
