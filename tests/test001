@@ -1,2 +1,0 @@
-cp data.old test001.csv
-./colt++ test001.csv

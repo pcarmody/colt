@@ -1,0 +1,4 @@
+source ./env.sh
+cp $DATADIR/data.old test001.csv
+$PROGRAM test001.csv > $DESTDIR/test001.csv
+diff $DESTDIR/test001.csv $EXPECTDIR/test001.csv | wc
