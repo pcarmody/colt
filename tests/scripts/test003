@@ -2,7 +2,7 @@ source ./env.sh
 
 TESTNAME=$(basename "$0")_vertical
 
-rm $SCRATCHDIR/$TESTNAME.csv
+rm $SCRATCHDIR/$TESTNAME.csv*
 rm $DESTDIR/$TESTNAME.csv
 
 cp $DATADIR/data.old $SCRATCHDIR/$TESTNAME.csv

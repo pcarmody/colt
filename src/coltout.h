@@ -13,7 +13,7 @@ class colt_out : public colt_operator {
 	char	*end_of_line_sep_char;
 	char	*quote_char;
 public:
-	colt_out(colt_base &in, char *col=",", char *eol="\n", char *quote="\"");
+	colt_out(colt_base &in, char *col=",", char *eol="\n", char *quote=NULL);
 	virtual ~colt_out();
 
 	virtual	colt_base *copy(colt_base *operand=NULL);

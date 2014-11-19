@@ -58,5 +58,7 @@
 #include "coltcomplement.h"
 
 #include "coltparser.h"
+#include "colttrace.h"
 
+#define COLT_TRACE(MSG) colt_trace _trace(MSG);
 using namespace std;

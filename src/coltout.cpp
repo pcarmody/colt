@@ -15,7 +15,8 @@
 using namespace std;
 
 colt_out::colt_out(colt_base &in, char *col, char *eol, char *quote):
-		colt_operator(in)
+		colt_operator(in),
+		quote_char(NULL)
 {
 	i_am = colt_class_out;
 	if(col) {
@@ -105,7 +106,7 @@ int colt_out::process(int i)
 	if(f == NULL)
 		return 0;
 
-	char out_string[500];// = (char *) malloc(500);
+	char out_string[COLT_MAX_STRING_SIZE];// = (char *) malloc(500);
 	out_string[0] = '\0';
 
 	for(int j=0; j<num_cols(); j++) {
@@ -114,9 +115,17 @@ int colt_out::process(int i)
 
 		char *x = extract_str(f[j]);
 		int new_len = strlen(out_string)+strlen(x)+2;
-		if(new_len > 500)
+
+		if(quote_char)
+			new_len += 2;
+
+		if(new_len > COLT_MAX_STRING_SIZE)
 			break; //out_string = (char *) realloc(out_string, new_len);
-		strcat(out_string, x );
+
+		if(quote_char)
+			sprintf(out_string,"%s%s%s%s", out_string, quote_char, x, quote_char);
+		else
+			strcat(out_string, x );
 	}
 	strcat(out_string, end_of_line_sep_char);
 	cout << out_string;

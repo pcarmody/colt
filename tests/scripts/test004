@@ -1,11 +1,11 @@
 source ./env.sh
 
-TESTNAME=$(basename "$0")_basic_csv
+TESTNAME=$(basename "$0")_html
 
 rm $SCRATCHDIR/$TESTNAME.csv*
 rm $DESTDIR/$TESTNAME.csv
 
 cp $DATADIR/data.old $SCRATCHDIR/$TESTNAME.csv
-$PROGRAM $SCRATCHDIR/$TESTNAME.csv > $DESTDIR/$TESTNAME.csv
+$PROGRAM $SCRATCHDIR/$TESTNAME.csv html > $DESTDIR/$TESTNAME.csv
 [[ -n $RESETTEST ]] && cp $DESTDIR/$TESTNAME.csv $EXPECTEDDIR
 echo $TESTNAME `diff $DESTDIR/$TESTNAME.csv $EXPECTEDDIR/$TESTNAME.csv | wc -l`

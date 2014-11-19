@@ -46,16 +46,17 @@ void fatal_error(char const *err)
 
 int main(int argc, char **argv)
 {
+	COLT_TRACE("main");
 	colt_base *base_obj = NULL;
 
 	if(argc > 1 &&
-			(strcmp(argv[1], "-h") == 0
-			|| strcmp(argv[1], "help") == 0) ) {
-
-		if(argv[2]) {
-			colt_load_thru(argv[2], 1);
-			exit(0);
-		}
+		(strcmp(argv[1], "-h") == 0
+		|| strcmp(argv[1], "help") == 0) ) {
+//
+//		if(argv[2]) {
+//			colt_load_thru(argv[2], 1);
+//			exit(0);
+//		}
 
 		cout << "colt++ filename <expressions> <output format>\n";
 		cout << "\tcolumn-operations\n";
@@ -72,11 +73,21 @@ int main(int argc, char **argv)
 
 	char command_line[1000];
 	command_line[0] ='\0';
+	int i = 1;
 
-	for(int i=1; i<argc; i++) {
+	if(argc > 1 &&
+		(strcmp(argv[1], "-D") == 0 || strcmp(argv[1], "--debug") == 0) ) {
+		colt_trace::show = 1;
+
+		i = 2;
+	}
+
+	for(; i<argc; i++) {
 		strcat(command_line, argv[i]);
 		strcat(command_line, " ");
 	}
+
+	_trace.add_match("parsq");
 
 	colt_parser parser(command_line);
 	base_obj = parser.parse();

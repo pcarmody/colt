@@ -36,17 +36,20 @@ colt_cross::~colt_cross()
 
 colt_base	*colt_cross::copy(colt_base *op)
 {
+	COLT_TRACE("*colt_cross::copy(colt_base *op)")
 //	return new colt_cross(*op, &right.operand->copy(NULL));
 	return this;
 }
 
 int colt_cross::num_cols()
 {
+	COLT_TRACE("colt_cross::num_cols()")
 	return colt_operator::num_cols() + right->num_cols();
 }
 
 char *colt_cross::col_header(int n)
 {
+	COLT_TRACE("*colt_cross::col_header(int n)")
 	int left_cols = colt_operator::num_cols();
 	if(n < left_cols)
 		return colt_operator::col_header(n);
@@ -55,6 +58,7 @@ char *colt_cross::col_header(int n)
 
 char **colt_cross::fields(int rec_num)
 {
+	COLT_TRACE("**colt_cross::fields(int rec_num)")
 	char **left = colt_operator::fields(current_rec_num);
 	char **rite = right->fields(rec_num);
 
@@ -76,6 +80,7 @@ char **colt_cross::fields(int rec_num)
 
 colt_datatype **colt_cross::cells(int rec_num)
 {
+	COLT_TRACE("**colt_cross::cells(int rec_num)")
 	colt_datatype **left = colt_operator::cells(current_rec_num);
 	colt_datatype **rite = right->cells(rec_num);
 
@@ -93,6 +98,7 @@ colt_datatype **colt_cross::cells(int rec_num)
 
 int colt_cross::process(int rec_num)
 {
+	COLT_TRACE("colt_cross::process(int rec_num)")
 	if(!right->preprocess())
 		return 0;
 

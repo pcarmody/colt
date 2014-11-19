@@ -24,11 +24,13 @@ colt_parser::~colt_parser()
 
 int colt_parser::is_a(Colt_Class c)
 {
+	COLT_TRACE("colt_parser::is_a(Colt_Class c)")
 	return c == colt_class_parser;
 }
 
 int colt_parser::find_insertions(char **cols)
 {
+	COLT_TRACE("colt_parser::find_insertions(char **cols)")
 	substrings[numfrags].index = -1;
 	substrings[numfrags].substring[0] = '\0';
 	for(char *a=input_buffer; *a; a++) {
@@ -67,6 +69,7 @@ int colt_parser::find_insertions(char **cols)
 
 char *colt_parser::replace_strings(char **vals)
 {
+	COLT_TRACE("*colt_parser::replace_strings(char **vals)")
 	compiled_string[0] = '\0';
 
 	for(int i=0; i<numfrags+1; i++) {
@@ -94,17 +97,20 @@ char *colt_parser::replace_strings(char **vals)
 
 void colt_parser::fatal_error(char const *err)
 {
+	COLT_TRACE("colt_parser::fatal_error(char const *err)")
 	cerr<< err;
 	exit(-1);
 }
 
 int colt_parser::is_token(const char *token)
 {
+	COLT_TRACE("colt_parser::is_token(const char *token)")
 	return strncmp(input_buffer, token, strlen(token)) == 0;
 }
 
 int colt_parser::consume_whitespace()
 {
+	COLT_TRACE("colt_parser::consume_whitespace()")
 	char *b = input_buffer;
 
 	while(*b == '\t' || *b == ' ' || *b == '\n') b++;
@@ -115,6 +121,7 @@ int colt_parser::consume_whitespace()
 
 char *colt_parser::consume_keyword(char *outbuff)
 {
+	COLT_TRACE("*colt_parser::consume_keyword(char *outbuff)")
 	char *b=input_buffer;
 	char *a = outbuff;
 	char quote_char = '\0';
@@ -139,6 +146,7 @@ char *colt_parser::consume_keyword(char *outbuff)
 
 int colt_parser::consume_code_segment(char *outbuff)
 {
+	COLT_TRACE("colt_parser::consume_code_segment(char *outbuff)")
 	char *b=input_buffer;
 	int indent_level = 0;
 
@@ -166,6 +174,7 @@ int colt_parser::consume_code_segment(char *outbuff)
 
 int colt_parser::consume_token(char *a)
 {
+	COLT_TRACE("colt_parser::consume_token(char *a)")
 	char *b = input_buffer;
 
 	if(strncmp(b, a, strlen(a)) != 0) {
@@ -179,6 +188,7 @@ int colt_parser::consume_token(char *a)
 
 int colt_parser::consume_integer()
 {
+	COLT_TRACE("colt_parser::consume_integer()")
 	if(!isdigit(*input_buffer))
 		fatal_error("Expected an integer.\n");
 
@@ -190,6 +200,7 @@ int colt_parser::consume_integer()
 
 int colt_parser::consume_word(char *out)
 {
+	COLT_TRACE("colt_parser::consume_word(char *out)")
 	char *a = input_buffer;
 	while(isalnum(*a)
 		|| *a == '.'
@@ -202,6 +213,7 @@ int colt_parser::consume_word(char *out)
 
 int colt_parser::consume_colt_expression(char *out)
 {
+	COLT_TRACE("colt_parser::consume_colt_expression(char *out)")
 	if(!consume_token("["))
 		fatal_error("Syntax error: expected [ colt-expression ]\n");
 
@@ -217,24 +229,28 @@ int colt_parser::consume_colt_expression(char *out)
 
 colt_counter *colt_parser::count()
 {
+	COLT_TRACE("*colt_parser::count()")
 	consume_token("count");
 	return new colt_counter(*return_value);
 }
 
 colt_out_vertical *colt_parser::vertical()
 {
+	COLT_TRACE("*colt_parser::vertical()")
 	consume_token("vertical");
 	return new colt_out_vertical(*return_value);
 }
 
 colt_html *colt_parser::html()
 {
+	COLT_TRACE("*colt_parser::html()")
 	consume_token("html");
 	return new colt_html(*return_value);
 }
 
 colt_to_json *colt_parser::json()
 {
+	COLT_TRACE("*colt_parser::json()")
 	consume_token("json");
 
 	if(is_token(":")) {
@@ -250,6 +266,7 @@ colt_to_json *colt_parser::json()
 
 colt_out *colt_parser::csv()
 {
+	COLT_TRACE("*colt_parser::csv()")
 	colt_out *retval;
 	char *in = input_buffer;
 
@@ -271,6 +288,7 @@ colt_out *colt_parser::csv()
 
 colt_out_cbf *colt_parser::cbf()
 {
+	COLT_TRACE("*colt_parser::cbf()")
 	colt_out_cbf *retval;
 	char *in = input_buffer;
 
@@ -288,6 +306,7 @@ colt_out_cbf *colt_parser::cbf()
 
 colt_base *colt_parser::file_name()
 {
+	COLT_TRACE("*colt_parser::file_name()")
 	char file_name[COLT_MAX_STRING_SIZE];
 	char *a = file_name;
 	char *in = input_buffer;
@@ -333,6 +352,7 @@ colt_base *colt_parser::file_name()
 
 colt_select *colt_parser::select()
 {
+	COLT_TRACE("*colt_parser::select()")
 	consume_token("select:");
 
 	int num_cols = 0;
@@ -362,6 +382,7 @@ colt_select *colt_parser::select()
 
 colt_skip_limit *colt_parser::skip_limit()
 {
+	COLT_TRACE("*colt_parser::skip_limit()")
 	char *in = input_buffer;
 	consume_token("limit:");
 	int limit = consume_integer();
@@ -378,6 +399,7 @@ colt_skip_limit *colt_parser::skip_limit()
 
 colt_if *colt_parser::ifx()
 {
+	COLT_TRACE("*colt_parser::ifx()")
 	char in[1000];
 	input_buffer += 3;
 
@@ -388,6 +410,7 @@ colt_if *colt_parser::ifx()
 
 colt_add *colt_parser::add()
 {
+	COLT_TRACE("*colt_parser::add()")
 	char repl_str[COLT_MAX_STRING_SIZE];
 	char label[COLT_MAX_STRING_SIZE];
 	char type_str[COLT_MAX_STRING_SIZE];
@@ -431,6 +454,7 @@ colt_add *colt_parser::add()
 
 colt_link *colt_parser::link()
 {
+	COLT_TRACE("*colt_parser::link()")
 	consume_token("link:");
 
 	char col_name[COLT_MAX_STRING_SIZE];
@@ -469,6 +493,7 @@ colt_link *colt_parser::link()
 
 colt_aggregate *colt_parser::aggregate()
 {
+	COLT_TRACE("*colt_parser::aggregate()")
 	char *b=input_buffer+3;
 
 	if(*b != ':')
@@ -519,6 +544,7 @@ colt_aggregate *colt_parser::aggregate()
 
 colt_aggregate_row *colt_parser::aggregate_row()
 {
+	COLT_TRACE("*colt_parser::aggregate_row()")
 	int func_code;
 	consume_token("aggrow:");
 
@@ -535,22 +561,24 @@ colt_aggregate_row *colt_parser::aggregate_row()
 
 	int count = 1;
 	char col_name[COLT_MAX_STRING_SIZE];
+	if(consume_token("="))
+		consume_keyword(col_name);
+	else
+		fatal_error("Expected '=column name' in aggrow.\n");
 
 	if(consume_token("-"))
 		count = consume_integer();
 
 	colt_aggregate_row *retval = NULL;
-	if(consume_token(",")) {
-		consume_keyword(col_name);
-		retval = new colt_aggregate_row(*return_value, func_code, count, col_name);
-	} else
-		retval = new colt_aggregate_row(*return_value, func_code, count);
+
+	retval = new colt_aggregate_row(*return_value, func_code, count, col_name);
 
 	return retval;
 }
 
 colt_sort *colt_parser::sort()
 {
+	COLT_TRACE("*colt_parser::sort()")
 	char key[100];
 	int  type=0;
 	int  direction=1;
@@ -604,6 +632,7 @@ colt_sort *colt_parser::sort()
 
 colt_keyspace *colt_parser::keyspace()
 {
+	COLT_TRACE("*colt_parser::keyspace()")
 	input_buffer += 8;
 
 	char *b=input_buffer;
@@ -632,6 +661,7 @@ colt_keyspace *colt_parser::keyspace()
 
 colt_cthru *colt_parser::cthru()
 {
+	COLT_TRACE("*colt_parser::cthru()")
 	char key[100];
 	int  type=0;
 	int  direction=1;
@@ -684,6 +714,7 @@ colt_cthru *colt_parser::cthru()
 
 colt_range *colt_parser::search()
 {
+	COLT_TRACE("*colt_parser::search()")
 	char *b = input_buffer+6;
 	char low[COLT_MAX_STRING_SIZE], high[COLT_MAX_STRING_SIZE];
 
@@ -710,6 +741,7 @@ colt_range *colt_parser::search()
 
 coltbitmap *colt_parser::set()
 {
+	COLT_TRACE("*colt_parser::set()")
 	input_buffer += 3;
 	coltbitmap *retval = NULL;
 
@@ -730,6 +762,7 @@ coltbitmap *colt_parser::set()
 
 colt_each *colt_parser::each()
 {
+	COLT_TRACE("*colt_parser::each()")
 	input_buffer += 4;
 
 	if(*input_buffer != ':' &&
@@ -749,6 +782,7 @@ colt_each *colt_parser::each()
 
 colt_partition *colt_parser::partition()
 {
+	COLT_TRACE("*colt_parser::partition()")
 	input_buffer += 4;
 
 	if(*input_buffer != ':')
@@ -778,6 +812,7 @@ colt_partition *colt_parser::partition()
 
 colt_expand *colt_parser::expand()
 {
+	COLT_TRACE("*colt_parser::expand()")
 	consume_token("expand");
 
 	if(*input_buffer != ':')
@@ -807,6 +842,7 @@ colt_expand *colt_parser::expand()
 
 colt_reduce *colt_parser::reduce()
 {
+	COLT_TRACE("*colt_parser::reduce()")
 	consume_token("reduce");
 	if(!consume_token(":"))
 		return new colt_reduce(*return_value, 0);
@@ -823,6 +859,7 @@ colt_reduce *colt_parser::reduce()
 
 colt_onchange *colt_parser::onchange()
 {
+	COLT_TRACE("*colt_parser::onchange()")
 	consume_token("onchange:");
 
 	char *b = input_buffer;
@@ -849,6 +886,7 @@ colt_onchange *colt_parser::onchange()
 
 colt_share *colt_parser::share()
 {
+	COLT_TRACE("*colt_parser::share()")
 	consume_token("share:[");
 
 	colt_share *retval = new colt_share(*return_value);
@@ -880,18 +918,21 @@ colt_share *colt_parser::share()
 
 colt_thread *colt_parser::threadx()
 {
+	COLT_TRACE("*colt_parser::threadx()")
 	consume_token("thread");
 	return new colt_thread(*return_value);
 }
 
 colt_sync *colt_parser::sync()
 {
+	COLT_TRACE("*colt_parser::sync()")
 	consume_token("sync");
 	return new colt_sync(*return_value);
 }
 
 colt_base *colt_parser::unary_expression()
 {
+	COLT_TRACE("*colt_parser::unary_expression()")
 	colt_base *object = NULL;
 
 	if(is_token("select"))
@@ -942,6 +983,7 @@ colt_base *colt_parser::unary_expression()
 
 colt_base *colt_parser::unary_expressions()
 {
+	COLT_TRACE("*colt_parser::unary_expressions()")
 	colt_base *retval = NULL;
 	colt_base *object = NULL;
 
@@ -955,6 +997,7 @@ colt_base *colt_parser::unary_expressions()
 
 colt_base *colt_parser::output_expression()
 {
+	COLT_TRACE("*colt_parser::output_expression()")
 	if(is_token("count"))
 		return count();
 
@@ -978,6 +1021,7 @@ colt_base *colt_parser::output_expression()
 
 colt_isect *colt_parser::isect()
 {
+	COLT_TRACE("*colt_parser::isect()")
 	input_buffer += 5;
 	if(*input_buffer != ':')
 		fatal_error("Expected isect:file,file\n");
@@ -996,6 +1040,7 @@ colt_isect *colt_parser::isect()
 
 colt_union *colt_parser::unionx()
 {
+	COLT_TRACE("*colt_parser::unionx()")
 	input_buffer += 5;
 	if(*input_buffer != ':')
 		fatal_error("Expected union:file,file\n");
@@ -1014,6 +1059,7 @@ colt_union *colt_parser::unionx()
 
 colt_complement *colt_parser::complement()
 {
+	COLT_TRACE("*colt_parser::complement()")
 	input_buffer += 5;
 	if(*input_buffer != ':')
 		fatal_error("Expected complement:file,file\n");
@@ -1035,6 +1081,7 @@ colt_complement *colt_parser::complement()
 
 colt_base *colt_parser::object_expression()
 {
+	COLT_TRACE("*colt_parser::object_expression()")
 
 	if(is_token("isect"))
 		return_value = isect();
@@ -1050,6 +1097,7 @@ colt_base *colt_parser::object_expression()
 
 colt_base *colt_parser::parse()
 {
+	COLT_TRACE("*colt_parser::parse()")
 //	input_buffer = input;
 
 	return_value = object_expression();
@@ -1075,6 +1123,7 @@ colt_base *colt_parser::parse()
 
 colt_base *colt_parser::parse_unary_expressions(colt_base *in)
 {
+	COLT_TRACE("*colt_parser::parse_unary_expressions(colt_base *in)")
 	return_value = in;
 
 	colt_base *retval =  unary_expressions();
