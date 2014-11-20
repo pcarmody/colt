@@ -15,7 +15,7 @@ int colt_trace::show=0;
 vector<string> colt_trace::matches;
 
 colt_trace::colt_trace(const char *str):
-	string(str),
+	location(str),
 	is_match(0)
 {
 	// TODO Auto-generated constructor stub
@@ -25,9 +25,8 @@ colt_trace::colt_trace(const char *str):
 	}
 
 	if (show && is_match) {
-		for(int i=0; i<indent_level; i++)
-			std::cout << " ";
-		std::cout << ">" << string << "\n";
+		indent();
+		std::cout << ">" << location << "\n";
 		indent_level++;
 	}
 }
@@ -37,9 +36,8 @@ colt_trace::~colt_trace()
 	// TODO Auto-generated destructor stub
 	if(show && is_match) {
 		indent_level--;
-		for(int i=0; i<indent_level; i++)
-			std::cout << " ";
-		std::cout << "<" << string << "\n";
+		indent();
+		std::cout << "<" << location << "\n";
 	}
 }
 
@@ -48,13 +46,49 @@ void colt_trace::add_match(const char *str)
 	matches.push_back(str);
 }
 
+colt_trace &colt_trace::start()
+{
+	if(show && is_match) {
+		indent();
+		std::cout << "=" << location << ":";
+	}
+
+	return *this;
+}
+
 colt_trace &colt_trace::operator <<(const char *str)
 {
 	if(show && is_match) {
-		indent_level--;
-		for(int i=0; i<indent_level; i++)
-			std::cout << " ";
-		std::cout << "<" << string << ":" << str;
+		std::cout << str;
+	}
+
+	return *this;
+}
+
+colt_trace &colt_trace::operator <<(char *str)
+{
+	if(show && is_match) {
+		std::cout << str;
+	}
+
+	return *this;
+}
+
+colt_trace &colt_trace::operator <<(int x)
+{
+	if(show && is_match) {
+		std::cout << x;
+	}
+
+	return *this;
+}
+
+colt_trace &colt_trace::operator <<(colt_datatype *dtype)
+{
+	if(show && is_match) {
+		char buff[COLT_MAX_STRING_SIZE];
+		dtype->format(buff);
+		std::cout << buff;
 	}
 
 	return *this;

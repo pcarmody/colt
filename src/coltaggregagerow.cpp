@@ -32,7 +32,8 @@ colt_aggregate_row::~colt_aggregate_row()
 int colt_aggregate_row::preprocess()
 {
 	COLT_TRACE("colt_aggregate_row::preprocess()")
-	for(int j=0; j<colt_operator::num_cols(); j++) {
+	int numc = colt_operator::num_cols();
+	for(int j=0; j<numc; j++) {
 		char *head = operand->col_header( j );
 		if(strcmp(column_name, head ) == 0 ) {
 			column_number = j;
@@ -70,7 +71,8 @@ int colt_aggregate_row::process(int rec_num)
 			return 1;
 		}
 		if(rows[count-1] < 0 ||
-				strcmp(num, fields(rows[count-1])[column_number]) < 0) {
+//				*cells(rows[count-1])[column_number] >= num) {
+				strcmp(num, fields(rows[count-1])[column_number]) > 0) {
 			for(int i=0; i<count; i++) {
 				char **g = fields(rows[i]);
 				char *curr = g[column_number];
@@ -85,6 +87,7 @@ int colt_aggregate_row::process(int rec_num)
 	} else if(function == colt_aggregate::min) {
 		char *num = f[column_number];
 		if(rows[count-1] < 0 ||
+//				*cells(rows[count-1])[column_number] < num) {
 				strcmp(num, fields(rows[count-1])[column_number]) < 0) {
 			for(int i=0; i<count; i++) {
 				if(rows[i] < 0) {

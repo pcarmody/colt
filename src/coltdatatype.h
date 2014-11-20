@@ -32,6 +32,10 @@ public:
 	virtual	char *consume(char *x);
 	virtual int gen_header(char *x);
 	virtual int	isa_container() { return type >= COLT_DT_INDEX; };
+	virtual int operator <(char *x);
+	virtual int operator <(colt_datatype &x);
+			int operator >=(colt_datatype &x) { return !operator <(x); };
+			int operator >=(char *x) { return !operator <(x); };
 };
 
 class colt_integer : public colt_datatype {
@@ -45,6 +49,8 @@ public:
 	virtual	int format(char *x);
 	virtual int generate(char *x);
 	virtual	char *consume(char *x);
+	virtual int operator <(char *x);
+	virtual int operator <(colt_datatype &x);
 };
 
 #endif /* COLTDATATYPE_H_ */

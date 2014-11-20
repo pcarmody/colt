@@ -15,11 +15,13 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+using namespace std;
 #include "coltdatatype.h"
 #include "coltbase.h"
 #include "coltcsv.h"
+#include "colttrace.h"
 
-using namespace std;
+#define COLT_TRACE(MSG) colt_trace _trace(MSG);
 
 int colt_index_file_exists(char *file_name)
 {
@@ -68,6 +70,7 @@ colt_csv::colt_csv(char *fname, char col_sep, char eol_sep, char q_char)
 
 int colt_csv::open_and_load()
 {
+	COLT_TRACE("colt_csv::open_and_load()")
 	if(colt_index_file_exists(file_name))
 		preload_data();
 	else
@@ -83,6 +86,10 @@ colt_csv::~colt_csv() {
 
 	if(fields_retval)
 		free(fields_retval);
+
+	for(int i=0; i<col_count; i++)
+		delete cell_objects[i];
+	free(cell_objects);
 //
 //	if(headers)
 //		free(headers);
@@ -99,26 +106,31 @@ colt_csv::~colt_csv() {
 
 colt_base *colt_csv::copy(colt_base *op)
 {
+	COLT_TRACE("*colt_csv::copy(colt_base *op)")
 	return new colt_csv(file_name, column_sep_char, end_of_line_sep_char, quote_char);
 }
 
 char colt_csv::sep_char()
 {
+	COLT_TRACE("colt_csv::sep_char()")
 	return column_sep_char;
 }
 
 char *colt_csv::source_file_name()
 {
+	COLT_TRACE("*colt_csv::source_file_name()")
 	return file_name;
 }
 
 int colt_csv::num_lines()
 {
+	COLT_TRACE("colt_csv::num_lines()")
 	return lines.size()-1;
 };
 
 int colt_csv::max_size()
 {
+	COLT_TRACE("colt_csv::max_size()")
 	if(line_counter < 0)
 		return num_lines();
 
@@ -127,6 +139,7 @@ int colt_csv::max_size()
 
 int colt_csv::get_next_index(int curr_index, int size, char *buff)
 {
+	COLT_TRACE("colt_csv::get_next_index(int curr_index, int size, char *buff)")
     while(curr_index < size && buff[curr_index] != '\n'){
     	if(buff[curr_index] == column_sep_char) {
     		buff[curr_index] = '\0';
@@ -151,11 +164,13 @@ int colt_csv::get_next_index(int curr_index, int size, char *buff)
 
 char *colt_csv::extract_str(char *in, char sep_char, char eol_char, char q_char)
 {
+	COLT_TRACE("*colt_csv::extract_str(char *in, char sep_char, char eol_char, char q_char)")
 	return in;
 }
 
 int colt_csv::open_file (int set_sep_chars)
 {
+	COLT_TRACE("colt_csv::open_file (int set_sep_chars)")
 	struct stat sb;
       char *p;
       int fd;
@@ -217,6 +232,7 @@ int colt_csv::open_file (int set_sep_chars)
 
 int	colt_csv:: find_sep_chars(int set_sep_chars)
 {
+	COLT_TRACE("colt_csv:: find_sep_chars(int set_sep_chars)")
     if(!set_sep_chars)
   	  return 1;
 
@@ -253,6 +269,7 @@ int	colt_csv:: find_sep_chars(int set_sep_chars)
 
 int  colt_csv::load_headers()
 {
+	COLT_TRACE("colt_csv::load_headers()")
 	char *b = base_ptr;
 	char *tmp_header = b;
 	char *tmp_array[COLT_MAX_NUM_COLS];
@@ -275,11 +292,16 @@ int  colt_csv::load_headers()
 
 	headers = (char **) malloc(sizeof(char*)*col_count);
 	memcpy(headers, tmp_array, col_count*sizeof(char*));
+
+	cell_objects == (colt_datatype **) malloc(sizeof(colt_datatype*)*col_count);
+	for(int i=0; i<col_count; i++)
+		cell_objects[i] = new colt_datatype;
 }
 
 
 int colt_csv::preload_data()
 {
+	COLT_TRACE("colt_csv::preload_data()")
 	char index_file_name[100];
 	strcpy(index_file_name, file_name);
 	strcat(index_file_name, ".ndx");
@@ -322,6 +344,14 @@ int colt_csv::preload_data()
 	headers = (char **) malloc(sizeof(char*)*col_count);
 	memcpy(headers, tmp_array, col_count*sizeof(char*));
 
+	cell_objects = (colt_datatype **) malloc(sizeof(colt_datatype*)*col_count);
+//	cout << (long) cell_objects << ":" << col_count << ":" << sizeof(colt_datatype *) << ":" << sizeof(colt_datatype*)*col_count << " qqq\n";
+	for(int i=0; i<col_count; i++) {
+		colt_datatype *tmp = new colt_datatype;
+//		cout << "qqq " << i << "\n";
+		cell_objects[i] = tmp;
+
+	}
 	preload = 1;
 
 	return 1;
@@ -329,15 +359,19 @@ int colt_csv::preload_data()
 
 int colt_csv::show_status(int indent_level)
 {
+	COLT_TRACE("colt_csv::show_status(int indent_level)")
 	return 0;
 }
 
 int colt_csv::num_cols()
 {
+	COLT_TRACE("colt_csv::num_cols()")
 	return col_count;
 }
 
-char *colt_csv::record(int line_num) {
+char *colt_csv::record(int line_num) 
+{
+	COLT_TRACE("*colt_csv::record(int line_num) ")
 	if(line_num >= lines.size())
 		line_num = lines.size()-1;
 	return base_ptr + lines[line_num];
@@ -345,12 +379,15 @@ char *colt_csv::record(int line_num) {
 
 char *colt_csv::col_header(int n)
 {
+	COLT_TRACE("*colt_csv::col_header(int n)")
 	return headers[n];
 }
 
 char colt_buffer[1000];
 
-char *colt_csv::field_val(int rec_num, int col_num) {
+char *colt_csv::field_val(int rec_num, int col_num) 
+{
+	COLT_TRACE("*colt_csv::field_val(int rec_num, int col_num) ")
 	char *rec = record(rec_num);
 	int cnt = 0;
 
@@ -364,6 +401,7 @@ char *colt_csv::field_val(int rec_num, int col_num) {
 
 char **colt_csv::fields(int rec_num)
 {
+	COLT_TRACE("**colt_csv::fields(int rec_num)")
 //	if(fields_retval)
 //		free(fields_retval);
 	if(rec_num > num_lines())
@@ -371,7 +409,8 @@ char **colt_csv::fields(int rec_num)
 
 	int i = 0;
 	fields_retval[0] = record(rec_num);
-	for(char *x = record(rec_num); i<num_cols(); x++)
+	int number_of_cols = num_cols();
+	for(char *x = record(rec_num); i<number_of_cols; x++)
 		if(!*x) {
 			fields_retval[++i] = x+1;
 		}
@@ -381,6 +420,7 @@ char **colt_csv::fields(int rec_num)
 
 void colt_csv::set_coltype(int num, colt_datatype *x)
 {
+	COLT_TRACE("colt_csv::set_coltype(int num, colt_datatype *x)")
 	if(!cell_objects) {
 		cell_objects = (colt_datatype **) malloc( sizeof(colt_datatype *) * num_cols());
 		for(int i=0; i<num_cols(); i++) cell_objects[i] = NULL;
@@ -394,21 +434,34 @@ void colt_csv::set_coltype(int num, colt_datatype *x)
 
 colt_datatype **colt_csv::cells(int rec_num)
 {
+	COLT_TRACE("**colt_csv::cells(int rec_num)")
 	if(rec_num > num_lines())
 		rec_num = num_lines();
 
 	if(!cell_objects)
 		return cell_objects;
 
-	char **strings = fields(rec_num);
-	for(int i = 0; i<num_cols(); i++)
-		if(cell_objects[i])
-			cell_objects[i]->set_buffer(strings[i]);
+//	char **strings = fields(rec_num);
+//	int number_of_cols = num_cols();
+//	for(int i = 0; i<number_of_cols; i++)
+//		if(cell_objects[i])
+//			cell_objects[i]->set_buffer(strings[i]);
+	int i = 0;
+	char *start = record(rec_num);
+	cell_objects[0]->set_buffer(start);
+	int number_of_cols = num_cols();
+
+	_trace.start() << " col_count is " << number_of_cols << "\n";
+	for(char *x = start; i<number_of_cols; x++)
+		if(!*x)
+			cell_objects[++i]->set_buffer(x+1);
+
 	return cell_objects;
 }
 
 bool colt_csv::sort_func(int i, int j)
 {
+	COLT_TRACE("colt_csv::sort_func(int i, int j)")
 	char a[80];
 	char b[80];
 	strcpy(a, field_val(i,6));
@@ -418,6 +471,7 @@ bool colt_csv::sort_func(int i, int j)
 
 int colt_csv::get_next_row()
 {
+	COLT_TRACE("colt_csv::get_next_row()")
 	if(preload) {
 		++line_counter;
 		if(line_counter >= num_lines())
@@ -440,6 +494,7 @@ int colt_csv::get_next_row()
 
 int colt_csv::preprocess()
 {
+	COLT_TRACE("colt_csv::preprocess()")
 	line_counter=-1;
 
 	if(!fields_retval)

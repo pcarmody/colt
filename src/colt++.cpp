@@ -87,7 +87,10 @@ int main(int argc, char **argv)
 		strcat(command_line, " ");
 	}
 
-	_trace.add_match("pars");
+	_trace.add_match("agg");
+	_trace.add_match("csv");
+	_trace.add_match("integer");
+	_trace.add_match("datatype");
 
 	colt_parser parser(command_line);
 	base_obj = parser.parse();
