@@ -345,12 +345,9 @@ int colt_csv::preload_data()
 	memcpy(headers, tmp_array, col_count*sizeof(char*));
 
 	cell_objects = (colt_datatype **) malloc(sizeof(colt_datatype*)*col_count);
-//	cout << (long) cell_objects << ":" << col_count << ":" << sizeof(colt_datatype *) << ":" << sizeof(colt_datatype*)*col_count << " qqq\n";
 	for(int i=0; i<col_count; i++) {
 		colt_datatype *tmp = new colt_datatype;
-//		cout << "qqq " << i << "\n";
 		cell_objects[i] = tmp;
-
 	}
 	preload = 1;
 
@@ -441,17 +438,11 @@ colt_datatype **colt_csv::cells(int rec_num)
 	if(!cell_objects)
 		return cell_objects;
 
-//	char **strings = fields(rec_num);
-//	int number_of_cols = num_cols();
-//	for(int i = 0; i<number_of_cols; i++)
-//		if(cell_objects[i])
-//			cell_objects[i]->set_buffer(strings[i]);
 	int i = 0;
 	char *start = record(rec_num);
 	cell_objects[0]->set_buffer(start);
 	int number_of_cols = num_cols();
 
-	_trace.start() << " col_count is " << number_of_cols << "\n";
 	for(char *x = start; i<number_of_cols; x++)
 		if(!*x)
 			cell_objects[++i]->set_buffer(x+1);

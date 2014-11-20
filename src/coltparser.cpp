@@ -132,7 +132,8 @@ char *colt_parser::consume_keyword(char *outbuff)
 			*a++ = *b++;
 		*a = '\0';
 	} else {
-		while(*b && *b != '\t' && *b != ' ' && *b != '\n')
+//		while(*b && *b != '\t' && *b != ' ' && *b != '\n')
+		while(isalnum(*b) || *b == '_' || *b == '-')
 			*a++ = *b++;
 		*a = '\0';
 	}
@@ -566,7 +567,7 @@ colt_aggregate_row *colt_parser::aggregate_row()
 	else
 		fatal_error("Expected '=column name' in aggrow.\n");
 
-	if(consume_token("-"))
+	if(consume_token(","))
 		count = consume_integer();
 
 	colt_aggregate_row *retval = NULL;

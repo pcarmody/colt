@@ -32,6 +32,7 @@ colt_aggregate_row::~colt_aggregate_row()
 int colt_aggregate_row::preprocess()
 {
 	COLT_TRACE("colt_aggregate_row::preprocess()")
+	_trace.start() << " " << column_name << "\n";
 	int numc = colt_operator::num_cols();
 	for(int j=0; j<numc; j++) {
 		char *head = operand->col_header( j );
