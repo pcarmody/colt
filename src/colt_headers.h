@@ -61,4 +61,5 @@
 #include "colttrace.h"
 
 #define COLT_TRACE(MSG) colt_trace _trace(MSG);
+#define TRACE(MSG) _trace << MSG << "\n";
 using namespace std;

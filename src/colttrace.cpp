@@ -47,3 +47,15 @@ void colt_trace::add_match(const char *str)
 {
 	matches.push_back(str);
 }
+
+colt_trace &colt_trace::operator <<(const char *str)
+{
+	if(show && is_match) {
+		indent_level--;
+		for(int i=0; i<indent_level; i++)
+			std::cout << " ";
+		std::cout << "<" << string << ":" << str;
+	}
+
+	return *this;
+}

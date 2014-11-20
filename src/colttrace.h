@@ -21,6 +21,7 @@ public:
 	virtual ~colt_trace();
 
 	void add_match(const char *s);
+	colt_trace &operator <<(const char *str);
 };
 
 #endif /* COLTTRACE_H_ */
