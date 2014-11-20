@@ -87,7 +87,7 @@ int main(int argc, char **argv)
 		strcat(command_line, " ");
 	}
 
-	_trace.add_match("parsq");
+	_trace.add_match("pars");
 
 	colt_parser parser(command_line);
 	base_obj = parser.parse();

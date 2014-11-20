@@ -31,6 +31,7 @@ colt_aggregate_row::~colt_aggregate_row()
 
 int colt_aggregate_row::preprocess()
 {
+	COLT_TRACE("colt_aggregate_row::preprocess()")
 	for(int j=0; j<colt_operator::num_cols(); j++) {
 		char *head = operand->col_header( j );
 		if(strcmp(column_name, head ) == 0 ) {
@@ -46,6 +47,7 @@ int colt_aggregate_row::preprocess()
 }
 int colt_aggregate_row::process(int rec_num)
 {
+	COLT_TRACE("colt_aggregate_row::process(int rec_num)")
 	char **f;
 	if(function != colt_aggregate::first && function != colt_aggregate::last)
 		f= fields(rec_num);
@@ -117,6 +119,7 @@ int colt_aggregate_row::process(int rec_num)
 
 void colt_aggregate_row::postprocess()
 {
+	COLT_TRACE("colt_aggregate_row::postprocess()")
 	for(int i=0; i<count; i++)
 		out_object->process(rows[i]);
 
