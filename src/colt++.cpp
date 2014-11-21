@@ -76,21 +76,17 @@ int main(int argc, char **argv)
 	int i = 1;
 
 	if(argc > 1 &&
-		(strcmp(argv[1], "-D") == 0 || strcmp(argv[1], "--debug") == 0) ) {
+		(strncmp(argv[1], "-D", 2) == 0 || strcmp(argv[1], "--debug") == 0) ) {
 		colt_trace::show = 1;
 
-		i = 2;
+		while(strncmp(argv[i], "-D", 2) == 0)
+			_trace.add_match(argv[i++]+2);
 	}
 
 	for(; i<argc; i++) {
 		strcat(command_line, argv[i]);
 		strcat(command_line, " ");
 	}
-
-	_trace.add_match("agg");
-	_trace.add_match("csv");
-	_trace.add_match("integer");
-	_trace.add_match("datatype");
 
 	colt_parser parser(command_line);
 	base_obj = parser.parse();
