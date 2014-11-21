@@ -28,11 +28,13 @@ colt_out_vertical::~colt_out_vertical() {
 
 colt_base *colt_out_vertical::copy(colt_base *op)
 {
+	COLT_TRACE("*colt_out_vertical::copy(colt_base *op)")
 	return new colt_out_vertical(*op, col_seperator);
 }
 
 void colt_out_vertical::fill_sequential()
 {
+	COLT_TRACE("colt_out_vertical::fill_sequential()")
 	char out_string[1000];
 	out_string[0] = '\0';
 
@@ -65,6 +67,7 @@ void colt_out_vertical::fill_sequential()
 
 int colt_out_vertical::preprocess()
 {
+	COLT_TRACE("colt_out_vertical::preprocess()")
 	char out_string[1000];
 	out_string[0] = '\0';
 
@@ -85,6 +88,7 @@ int colt_out_vertical::preprocess()
 
 int colt_out_vertical::process(int i)
 {
+	COLT_TRACE("colt_out_vertical::process(int i)")
 	char **f = fields(i);
 	if(!f)
 		return 0;

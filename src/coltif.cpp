@@ -33,6 +33,7 @@ colt_if::~colt_if() {
 
 int colt_if::process(int i)
 {
+	COLT_TRACE("colt_if::process(int i)")
 	if((*function_ptr)(fields(i))) {
 		return colt_cexpression::process(i);
 	}

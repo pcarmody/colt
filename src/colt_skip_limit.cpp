@@ -39,10 +39,12 @@ colt_skip_limit::~colt_skip_limit()
 
 colt_base *colt_skip_limit::copy(colt_base *op)
 {
+	COLT_TRACE("*colt_skip_limit::copy(colt_base *op)")
 	return new colt_skip_limit(*op, limit_to, skip_by);
 }
 void colt_skip_limit::fill_sequential(int start)
 {
+	COLT_TRACE("colt_skip_limit::fill_sequential(int start)")
 //	for(int i=skip_by; i<limit_to+skip_by; i++)
 ////		index_list[index_count++] = i;
 //		push_back(i);
@@ -51,12 +53,14 @@ void colt_skip_limit::fill_sequential(int start)
 
 int colt_skip_limit::preprocess()
 {
+	COLT_TRACE("colt_skip_limit::preprocess()")
 	rec_counter = 0;
 	return colt_operator::preprocess();
 }
 
 int colt_skip_limit::process(int rec_num)
 {
+	COLT_TRACE("colt_skip_limit::process(int rec_num)")
 	rec_counter++;
 
 	if(rec_counter < skip_by && rec_counter <= num_lines())

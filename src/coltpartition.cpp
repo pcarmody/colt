@@ -21,6 +21,7 @@ colt_partition::~colt_partition() {
 
 colt_operator *colt_partition::insert_expression(char *expression)
 {
+	COLT_TRACE("*colt_partition::insert_expression(char *expression)")
 	colt_operator *retval;
 	colt_parser parse(expression);
 
@@ -36,6 +37,7 @@ colt_operator *colt_partition::insert_expression(char *expression)
 
 int colt_partition::process(int rec_num)
 {
+	COLT_TRACE("colt_partition::process(int rec_num)")
 	int retval = 0;
 	char **row = fields(rec_num);
 	char *key = row[column_number];
@@ -69,6 +71,7 @@ int colt_partition::process(int rec_num)
 
 void colt_partition::postprocess()
 {
+	COLT_TRACE("colt_partition::postprocess()")
 	for(int i=0; i<list.Size(); i++) {
 		end_of_list[i]->set_destination(out_object, 1);
 		list[i]->postprocess();

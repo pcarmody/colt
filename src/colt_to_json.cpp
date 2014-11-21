@@ -31,11 +31,13 @@ colt_to_json::~colt_to_json() {
 
 colt_base *colt_to_json::copy(colt_base *op)
 {
+	COLT_TRACE("*colt_to_json::copy(colt_base *op)")
 	return new colt_to_json(*op, key_col);
 }
 
 int colt_to_json::preprocess()
 {
+	COLT_TRACE("colt_to_json::preprocess()")
 //	colt_operator::preprocess();
 
 	key_col_index = -1;
@@ -62,6 +64,7 @@ int colt_to_json::preprocess()
 
 int colt_to_json::process(int i)
 {
+	COLT_TRACE("colt_to_json::process(int i)")
 	char **f = fields(i);
 	if(!f)
 		return 0;
@@ -84,6 +87,7 @@ int colt_to_json::process(int i)
 
 void colt_to_json::postprocess()
 {
+	COLT_TRACE("colt_to_json::postprocess()")
 	if(key_col_index >= 0)
 		std::cout << " }";
 	else

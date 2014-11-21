@@ -50,6 +50,7 @@ colt_cexpression::colt_cexpression(colt_base &in, COLT_C_FUNC func):
 
 void colt_cexpression::compile_and_link()
 {
+	COLT_TRACE("colt_cexpression::compile_and_link()")
 	char code_name[80];
 	char so_name[80];
 	char fn_name[80];
@@ -102,6 +103,7 @@ colt_cexpression::~colt_cexpression() {
 
 int colt_cexpression::preprocess()
 {
+	COLT_TRACE("colt_cexpression::preprocess()")
 	compile_and_link();
 
 	return colt_operator::preprocess();

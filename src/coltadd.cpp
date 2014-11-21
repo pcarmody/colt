@@ -34,11 +34,13 @@ colt_add::~colt_add()
 
 int colt_add::num_cols()
 {
+	COLT_TRACE("colt_add::num_cols()")
 	return colt_operator::num_cols()+1;
 }
 
 char **colt_add::fields(int rec_num)
 {
+	COLT_TRACE("**colt_add::fields(int rec_num)")
 	char **rec = colt_operator::fields(rec_num);
 
 	if(!rec)
@@ -59,6 +61,7 @@ char **colt_add::fields(int rec_num)
 
 colt_datatype **colt_add::cells(int rec_num)
 {
+	COLT_TRACE("**colt_add::cells(int rec_num)")
 	colt_datatype **rec = colt_operator::cells(rec_num);
 
 	if(!rec)
@@ -76,6 +79,7 @@ colt_datatype **colt_add::cells(int rec_num)
 
 char *colt_add::col_header(int n)
 {
+	COLT_TRACE("*colt_add::col_header(int n)")
 	if(n < colt_operator::num_cols())
 		return colt_operator::col_header(n);
 
@@ -84,6 +88,7 @@ char *colt_add::col_header(int n)
 
 int colt_add::preprocess()
 {
+	COLT_TRACE("colt_add::preprocess()")
 	int retval = colt_operator::preprocess();
 
 	char *headers[100];

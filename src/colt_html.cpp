@@ -29,6 +29,7 @@ colt_base *colt_html::copy(colt_base *op)
 
 void colt_html::fill_sequential()
 {
+	COLT_TRACE("colt_html::fill_sequential()")
 	cout << "<table>\n<thead>\n<tr><th>";
 
 //	colt_out::fill_sequential();
@@ -62,6 +63,7 @@ void colt_html::fill_sequential()
 
 int colt_html::preprocess()
 {
+	COLT_TRACE("colt_html::preprocess()")
 	colt_operator::preprocess();
 	cout << "<table>\n<thead>\n<tr><th>";
 
@@ -83,11 +85,13 @@ int colt_html::preprocess()
 
 int colt_html::process(int rec_num)
 {
+	COLT_TRACE("colt_html::process(int rec_num)")
 	cout << "<tr><td>";
 	colt_out::process(rec_num);
 }
 
 void colt_html::postprocess()
 {
+	COLT_TRACE("colt_html::postprocess()")
 	cout << "</tbody>\n</table>";
 }

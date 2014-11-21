@@ -26,6 +26,7 @@ colt_onchange::~colt_onchange() {
 
 int colt_onchange::preprocess()
 {
+	COLT_TRACE("colt_onchange::preprocess()")
 	for(int j=0; j<colt_operator::num_cols(); j++) {
 		char *head = operand->col_header( j );
 		if(strcmp(column_name, head ) == 0 ) {
@@ -45,6 +46,7 @@ int colt_onchange::preprocess()
 
 int colt_onchange::process(int rec_num)
 {
+	COLT_TRACE("colt_onchange::process(int rec_num)")
 	char **row = fields(rec_num);
 	if(!current_value || strcmp(current_value, row[column_number]) != 0) {
 
@@ -69,6 +71,7 @@ int colt_onchange::process(int rec_num)
 
 void colt_onchange::postprocess()
 {
+	COLT_TRACE("colt_onchange::postprocess()")
 
 	if(expression_object) {
 		expression_object->postprocess();
