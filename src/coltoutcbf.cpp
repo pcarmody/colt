@@ -11,7 +11,7 @@
 colt_out_cbf::colt_out_cbf(colt_base &in, char *fname):
 	colt_operator(in),
 	file_name(NULL),
-	fileptr(NULL)
+	fileptr(stdout)
 {
 	// TODO Auto-generated constructor stub
 	if(fname) {
@@ -29,40 +29,51 @@ colt_out_cbf::~colt_out_cbf()
 
 int colt_out_cbf::preprocess()
 {
+	COLT_TRACE("int colt_out_cbf::preprocess()")
 	if(file_name)
 		fileptr = fopen(file_name, "wb");
-	else
-		fileptr = stdout;
 
 	int cols = num_cols();
-	fwrite(&cols, sizeof(cols), 1, fileptr);
-
-	colt_datatype **type = cells(0);
 	for(int i=0; i<cols; i++) {
-		char *header = col_header(i);
-		fwrite(header, strlen(header)+1, 1, fileptr);
-		char buffer[COLT_MAX_STRING_SIZE];
-		int len = type[i]->gen_header(buffer);
-		fwrite(buffer, len, 1, fileptr);
+		char *head = col_header(i);
+		fwrite(head, strlen(head), 1, fileptr );
+		if(i < cols-1)
+			fwrite(",", 1, 1, fileptr );
 	}
+	fwrite("\n", 1, 1, fileptr );
+//	fwrite(&cols, sizeof(cols), 1, fileptr);
+
+//	colt_datatype **type = cells(0);
+//	for(int i=0; i<cols; i++) {
+//		char *header = col_header(i);
+//		fwrite(header, strlen(header)+1, 1, fileptr);
+//		char buffer[COLT_MAX_STRING_SIZE];
+//		int len = type[i]->gen_header(buffer);
+//		fwrite(buffer, len, 1, fileptr);
+//	}
 
 	return colt_operator::preprocess();
 }
 
 int colt_out_cbf::process(int i)
 {
+	COLT_TRACE("colt_out_cbf::process(int i)")
 	char buffer[COLT_MAX_STRING_SIZE];
 	colt_datatype **objects = cells(i);
-	for(int i=0; i<num_cols(); i++) {
-		int len = objects[i]->generate(buffer);
+	int cols = num_cols();
+	for(int i=0; i<cols; i++) {
+		int len = objects[i]->format(buffer);
 		fwrite(buffer, len, 1, fileptr);
 	}
+
+	fwrite("\n", 1, 1, fileptr );
 
 	return colt_operator::process(i);
 }
 
 void colt_out_cbf::postprocess()
 {
+	COLT_TRACE("colt_out_cbf::postprocess()")
 	if(file_name)
 		fclose(fileptr);
 

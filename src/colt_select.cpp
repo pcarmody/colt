@@ -49,11 +49,13 @@ colt_select::~colt_select()
 
 int colt_select::num_cols()
 {
+	COLT_TRACE("colt_select::num_cols()")
 	return count;
 }
 
 char **colt_select::fields(int rec_num)
 {
+	COLT_TRACE("**colt_select::fields(int rec_num)")
 	char **rec = colt_operator::fields(rec_num);
 
 	if(!rec)
@@ -68,6 +70,7 @@ char **colt_select::fields(int rec_num)
 
 colt_datatype **colt_select::cells(int rec_num)
 {
+	COLT_TRACE("**colt_select::cells(int rec_num)")
 	colt_datatype **rec = colt_operator::cells(rec_num);
 
 	if(!rec)
@@ -83,16 +86,19 @@ colt_datatype **colt_select::cells(int rec_num)
 
 char *colt_select::col_header(int n)
 {
+	COLT_TRACE("*colt_select::col_header(int n)")
 	return colt_operator::col_header(list[n]);
 }
 
 int colt_select::preprocess()
 {
+	COLT_TRACE("colt_select::preprocess()")
 	if(list)
 		delete list;
 	list = new int[count];
 
-	for(int j=0; j<colt_operator::num_cols(); j++) {
+	int cols = colt_operator::num_cols();
+	for(int j=0; j<cols; j++) {
 		char *head = operand->col_header( j );
 		for(int i=0; i<count; i++) {
 			if(strcmp(headers[i], head ) == 0 ) {

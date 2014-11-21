@@ -133,7 +133,7 @@ char *colt_parser::consume_keyword(char *outbuff)
 		*a = '\0';
 	} else {
 //		while(*b && *b != '\t' && *b != ' ' && *b != '\n')
-		while(isalnum(*b) || *b == '_' || *b == '-')
+		while(isalnum(*b) || *b == '_' || *b == '-' || *b == '/' || *b == '.')
 			*a++ = *b++;
 		*a = '\0';
 	}
@@ -309,33 +309,53 @@ colt_base *colt_parser::file_name()
 {
 	COLT_TRACE("*colt_parser::file_name()")
 	char file_name[COLT_MAX_STRING_SIZE];
-	char *a = file_name;
-	char *in = input_buffer;
+	char tmp[COLT_MAX_STRING_SIZE];
+	char dtype_str[COLT_MAX_STRING_SIZE];
 	char col_sep='\0', eol_sep='\0', quote_sep='\0';
 
-	while(*in && *in != ':' && *in != ',' && *in != ' ' && *in != '\t') *a++ = *in++;
-	*a = '\0';
+	consume_keyword(file_name);
 
-	input_buffer = in;
-
-	if(match(file_name, "thru$"))
-		return colt_load_thru(file_name);
-
-	if(*in == ':') {
-		col_sep = in[1];
-		if(in[3] == ':') {
-			quote_sep = in[4];
-			if(in[5] == ':')
-				eol_sep = in[6];
+	if(consume_token(":")) {
+		col_sep = *input_buffer++;
+		if(consume_token(",")) {
+			quote_sep = *input_buffer++;
+			if(consume_token(","))
+				eol_sep = *input_buffer++;
 		}
 	}
 
-	input_buffer = in;
+	if(consume_token("[")) {
+		consume_keyword(dtype_str);
+		if(!consume_token("]"))
+			fatal_error("Expected closing ']' in file datatype definiiton.\n");
+	} else
+		dtype_str[0] = '\0';
+//	char *a = file_name;
+//	char *in = input_buffer;
+//
+//	while(*in && *in != ':' && *in != ',' && *in != ' ' && *in != '\t') *a++ = *in++;
+//	*a = '\0';
+//
+//	input_buffer = in;
+//
+//	if(match(file_name, "thru$"))
+//		return colt_load_thru(file_name);
+//
+//	if(*in == ':') {
+//		col_sep = in[1];
+//		if(in[3] == ':') {
+//			quote_sep = in[4];
+//			if(in[5] == ':')
+//				eol_sep = in[6];
+//		}
+//	}
+//
+//	input_buffer = in;
 
 //	if(strcmp(file_name, "-") == 0)
 	colt_csv *retval = NULL;
 
-	a = file_name;
+	char *a = file_name;
 	if(*a == '-')
 		if(col_sep)
 			retval = new colt_sequential_csv(a+1, col_sep, eol_sep, quote_sep);
@@ -348,6 +368,12 @@ colt_base *colt_parser::file_name()
 			retval = new colt_csv(file_name, 0);
 
 	retval->open_and_load();
+
+	if(dtype_str[0])
+		for(int i=0; i<strlen(dtype_str); i++)
+			if(dtype_str[i] == 'I')
+				retval->set_datatype(i, COLT_DT_INTEGER);
+
 	return retval;
 }
 

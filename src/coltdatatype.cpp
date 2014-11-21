@@ -31,8 +31,7 @@ void colt_datatype::set_buffer(char *x)
 int colt_datatype::format(char *x)
 {
 	COLT_TRACE("colt_datatype::format(char *x)")
-			cout << "colt_datatype " << buffer << ":" << x << ":\n";
-	strcat(x, buffer);
+	strcpy(x, buffer);
 	return strlen(buffer);
 }
 

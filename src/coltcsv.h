@@ -53,6 +53,7 @@ public:
 	virtual	char *field_val(int rec_num, int col_num);
 	virtual	char **fields(int rec_num);
 	virtual void set_coltype(int num, colt_datatype *x);
+	virtual void set_datatype(int i, int type);
 	virtual	colt_datatype **cells(int rec_num);
 	virtual	bool sort_func(int i, int j);
 	virtual	int show_status(int indent_level=0);

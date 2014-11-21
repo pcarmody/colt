@@ -1,0 +1,11 @@
+source ./env.sh
+
+TESTNAME=$(basename "$0")_aggrow_max
+
+rm $SCRATCHDIR/$TESTNAME.csv*
+rm $DESTDIR/$TESTNAME.csv
+
+cp $DATADIR/data.old $SCRATCHDIR/$TESTNAME.csv
+$PROGRAM $SCRATCHDIR/$TESTNAME.csv aggrow:min=name > $DESTDIR/$TESTNAME.csv
+[[ -n $RESETTEST ]] && cp $DESTDIR/$TESTNAME.csv $EXPECTEDDIR
+echo $TESTNAME `diff $DESTDIR/$TESTNAME.csv $EXPECTEDDIR/$TESTNAME.csv | wc -l`

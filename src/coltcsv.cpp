@@ -407,7 +407,7 @@ char **colt_csv::fields(int rec_num)
 	int i = 0;
 	fields_retval[0] = record(rec_num);
 	int number_of_cols = num_cols();
-	for(char *x = record(rec_num); i<number_of_cols; x++)
+	for(char *x = fields_retval[0]; i<number_of_cols; x++)
 		if(!*x) {
 			fields_retval[++i] = x+1;
 		}
@@ -429,6 +429,20 @@ void colt_csv::set_coltype(int num, colt_datatype *x)
 	cell_objects[num] = x;
 }
 
+void colt_csv::set_datatype(int i, int type)
+{
+	if(cell_objects[i]) {
+		if(cell_objects[i]->type == type)
+			return;
+		delete cell_objects[i];
+	}
+
+	if(type == COLT_DATATYPE)
+		cell_objects[i] = new colt_datatype;
+	else if(type == COLT_DT_INTEGER)
+		cell_objects[i] = new colt_integer;
+}
+
 colt_datatype **colt_csv::cells(int rec_num)
 {
 	COLT_TRACE("**colt_csv::cells(int rec_num)")
@@ -438,14 +452,21 @@ colt_datatype **colt_csv::cells(int rec_num)
 	if(!cell_objects)
 		return cell_objects;
 
-	int i = 0;
-	char *start = record(rec_num);
-	cell_objects[0]->set_buffer(start);
-	int number_of_cols = num_cols();
+	char **f = fields(rec_num);
 
-	for(char *x = start; i<number_of_cols; x++)
-		if(!*x)
-			cell_objects[++i]->set_buffer(x+1);
+	int number_of_cols = num_cols();
+	for(int i=0; i< number_of_cols; i++)
+		cell_objects[i]->set_buffer(f[i]);
+//	int i = 1;
+//	char *start = record(rec_num);
+//	cell_objects[0]->set_buffer(start);
+//	int number_of_cols = num_cols();
+//
+//	for(char *x = start; i<=number_of_cols; x++)
+//		if(!*x)
+//			cell_objects[++i]->set_buffer(x+1);
+
+	_trace.start() << " cells filled\n";
 
 	return cell_objects;
 }

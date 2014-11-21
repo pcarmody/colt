@@ -28,6 +28,7 @@ colt_each::~colt_each()
 
 colt_operator *colt_each::insert_expression(char *expression)
 {
+	COLT_TRACE("*colt_each::insert_expression(char *expression)")
 	colt_operator *retval;
 	colt_parser parse(expression);
 
@@ -43,12 +44,14 @@ colt_operator *colt_each::insert_expression(char *expression)
 
 int colt_each::process(int rec_num)
 {
+	COLT_TRACE("colt_each::process(int rec_num)")
 	expression_object = insert_expression(expression_string);
 
 	if(!expression_object->preprocess()) {
 		return 0;
 	}
 
+	_trace.start() << "ready to process subexpression." << expression_object->i_am << "\n";
 	expression_object->process(rec_num);
 
 	expression_object->postprocess();

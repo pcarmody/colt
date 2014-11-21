@@ -109,7 +109,8 @@ int colt_out::process(int i)
 	char out_string[COLT_MAX_STRING_SIZE];// = (char *) malloc(500);
 	out_string[0] = '\0';
 
-	for(int j=0; j<num_cols(); j++) {
+	int cals = num_cols();
+	for(int j=0; j<cals; j++) {
 		if(j > 0)
 			strcat(out_string, column_sep_char);
 
