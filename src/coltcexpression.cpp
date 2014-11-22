@@ -38,6 +38,8 @@ colt_cexpression::colt_cexpression(colt_base &b, char *in):
 {
 	i_am = colt_class_c_expression;
 	return_type = "int";
+	code_string = new char[strlen(in)+1];
+	strcpy(code_string, in);
 }
 
 colt_cexpression::colt_cexpression(colt_base &in, COLT_C_FUNC func):
@@ -59,21 +61,24 @@ void colt_cexpression::compile_and_link()
 	sprintf(so_name, "/tmp/ifcode_%d.so", (int) getpid());
 	sprintf(fn_name, "if_%d", (int) getpid());
 
+	_trace.start() << ": code file name is " << code_name << "\n";
 	std::ofstream c_code(code_name);
 	c_code << "#include <iostream>\n";
-	//	c_code << "#include \"/tmp/colt_row.h\"\n";
 	c_code << "#include <sys/types.h>\n";
 	c_code << "#include <regex.h>\n";
+
 	c_code << regex_match;
-	for(int i=0; i<num_cols(); i++)
+
+	int cols = num_cols();
+	for(int i=0; i<cols; i++)
 		c_code << "#define " << col_header(i) << " ((char *) row[" << i << "])\n";
 
 	c_code << "extern \"C\" " << return_type << " " << fn_name << "(char **row)\n";
 	c_code << "{\n";
-	//	c_code << "\t std::cout << \"if\" << row[name] << '\\n';";
 	c_code << "\treturn " << code_string << ";\n";
 	c_code << "}\n";
 	c_code.close();
+	_trace.start() << ":" << code_name << "\n";
 
 	char pipe_string[100];
 	//	sprintf(pipe_string, "g++ -fPIC -shared %s -o %s", code_name, so_name);
