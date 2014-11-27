@@ -1,5 +1,5 @@
 RESETTEST=
-PROGRAM=/Users/paulcarmody/csv/Debug/csv
+PROGRAM=../Debug/test
 TESTDIR=`pwd`
 DATADIR=$TESTDIR/data
 DESTDIR=$TESTDIR/last_output

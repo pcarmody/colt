@@ -14,12 +14,12 @@ class colt_aggregate : public colt_operator {
 		int		function;
 		int		column_number;
 		char	*column_name;
-		agg_details_struct(int func, char *col_name, int col_number=-1) {
+		agg_details_struct(int func, char *col_name, int col_num=-1) {
 			function = func;
 			column_name = new char[strlen(col_name)+1];
 			strcpy(column_name, col_name);
 			column_name[strlen(col_name)] = '\0';
-			col_number = col_number;
+			column_number = col_num;
 		};
 		virtual ~agg_details_struct() {
 			delete column_name;

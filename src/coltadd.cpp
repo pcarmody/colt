@@ -8,23 +8,16 @@
 #include "colt_headers.h"
 #include "coltadd.h"
 
-
-//colt_add::colt_add(colt_base &in):
-//	colt_operator(in),
-//	template_str(NULL)
-//{
-//// TODO Auto-generated constructor stub
-//	i_am = colt_class_add;
-//}
-
 colt_add::colt_add(colt_base &in, char *col_name, int t, char *tstr):
-	colt_cexpression(in, tstr)
+	colt_cexpression(in, tstr),
+	return_value(NULL)
 {
 	// TODO Auto-generated constructor stub
 	i_am = colt_class_add;
 	label = new char[strlen(col_name)+1];
 	strcpy(label, col_name);
 	type = t;
+	return_value = colt_datatype::new_object(type);
 }
 
 colt_add::~colt_add()
@@ -46,15 +39,13 @@ char **colt_add::fields(int rec_num)
 	if(!rec)
 		return NULL;
 
-	int i;
+	int cols = num_cols();
+	memcpy(colt_add_out, rec, sizeof(rec[0])*cols);
+//	colt_add_out[cols] = return_value->format();
 
-	for(i=0; i<colt_operator::num_cols(); i++) {
-		colt_add_out[i] = rec[i];
-	}
+	int tmp = (*function_ptr)(colt_add_out);
 
-	int tmp = (*function_ptr)(rec);
-//	colt_integer tmp1(tmp);
-//	colt_add_out[i] = tmp.format();
+	return_value->set_buffer(colt_add_out[cols]);
 
 	return colt_add_out;
 }
@@ -63,16 +54,18 @@ colt_datatype **colt_add::cells(int rec_num)
 {
 	COLT_TRACE("**colt_add::cells(int rec_num)")
 	colt_datatype **rec = colt_operator::cells(rec_num);
+	void *cell_values[COLT_MAX_NUM_COLS];
 
 	if(!rec)
 		return NULL;
 
-	int i;
-	for(i=0; i<colt_operator::num_cols(); i++) {
-		colt_add_cell[i] = rec[i];
-	}
+	int cols = num_cols();
+//	memcpy(colt_add_out, sizeof(rec[0])*cols, rec);
+	for(int i=0; i<num_cols(); i++)
+		cell_values[i] = rec[i]->value_ptr();
+	cell_values[cols] = return_value->value_ptr();
 
-//	colt_add_cell[i] = (*function_ptr)(rec);
+	int tmp = (*function_ptr)((char **) cell_values);
 
 	return colt_add_cell;
 }

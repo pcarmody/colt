@@ -22,6 +22,31 @@ colt_datatype::~colt_datatype() {
 	// TODO Auto-generated destructor stub
 }
 
+colt_datatype * colt_datatype::new_object(int type)
+{
+	if(type == COLT_DATATYPE)
+		return new colt_datatype();
+	else if(type == COLT_DT_INTEGER)
+		return new colt_integer();
+//	else if(type == COLT_DT_DATE)
+//		return new colt_dt_date();
+//	else if(type == COLT_DT_INDEX)
+//		return new colt_dt_index();
+//	else if(type == COLT_DT_INDEX_LIST)
+//		return new colt_dt_index_list();
+//	else if(type == COLT_DT_RANGE)
+//		return new colt_dt_range();
+//	else if(type == COLT_DT_BITMAP)
+//		return new colt_dt_bitmap();
+
+	return new colt_datatype();
+}
+
+void *colt_datatype::value_ptr()
+{
+	return (void *) buffer;
+}
+
 void colt_datatype::set_buffer(char *x)
 {
 	COLT_TRACE("colt_datatype::set_buffer(char *x)")
@@ -88,6 +113,12 @@ colt_integer::~colt_integer()
 {
 
 }
+
+void *colt_integer::value_ptr()
+{
+	return (void *) &value;
+}
+
 
 void colt_integer::set_buffer(char *x)
 {
