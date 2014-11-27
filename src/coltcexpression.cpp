@@ -70,11 +70,27 @@ void colt_cexpression::compile_and_link()
 	c_code << regex_match;
 
 	int cols = num_cols();
-	for(int i=0; i<cols; i++)
-		c_code << "#define " << col_header(i) << " ((char *) row[" << i << "])\n";
+	colt_datatype **the_cells = cells(0);
+//	for(int i=0; i<cols; i++)
+//		c_code << "#define " << col_header(i) << " ((char *) row[" << i << "])\n";
 
 	c_code << "extern \"C\" " << return_type << " " << fn_name << "(char **row)\n";
 	c_code << "{\n";
+
+	// sample output
+	// int &cola = (int &) row[0];
+	for(int i=0; i<cols; i++) {
+		char *value_type = the_cells[i]->gen_value_type();
+		c_code << value_type
+			<< " &"
+			<< col_header(i)
+			<< " = ("
+			<< value_type
+			<< " &) row["
+			<< i
+			<< "];\n";
+	}
+
 	c_code << "\treturn " << code_string << ";\n";
 	c_code << "}\n";
 	c_code.close();

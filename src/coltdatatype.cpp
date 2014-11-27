@@ -22,6 +22,16 @@ colt_datatype::~colt_datatype() {
 	// TODO Auto-generated destructor stub
 }
 
+void *colt_datatype::get_value()
+{
+	return (void *) buffer;
+}
+
+char *colt_datatype::gen_value_type()
+{
+	return "string";
+}
+
 void colt_datatype::set_buffer(char *x)
 {
 	COLT_TRACE("colt_datatype::set_buffer(char *x)")
@@ -87,6 +97,16 @@ colt_integer::colt_integer():
 colt_integer::~colt_integer()
 {
 
+}
+
+void *colt_integer::get_value()
+{
+	return (void *) &value;
+}
+
+char *colt_integer::gen_value_type()
+{
+	return "int";
 }
 
 void colt_integer::set_buffer(char *x)

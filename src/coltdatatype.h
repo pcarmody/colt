@@ -26,6 +26,9 @@ public:
 	colt_datatype();
 	virtual ~colt_datatype();
 
+	virtual void *get_value();
+	virtual char *gen_value_type();
+
 	virtual	void set_buffer(char *x);
 	virtual	int format(char *x);
 	virtual int generate(char *x);
@@ -44,6 +47,9 @@ public:
 
 	colt_integer();
 	virtual ~colt_integer();
+
+	virtual void *get_value();
+	virtual char *gen_value_type();
 
 	virtual	void set_buffer(char *x);
 	virtual	int format(char *x);

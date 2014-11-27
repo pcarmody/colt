@@ -52,7 +52,7 @@ char **colt_add::fields(int rec_num)
 		colt_add_out[i] = rec[i];
 	}
 
-	int tmp = (*function_ptr)(rec);
+	(*function_ptr)((void **) rec);
 //	colt_integer tmp1(tmp);
 //	colt_add_out[i] = tmp.format();
 

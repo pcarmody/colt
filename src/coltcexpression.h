@@ -8,7 +8,7 @@
 #ifndef COLTCEXPRESSION_H_
 #define COLTCEXPRESSION_H_
 
-typedef int(*COLT_C_FUNC)(char **row);
+typedef int(*COLT_C_FUNC)(void **row);
 
 class colt_cexpression : public colt_operator {
 public:
