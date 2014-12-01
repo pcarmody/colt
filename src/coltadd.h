@@ -10,11 +10,11 @@
 
 class colt_add : public colt_cexpression {
 public:
-	char *label;
-	int	type;
-	char	*colt_add_out[COLT_MAX_NUM_COLS];
+	char 			*label;
+	int				type;
+	char			*colt_add_out[COLT_MAX_NUM_COLS];
 	colt_datatype	*colt_add_cell[COLT_MAX_NUM_COLS];
-	colt_datatype	*return_value;
+	void			**return_values;
 
 //	colt_add(colt_base &in);
 	colt_add(colt_base &in, char *col_name, int t, char *tstr);

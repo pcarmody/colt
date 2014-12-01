@@ -293,7 +293,7 @@ int  colt_csv::load_headers()
 	headers = (char **) malloc(sizeof(char*)*col_count);
 	memcpy(headers, tmp_array, col_count*sizeof(char*));
 
-	cell_objects == (colt_datatype **) malloc(sizeof(colt_datatype*)*col_count);
+	cell_objects = (colt_datatype **) malloc(sizeof(colt_datatype*)*col_count);
 	for(int i=0; i<col_count; i++)
 		cell_objects[i] = new colt_datatype;
 }

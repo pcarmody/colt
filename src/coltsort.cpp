@@ -104,6 +104,7 @@ colt_sort::~colt_sort() {
 
 colt_base *colt_sort::copy(colt_base *op)
 {
+	COLT_TRACE("*colt_sort::copy(colt_base *op)")
 	coltthru *retval = new colt_sort(*op, column_number, numeric_sort, ascending);
 	int size = sizeof(int) * index_count;
 	retval->index_list = (int *) malloc(size);
@@ -115,11 +116,13 @@ colt_base *colt_sort::copy(colt_base *op)
 
 int colt_sort::serialize_id_num()
 {
+	COLT_TRACE("colt_sort::serialize_id_num()")
 	return colt_sort_version;
 }
 
 int colt_sort::write_config(FILE *out)
 {
+	COLT_TRACE("colt_sort::write_config(FILE *out)")
 	colt_sort_identifier ident;
 	ident.id = serialize_id_num();
 	ident.index_count = index_count;
@@ -135,6 +138,7 @@ int colt_sort::write_config(FILE *out)
 
 int *colt_sort::read_config(int *in)
 {
+	COLT_TRACE("*colt_sort::read_config(int *in)")
     colt_sort_identifier ident;
 
     memcpy((void *) &ident, (void *) index_list, sizeof(ident));
@@ -157,6 +161,7 @@ int *colt_sort::read_config(int *in)
 
 int colt_sort::show_status(char *base_ptr, int indent)
 {
+	COLT_TRACE("colt_sort::show_status(char *base_ptr, int indent)")
 	colt_sort_identifier ident;
 
 	 memcpy((void *) &ident, (void *) base_ptr, sizeof(ident));
@@ -199,6 +204,7 @@ int colt_sort::show_status(char *base_ptr, int indent)
 
 void colt_sort::initialize()
 {
+	COLT_TRACE("colt_sort::initialize()")
 	fill_sequential();
 //	colt_sort_column = column_number;
 //	sort_obj = operand;
@@ -224,6 +230,7 @@ int result_high = LONG_MAX;
 
 int colt_sort::search(char *min, char *max, colt_range *retobj)
 {
+	COLT_TRACE("colt_sort::search(char *min, char *max, colt_range *retobj)")
 	if(numeric_sort) {
 		search_low = atoi(min);
 		if(search_low < atoi(field_val(0, col_num())) )
@@ -249,14 +256,17 @@ int colt_sort::search(char *min, char *max, colt_range *retobj)
 	search_lowest_low(0, num_lines());
 	search_highest_high(0, num_lines());
 
-	retobj->set_low(result_low);
-	retobj->set_high(result_high);
+	if(retobj) {
+		retobj->set_low(result_low);
+		retobj->set_high(result_high);
+	}
 
-	return 1;
+	return result_low || result_high;
 }
 
 void colt_sort::search_lowest_low(int low, int high)
 {
+	COLT_TRACE("colt_sort::search_lowest_low(int low, int high)")
 	if(low > high) {
 		result_low = low;
 		return;
@@ -299,6 +309,7 @@ void colt_sort::search_lowest_low(int low, int high)
 
 void colt_sort::search_highest_high(int low, int high)
 {
+	COLT_TRACE("colt_sort::search_highest_high(int low, int high)")
 	if(low > high) {
 		result_high = low-1;
 		return;
@@ -334,6 +345,7 @@ void colt_sort::search_highest_high(int low, int high)
 
 void colt_sort::postprocess()
 {
+	COLT_TRACE("colt_sort::postprocess()")
 	if(!preload)
 		perform_sort();
 
@@ -342,6 +354,7 @@ void colt_sort::postprocess()
 
 void colt_sort::perform_sort()
 {
+	COLT_TRACE("colt_sort::perform_sort()")
 	colt_sort_column = column_number;
 	sort_obj = operand;
 	sort_direction = ascending;

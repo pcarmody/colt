@@ -40,7 +40,7 @@ public:
 	int *read_config(int *);
 	int show_status(char *baseptr, int indent=0);
 	int col_num() { return column_number; };
-	int search(char *min, char *max, colt_range *retobj);
+	int search(char *min, char *max, colt_range *retobj=NULL);
 	void search_lowest_low(int low, int high);
 	void search_highest_high(int low, int high);
 

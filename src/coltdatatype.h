@@ -28,7 +28,9 @@ public:
 
 	static colt_datatype * new_object(int type);
 
-	virtual void *value_ptr();
+	virtual void *get_value();
+	virtual char *gen_value_type();
+
 	virtual	void set_buffer(char *x);
 	virtual	int format(char *x);
 	virtual int generate(char *x);
@@ -48,7 +50,9 @@ public:
 	colt_integer();
 	virtual ~colt_integer();
 
-	virtual void *value_ptr();
+	virtual void *get_value();
+	virtual char *gen_value_type();
+
 	virtual	void set_buffer(char *x);
 	virtual	int format(char *x);
 	virtual int generate(char *x);

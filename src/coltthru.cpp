@@ -39,6 +39,7 @@ int match(const char *string, char *pattern)
 
 colt_base *colt_load_thru(char *file_name, int status)
 {
+	COLT_TRACE("*colt_load_thru(char *file_name, int status)")
 	struct stat sb;
 	int fd;
 
@@ -131,6 +132,7 @@ coltthru::~coltthru()
 
 colt_base *coltthru::copy(colt_base *op)
 {
+	COLT_TRACE("*coltthru::copy(colt_base *op)")
 	coltthru *retval = new coltthru(*op);
 	int size = sizeof(int) * index_count;
 	retval->index_list = (int *) malloc(size);
@@ -142,11 +144,13 @@ colt_base *coltthru::copy(colt_base *op)
 
 int coltthru::serialize_id_num()
 {
+	COLT_TRACE("coltthru::serialize_id_num()")
 	return colt_thru_version;
 }
 
 void coltthru::initialize()
 {
+	COLT_TRACE("coltthru::initialize()")
 	index_list = (int *) malloc(index_record_size * 100);
 	index_count = 0;
 }
@@ -154,16 +158,19 @@ void coltthru::initialize()
 
 int coltthru::num_lines()
 {
+	COLT_TRACE("coltthru::num_lines()")
 	return index_count;
 };
 
 void coltthru::push_back(int i)
 {
+	COLT_TRACE("coltthru::push_back(int i)")
 	index_list[index_count++] = i;
 };
 
 void coltthru::fill_sequential(int start)
 {
+	COLT_TRACE("coltthru::fill_sequential(int start)")
 
 	if(index_list)
 		free(index_list);
@@ -178,12 +185,14 @@ void coltthru::fill_sequential(int start)
 
 coltthru &coltthru::operator <<(int xx)
 {
+	COLT_TRACE("&coltthru::operator <<(int xx)")
 	push_back(xx);
 	return *this;
 }
 
 char *coltthru::source_file_name()
 {
+	COLT_TRACE("*coltthru::source_file_name()")
 	if(file_name[0])
 		return file_name;
 	return colt_operator::source_file_name();
@@ -191,6 +200,7 @@ char *coltthru::source_file_name()
 
 colt_base *coltthru::get_datasource(int count)
 {
+	COLT_TRACE("*coltthru::get_datasource(int count)")
 	if(count == 0)
 		return this;
 	return operand->get_datasource(count-1);
@@ -198,13 +208,16 @@ colt_base *coltthru::get_datasource(int count)
 
 int coltthru::reduce_to(int level, int rec_num)
 {
+	COLT_TRACE("coltthru::reduce_to(int level, int rec_num)")
 	int retval = index_list[rec_num];
 	if(level == 0)
 		return retval;
 	return operand->reduce_to(level-1, retval);
 }
+
 int coltthru::write_config(FILE *out)
 {
+	COLT_TRACE("coltthru::write_config(FILE *out)")
 	colt_thru_identifier ident;
 	ident.id = serialize_id_num();
 	ident.index_count = index_count;
@@ -217,6 +230,7 @@ int coltthru::write_config(FILE *out)
 
 int *coltthru::read_config(int *base_ptr)
 {
+	COLT_TRACE("*coltthru::read_config(int *base_ptr)")
     colt_thru_identifier ident;
 
     memcpy((void *) &ident, (void *) index_list, sizeof(ident));
@@ -234,6 +248,7 @@ int *coltthru::read_config(int *base_ptr)
 
 void coltthru::save(char *file_name)
 {
+	COLT_TRACE("coltthru::save(char *file_name)")
 	FILE *out = fopen(file_name, "w");
 	write_config(out);
 	fwrite(index_list, index_record_size, index_count, out);
@@ -242,6 +257,7 @@ void coltthru::save(char *file_name)
 
 int coltthru::load(char *file_name, int status)
 {
+	COLT_TRACE("coltthru::load(char *file_name, int status)")
     struct stat sb;
     char *p;
     int fd;
@@ -291,6 +307,7 @@ int coltthru::load(char *file_name, int status)
 
 void coltthru::set_begin_end_index(int beg, int end)
 {
+	COLT_TRACE("coltthru::set_begin_end_index(int beg, int end)")
 	iterate_count = beg;
 	if(end >=0)
 		end_index = end;
@@ -300,6 +317,7 @@ void coltthru::set_begin_end_index(int beg, int end)
 
 int coltthru::show_status(char *base_ptr, int indent)
 {
+	COLT_TRACE("coltthru::show_status(char *base_ptr, int indent)")
 	 colt_thru_identifier ident;
 
 	 memcpy((void *) &ident, (void *) base_ptr, sizeof(ident));
@@ -321,16 +339,19 @@ int coltthru::show_status(char *base_ptr, int indent)
 
 char **coltthru::fields(int rec_num)
 {
+	COLT_TRACE("**coltthru::fields(int rec_num)")
 	return operand->fields(index_list[rec_num]);
 }
 
 colt_datatype **coltthru::cells(int rec_num)
 {
+	COLT_TRACE("**coltthru::cells(int rec_num)")
 	return operand->cells(index_list[rec_num]);
 }
 
 int coltthru::get_next_row()
 {
+	COLT_TRACE("coltthru::get_next_row()")
 	if(iterate_count > end_index)
 		return -1;
 
@@ -340,6 +361,7 @@ int coltthru::get_next_row()
 
 void coltthru::process_all()
 {
+	COLT_TRACE("coltthru::process_all()")
 	if(!preload)
 		return operand->process_all();
 
@@ -348,8 +370,9 @@ void coltthru::process_all()
 
 int coltthru::preprocess()
 {
-	if(preload)
-		return out_object->preprocess();
+	COLT_TRACE("coltthru::preprocess()")
+	if(index_list)
+		return colt_operator::preprocess();
 
 	index_count = 0;
 
@@ -358,14 +381,12 @@ int coltthru::preprocess()
 
 	index_list = (int *) malloc(max_size());
 
-	if(out_object)
-		return out_object->preprocess();
-
-	return 1;
+	return colt_operator::preprocess();
 }
 
 int coltthru::process(int rec_num)
 {
+	COLT_TRACE("coltthru::process(int rec_num)")
 	if(preload)
 		return out_object->process(rec_num);
 
@@ -375,6 +396,7 @@ int coltthru::process(int rec_num)
 
 void coltthru::postprocess()
 {
+	COLT_TRACE("coltthru::postprocess()")
 	if(!preload) {
 		if(file_name[0])
 			save(file_name);

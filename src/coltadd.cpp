@@ -10,14 +10,14 @@
 
 colt_add::colt_add(colt_base &in, char *col_name, int t, char *tstr):
 	colt_cexpression(in, tstr),
-	return_value(NULL)
+	return_values(NULL)
 {
 	// TODO Auto-generated constructor stub
 	i_am = colt_class_add;
 	label = new char[strlen(col_name)+1];
 	strcpy(label, col_name);
 	type = t;
-	return_value = colt_datatype::new_object(type);
+//	return_value = colt_datatype::new_object(type);
 }
 
 colt_add::~colt_add()
@@ -43,9 +43,9 @@ char **colt_add::fields(int rec_num)
 	memcpy(colt_add_out, rec, sizeof(rec[0])*cols);
 //	colt_add_out[cols] = return_value->format();
 
-	int tmp = (*function_ptr)(colt_add_out);
+//	int tmp = (*function_ptr)(colt_add_out);
 
-	return_value->set_buffer(colt_add_out[cols]);
+	return_values[rec_num] = (void *) colt_add_out[cols];
 
 	return colt_add_out;
 }
@@ -62,10 +62,13 @@ colt_datatype **colt_add::cells(int rec_num)
 	int cols = num_cols();
 //	memcpy(colt_add_out, sizeof(rec[0])*cols, rec);
 	for(int i=0; i<num_cols(); i++)
-		cell_values[i] = rec[i]->value_ptr();
-	cell_values[cols] = return_value->value_ptr();
+		cell_values[i] = rec[i]->get_value();
+	cell_values[cols] = return_values[rec_num];
 
-	int tmp = (*function_ptr)((char **) cell_values);
+	if(cell_values[cols])
+		return colt_add_cell;
+
+	int tmp = (*function_ptr)((void **) cell_values);
 
 	return colt_add_cell;
 }
@@ -88,8 +91,14 @@ int colt_add::preprocess()
 	int i;
 	for(i=0; i<colt_operator::num_cols(); i++)
 		headers[i] = col_header(i);
-
 	headers[i] = label;
+
+	int numlines = num_lines();
+	int sizeof_return_values = sizeof(colt_datatype *) * numlines;
+	return_values = (void **) malloc(sizeof_return_values);
+
+	for(i=0; i<numlines; i++)
+		return_values[i] = NULL;
 
 	return retval;
 }

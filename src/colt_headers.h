@@ -9,7 +9,7 @@
 #include "coltdatatype.h"
 
 #include "coltbase.h"
-#include "coltcsv.h""
+#include "coltcsv.h"
 #include "coltsequentialcsv.h"
 #include "coltoperator.h"
 #include "coltreduce.h"
@@ -47,6 +47,8 @@
 #include "coltadd.h"
 #include "colt_to_json.h"
 #include "coltcounter.h"
+
+#include "coltsift.h"
 
 #include "colt_cross.h"
 #include "coltexpand.h"

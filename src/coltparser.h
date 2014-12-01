@@ -67,6 +67,7 @@ public:
 	colt_share			*share();
 	colt_thread 		*threadx();
 	colt_sync			*sync();
+	colt_sift			*sift();
 	colt_base			*unary_expression();
 	colt_base 			*unary_expressions();
 

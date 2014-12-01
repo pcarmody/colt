@@ -42,9 +42,14 @@ colt_datatype * colt_datatype::new_object(int type)
 	return new colt_datatype();
 }
 
-void *colt_datatype::value_ptr()
+void *colt_datatype::get_value()
 {
 	return (void *) buffer;
+}
+
+char *colt_datatype::gen_value_type()
+{
+	return "char *";
 }
 
 void colt_datatype::set_buffer(char *x)
@@ -114,11 +119,15 @@ colt_integer::~colt_integer()
 
 }
 
-void *colt_integer::value_ptr()
+void *colt_integer::get_value()
 {
 	return (void *) &value;
 }
 
+char *colt_integer::gen_value_type()
+{
+	return "int";
+}
 
 void colt_integer::set_buffer(char *x)
 {

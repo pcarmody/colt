@@ -36,7 +36,7 @@ int colt_onchange::preprocess()
 	}
 
 	if(column_number == -1) {
-		cout << "onchange couldn't find columne '" << column_name << "'.\n";
+		cout << "onchange couldn't find column '" << column_name << "'.\n";
 		throw "Could not find column key for onchange.\n";
 	}
 

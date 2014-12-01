@@ -34,7 +34,15 @@ colt_if::~colt_if() {
 int colt_if::process(int i)
 {
 	COLT_TRACE("colt_if::process(int i)")
-	if((*function_ptr)(fields(i))) {
+	void *cols[COLT_MAX_NUM_COLS];
+	int numcols = num_cols();
+	colt_datatype **the_cells = cells(i);
+
+	for(int j=0; j<numcols; j++) {
+		cols[j] = the_cells[j]->get_value();
+	}
+
+	if((*function_ptr)(cols)) {
 		return colt_cexpression::process(i);
 	}
 	return 0;

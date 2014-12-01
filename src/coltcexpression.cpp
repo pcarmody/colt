@@ -64,17 +64,40 @@ void colt_cexpression::compile_and_link()
 	_trace.start() << ": code file name is " << code_name << "\n";
 	std::ofstream c_code(code_name);
 	c_code << "#include <iostream>\n";
+	c_code << "#include <string>\n";
+	c_code << "using namespace std;\n";
+
 	c_code << "#include <sys/types.h>\n";
 	c_code << "#include <regex.h>\n";
 
 	c_code << regex_match;
 
 	int cols = num_cols();
-	for(int i=0; i<cols; i++)
-		c_code << "#define " << col_header(i) << " ((char *) row[" << i << "])\n";
+	colt_datatype **the_cells = cells(0);
+//	for(int i=0; i<cols; i++)
+//		c_code << "#define " << col_header(i) << " ((char *) row[" << i << "])\n";
 
 	c_code << "extern \"C\" " << return_type << " " << fn_name << "(char **row)\n";
 	c_code << "{\n";
+
+	// sample output
+	// int &cola = (int &) row[0];
+	for(int i=0; i<cols; i++) {
+		char *value_type = the_cells[i]->gen_value_type();
+		if(!match(code_string, col_header(i)))
+			continue;
+		c_code << value_type
+			<< " "
+			<< col_header(i)
+			<< " = ("
+			<< value_type
+			<< " ) row["
+			<< i
+			<< "];\n";
+//		cout << "name = " << name << "\n";
+//		c_code << "cout << \"" << col_header(i) << " = \" << " << col_header(i) << " << \";\\n\";\n";
+	}
+
 	c_code << "\treturn " << code_string << ";\n";
 	c_code << "}\n";
 	c_code.close();
@@ -82,7 +105,7 @@ void colt_cexpression::compile_and_link()
 
 	char pipe_string[100];
 	//	sprintf(pipe_string, "g++ -fPIC -shared %s -o %s", code_name, so_name);
-	sprintf(pipe_string, "gcc -Wall -Werror -fpic -shared %s -o %s", code_name, so_name);
+	sprintf(pipe_string, "gcc -Wall -Werror -Werror=unused-variable -fpic -shared %s -o %s", code_name, so_name);
 
 	FILE *pipe = popen(pipe_string, "r");
 

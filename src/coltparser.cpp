@@ -692,49 +692,40 @@ colt_cthru *colt_parser::cthru()
 	char key[100];
 	int  type=0;
 	int  direction=1;
-	char *b=input_buffer+5;
 	char file_name[COLT_MAX_STRING_SIZE];
 
-	if(*b == ':') {
-		char *a=key;
-		b++;
-		while(*b && *b != ',' && *b != ':' && *b != ' ') *a++ = *b++;
-		*a = '\0';
-	}
+	file_name[0] = '\0';
 
-	if(*b == ',') {
-		b++;
-		if(*b != 'n' && *b != 'a') {
-			perror("cthru type parameter expected either 'a' for alpha or'n' numeric.\n");
-			exit(-1);
-		}
-		type = (*b++ == 'n');
-	}
+	consume_token("cthru");
 
-	if(*b == ',') {
-		b++;
-		if(*b != 'd' && *b != 'a') {
-			perror("cthru asscending parameter expected either 'a' for ascending or'd' for descending.\n");
-			exit(-1);
-		}
-		direction = (*b++ == 'a');
-	}
+	if(!consume_token(":")
+	|| !consume_word(key))
+		fatal_error("cthru syntax is 'cthru:key<,a/n><,a/d>");
+
+	if(consume_token(","))
+		if(consume_token("d"))
+			direction = 1;
+		else if(!consume_token("a"))
+			fatal_error("cthru syntax requires sort order as 'a' or 'd'.\n");
+
+	if(consume_token(","))
+		if(consume_token("n"))
+			type = 1;
+		else if(!consume_token("a"))
+			fatal_error("chtru syntax requires sort type as 'a' or 'n'.\n");
+
+	if(consume_token(":"))
+		if(!consume_word(file_name))
+			fatal_error("cthru expected a filename after ';'.\n");
 
 	colt_cthru *retval = NULL;
 
-	if(*b == ':') {
-		char *a=file_name;
-		b++;
-		while(*b && *b != ',' && *b != ':' && *b != ' ') *a++ = *b++;
-		*a = '\0';
+	if(file_name[0])
 		retval = new colt_cthru(*return_value, file_name, key, type, direction);
-	} else
+	else
 		retval = new colt_cthru(*return_value, key, type, direction);
 
-	while(*b && *b != ' ' && *b != '\t' && *b != '\n') b++;
-
 	return_value = retval;
-	input_buffer = b;
 
 	return retval;
 }
@@ -742,27 +733,18 @@ colt_cthru *colt_parser::cthru()
 colt_range *colt_parser::search()
 {
 	COLT_TRACE("*colt_parser::search()")
-	char *b = input_buffer+6;
+	consume_token("search");
+
 	char low[COLT_MAX_STRING_SIZE], high[COLT_MAX_STRING_SIZE];
 
-	if(*b != ':')
-		fatal_error("search paremter expected low - high.\n");
-
-	char *a=low;
-	b++;
-	*a = '\0';
-	while(*b && *b != '-' && *b != ' ' && *b != '\n') *a++ = *b++;
-	*a = '\0';
-
-	a = high;
-	b++;
-	while(*b && *b != '-' && *b != ' '  && *b != '\n') *a++ = *b++;
-	*a = '\0';
-
-	input_buffer = b;
+	if(!consume_token(":")
+	|| !consume_word(low)
+	|| !consume_token(",")
+	|| !consume_word(high))
+		fatal_error("search syntax is 'search:low,high'.\n");
 
 	colt_range *retval = new colt_range(*return_value, low, high);
-	return_value = retval;
+//	return_value = retval;
 	return retval;
 }
 
@@ -957,6 +939,36 @@ colt_sync *colt_parser::sync()
 	return new colt_sync(*return_value);
 }
 
+colt_sift *colt_parser::sift()
+{
+	COLT_TRACE("*colt_parser::sift()")
+	consume_token("sift:");
+
+	char file_name[COLT_MAX_STRING_SIZE];
+	if(!consume_word(file_name))
+		fatal_error("sift expected a file name.\n");
+
+	if(!consume_token(","))
+		fatal_error("sift expected comma in 'sift:file,cola=colb.\n");
+
+	char index_name[COLT_MAX_STRING_SIZE];
+	if(!consume_word(index_name))
+		fatal_error("sift expected primary column name in 'sift:file,cola=colb.\n");
+
+	int equality = 1;
+	if(!consume_token("="))
+		if(consume_token("!"))
+			equality = 0;
+		else
+			fatal_error("seift expected test condition '=' or '!'.\n");
+
+	char column_name[COLT_MAX_STRING_SIZE];
+	if(!consume_word(column_name))
+		fatal_error("sift expected secondary column name in 'sift:file,cola=colb\n");
+
+	return new colt_sift(*return_value, file_name, index_name, column_name);
+}
+
 colt_base *colt_parser::unary_expression()
 {
 	COLT_TRACE("*colt_parser::unary_expression()")
@@ -1002,6 +1014,8 @@ colt_base *colt_parser::unary_expression()
 		object = link();
 	else if(is_token("reduce"))
 		object = reduce();
+	else if(is_token("sift"))
+		object = sift();
 
 	consume_whitespace();
 

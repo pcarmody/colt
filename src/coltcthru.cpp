@@ -46,11 +46,13 @@ colt_cthru::~colt_cthru() {
 
 int colt_cthru::serialize_id_num()
 {
+	COLT_TRACE("colt_cthru::serialize_id_num()")
 	return colt_cthru_version;
 }
 
 void colt_cthru::initialize()
 {
+	COLT_TRACE("colt_cthru::initialize()")
 	colt_sort::initialize();
 	int lines = num_lines();
 
@@ -65,16 +67,19 @@ void colt_cthru::initialize()
 
 void colt_cthru::push_back(int i)
 {
+	COLT_TRACE("colt_cthru::push_back(int i)")
 	node_list[index_count++].record_number = i;
 }
 
 int colt_cthru::index(int i)
 {
+	COLT_TRACE("colt_cthru::index(int i)")
 	return node_list[i].record_number;
 }
 
 colt_cthru::colt_record *colt_cthru::init(int low, int high)
 {
+	COLT_TRACE("*colt_cthru::init(int low, int high)")
 	int center = low + (high - low)/2;
 	node_list[center].min_value_below = -1;
 	node_list[center].max_value_below = -1;
@@ -116,6 +121,7 @@ colt_cthru::colt_record *colt_cthru::init(int low, int high)
 
 int colt_cthru::search(char *cond, colt_range *retobj)
 {
+	COLT_TRACE("colt_cthru::search(char *cond, colt_range *retobj)")
 	return 0;
 }
 
@@ -134,6 +140,7 @@ extern int result_high;
 
 int colt_cthru::search(char *min, char *max, colt_range *retobj)
 {
+	COLT_TRACE("colt_cthru::search(char *min, char *max, colt_range *retobj)")
 	if(numeric_sort) {
 		search_low = atoi(min);
 		if(search_low < atoi(field_val(0, col_num())) )
@@ -167,6 +174,7 @@ int colt_cthru::search(char *min, char *max, colt_range *retobj)
 
 void colt_cthru::search_lowest_low(int low, int high)
 {
+	COLT_TRACE("colt_cthru::search_lowest_low(int low, int high)")
 	if(low > high) {
 		result_low = low;
 		return;
@@ -209,6 +217,7 @@ void colt_cthru::search_lowest_low(int low, int high)
 
 void colt_cthru::search_highest_high(int low, int high)
 {
+	COLT_TRACE("colt_cthru::search_highest_high(int low, int high)")
 	if(low > high) {
 		result_high = low-1;
 		return;
@@ -244,26 +253,31 @@ void colt_cthru::search_highest_high(int low, int high)
 
 char *colt_cthru::record(int line_num)
 {
+	COLT_TRACE("*colt_cthru::record(int line_num)")
 	return operand->record(node_list[line_num].record_number);
 }
 
 char *colt_cthru::field_val(int rec_num, int col_num)
 {
+	COLT_TRACE("*colt_cthru::field_val(int rec_num, int col_num)")
 	return colt_sort::field_val(node_list[rec_num].record_number, col_num);
 }
 
 char **colt_cthru::fields(int rec_num)
 {
+	COLT_TRACE("**colt_cthru::fields(int rec_num)")
 	return operand->fields(node_list[rec_num].record_number);
 }
 
 colt_datatype **colt_cthru::cells(int rec_num)
 {
+	COLT_TRACE("**colt_cthru::cells(int rec_num)")
 	return operand->cells(node_list[rec_num].record_number);
 }
 
 void colt_cthru::save(char *file_name)
 {
+	COLT_TRACE("colt_cthru::save(char *file_name)")
 //	FILE *out = fopen(file_name, "wb");
 //	fwrite(index_list, index_record_size, index_count, out);
 //	fclose(out);
@@ -275,6 +289,7 @@ void colt_cthru::save(char *file_name)
 
 int *colt_cthru::read_config(int *in)
 {
+	COLT_TRACE("*colt_cthru::read_config(int *in)")
 	int *retval = colt_sort::read_config(in);
 
 	node_list = (colt_record *) retval;
@@ -284,6 +299,7 @@ int *colt_cthru::read_config(int *in)
 
 void colt_cthru::perform_sort()
 {
+	COLT_TRACE("colt_cthru::perform_sort()")
 	if(preload)
 		return;
 
@@ -299,12 +315,15 @@ void colt_cthru::perform_sort()
 
 int colt_cthru::preprocess()
 {
+	COLT_TRACE("colt_cthru::preprocess()")
 	if(preload) {
 		node_list = (colt_record *) index_list;
 		if(out_object)
-			return out_object->preprocess();
+			return colt_sort::preprocess();
 		return 1;
 	}
+
+	int retval = colt_sort::preprocess();
 
 	if(node_list)
 		free(node_list);
@@ -312,11 +331,13 @@ int colt_cthru::preprocess()
 	index_record_size = sizeof(colt_record);
 	node_list = (colt_record *) malloc(max_size() * index_record_size);
 
-	return out_object && out_object->preprocess();
+	return retval;
+//	return out_object && out_object->preprocess();
 }
 
 void colt_cthru::postprocess()
 {
+	COLT_TRACE("colt_cthru::postprocess()")
 	colt_sort::postprocess();
 
 //	print();
