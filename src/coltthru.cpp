@@ -239,8 +239,10 @@ int *coltthru::read_config(int *base_ptr)
 
 	if(match(ident.file_name, "thru$"))
 		operand = colt_load_thru(ident.file_name);
-	else
+	else {
 		operand = new colt_csv(ident.file_name, 1);
+		((colt_csv *) operand)->open_and_load();
+	}
     operand->out_object = this;
 
     return base_ptr + sizeof(ident)/sizeof(int);
@@ -387,6 +389,7 @@ int coltthru::preprocess()
 int coltthru::process(int rec_num)
 {
 	COLT_TRACE("coltthru::process(int rec_num)")
+	_trace.start() << rec_num << "\n";
 	if(preload)
 		return out_object->process(rec_num);
 

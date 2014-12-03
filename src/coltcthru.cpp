@@ -266,6 +266,8 @@ char *colt_cthru::field_val(int rec_num, int col_num)
 char **colt_cthru::fields(int rec_num)
 {
 	COLT_TRACE("**colt_cthru::fields(int rec_num)")
+	_trace.start() << " " << rec_num << "\n";
+	_trace.start() << " " << node_list[rec_num].record_number << "\n";
 	return operand->fields(node_list[rec_num].record_number);
 }
 

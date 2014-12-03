@@ -75,6 +75,9 @@ int colt_csv::open_and_load()
 		preload_data();
 	else
 		open_file(1);
+
+	if(!fields_retval)
+		fields_retval = (char **) malloc(sizeof(char *) * (num_cols() + 1));
 }
 
 colt_csv::~colt_csv() {
@@ -401,8 +404,10 @@ char **colt_csv::fields(int rec_num)
 	COLT_TRACE("**colt_csv::fields(int rec_num)")
 //	if(fields_retval)
 //		free(fields_retval);
+			_trace.start() << " " << rec_num << ":" << num_lines() << ":" << file_name << "!\n";
 	if(rec_num > num_lines())
 		rec_num = num_lines();
+	_trace.start() << " " << rec_num << "\n";
 
 	int i = 0;
 	fields_retval[0] = record(rec_num);

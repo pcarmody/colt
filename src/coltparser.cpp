@@ -361,8 +361,9 @@ colt_base *colt_parser::file_name()
 			retval = new colt_sequential_csv(a+1, col_sep, eol_sep, quote_sep);
 		else
 			retval = new colt_sequential_csv(a+1, 1);
-	else
-		if(col_sep)
+	else if(match(file_name, "thru$"))
+		return colt_load_thru(file_name);
+	else if(col_sep)
 			retval = new colt_csv(file_name, col_sep, eol_sep, quote_sep);
 		else
 			retval = new colt_csv(file_name, 0);
@@ -650,7 +651,7 @@ colt_sort *colt_parser::sort()
 
 	while(*b && *b != ' ' && *b != '\t' && *b != '\n') b++;
 
-	return_value = retval;
+//	return_value = retval;
 
 	input_buffer = b;
 
@@ -681,7 +682,7 @@ colt_keyspace *colt_parser::keyspace()
 		retval = new colt_keyspace(*return_value, col, NULL);
 
 	input_buffer = b;
-	return_value = retval;
+//	return_value = retval;
 
 	return retval;
 }
@@ -725,7 +726,7 @@ colt_cthru *colt_parser::cthru()
 	else
 		retval = new colt_cthru(*return_value, key, type, direction);
 
-	return_value = retval;
+//	return_value = retval;
 
 	return retval;
 }

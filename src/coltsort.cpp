@@ -150,8 +150,10 @@ int *colt_sort::read_config(int *in)
 
 	if(match(ident.file_name, "thru$"))
 		operand = colt_load_thru(ident.file_name);
-	else
+	else{
 		operand = new colt_csv(ident.file_name, 1);
+		((colt_csv *) operand)->open_and_load();
+	}
 
     operand->out_object = this;
 
