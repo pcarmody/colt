@@ -39,8 +39,8 @@ public:
 	virtual int	isa_container() { return type >= COLT_DT_INDEX; };
 	virtual int operator <(char *x);
 	virtual int operator <(colt_datatype &x);
-			int operator >=(colt_datatype &x) { return !operator <(x); };
-			int operator >=(char *x) { return !operator <(x); };
+	virtual int compare(colt_datatype &r);
+			int operator >=(colt_datatype &x) { return compare(x) > 0; };
 };
 
 colt_datatype *new_datatype(int t);
@@ -63,6 +63,7 @@ public:
 	virtual	char *consume(char *x);
 	virtual int operator <(char *x);
 	virtual int operator <(colt_datatype &x);
+	virtual int compare(colt_datatype &r);
 };
 
 #endif /* COLTDATATYPE_H_ */

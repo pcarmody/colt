@@ -16,23 +16,43 @@ colt_base *tmp_file;
 
 int sort_direction;
 
+int datattype_sort_by_col(const void *l, const void *k)
+{
+	int *i = (int *)l, *j = (int *)k;
+	colt_datatype *left = sort_obj->cells(*i)[colt_sort_column];
+	colt_datatype *rite = sort_obj->cells(*j)[colt_sort_column];
+
+	if(sort_direction == 1)
+		return left->compare(*rite);
+
+	return rite->compare(*left);
+}
+
 int	char_sort_by_col(const void *l, const void *k)
 {
 	int *i = (int *)l, *j = (int *)k;
+	char *left = sort_obj->fields(*i)[colt_sort_column];
+	char *rite = sort_obj->fields(*j)[colt_sort_column];
 	if(sort_direction == 1)
-		return strcmp(sort_obj->field_val(*i, colt_sort_column), sort_obj->field_val(*j, colt_sort_column));
+		return strcmp(left, rite);
+//		return strcmp(sort_obj->field_val(*i, colt_sort_column), sort_obj->field_val(*j, colt_sort_column));
 	else
-		return strcmp(sort_obj->field_val(*j, colt_sort_column), sort_obj->field_val(*i, colt_sort_column));
+		return strcmp(rite, left);
+//		return strcmp(sort_obj->field_val(*j, colt_sort_column), sort_obj->field_val(*i, colt_sort_column));
 }
 
 int	int_sort_by_col(const void *l, const void *k)
 {
 	int *i = (int *)l, *j = (int *)k;
+	char *left = sort_obj->fields(*i)[colt_sort_column];
+	char *rite = sort_obj->fields(*j)[colt_sort_column];
 
 	if(sort_direction == 1)
-		return atoi(sort_obj->field_val(*i, colt_sort_column)) - atoi(sort_obj->field_val(*j, colt_sort_column));
+		return atoi(left) - atoi(rite);
+//		return atoi(sort_obj->field_val(*i, colt_sort_column)) - atoi(sort_obj->field_val(*j, colt_sort_column));
 	else
-		return atoi(sort_obj->field_val(*i, colt_sort_column)) - atoi(sort_obj->field_val(*j, colt_sort_column));
+		return atoi(rite) - atoi(left);
+//		return atoi(sort_obj->field_val(*i, colt_sort_column)) - atoi(sort_obj->field_val(*j, colt_sort_column));
 }
 
 //

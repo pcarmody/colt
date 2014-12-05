@@ -332,6 +332,7 @@ int colt_cthru::preprocess()
 
 	index_record_size = sizeof(colt_record);
 	node_list = (colt_record *) malloc(max_size() * index_record_size);
+	_trace.start() << "column_number = " << column_number << "\n";
 
 	return retval;
 //	return out_object && out_object->preprocess();

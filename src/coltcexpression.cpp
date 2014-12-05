@@ -64,7 +64,7 @@ void colt_cexpression::compile_and_link()
 	_trace.start() << ": code file name is " << code_name << "\n";
 	std::ofstream c_code(code_name);
 	c_code << "#include <iostream>\n";
-	c_code << "#include <string>\n";
+	c_code << "#include <string.h>\n";
 	c_code << "using namespace std;\n";
 
 	c_code << "#include <sys/types.h>\n";
@@ -101,7 +101,7 @@ void colt_cexpression::compile_and_link()
 			c_code << "cout << \"" << head[i] << " = \" << " << head[i] << " << \";\\n\";\n";
 	}
 
-	c_code << "\treturn " << code_string << ";\n";
+	c_code << "\treturn (long) " << code_string << ";\n";
 	c_code << "}\n";
 	c_code.close();
 	_trace.start() << ":" << code_name << "\n";

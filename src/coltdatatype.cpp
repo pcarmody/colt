@@ -115,6 +115,11 @@ int colt_datatype::operator <(char *x)
 	return strcmp(buffer, x) < 0;
 }
 
+int colt_datatype::compare(colt_datatype &right)
+{
+	return strcmp(buffer, right.buffer);
+}
+
 //
 //  COLT_INTEGER
 //
@@ -200,5 +205,16 @@ int colt_integer::operator <(colt_datatype &right)
 	}
 
 	return value < atoi(right.buffer);
+}
+
+int colt_integer::compare(colt_datatype &right)
+{
+	COLT_TRACE("colt_integer::operator <(colt_datatype &right)")
+	if(right.type == COLT_DT_INTEGER) {
+		colt_integer *tmp = (colt_integer *) &right;
+		return value - tmp->value;
+	}
+
+	return value - atoi(right.buffer);
 }
 
