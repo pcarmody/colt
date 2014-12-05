@@ -15,6 +15,7 @@ public:
 	char			*colt_add_out[COLT_MAX_NUM_COLS];
 	colt_datatype	*colt_add_cell[COLT_MAX_NUM_COLS];
 	void			**return_values;
+	char 			*headers[COLT_MAX_NUM_COLS];
 
 //	colt_add(colt_base &in);
 	colt_add(colt_base &in, char *col_name, int t, char *tstr);
@@ -24,6 +25,7 @@ public:
 	colt_datatype **cells(int rec);
 	int num_cols();
 	char *col_header(int n);
+	virtual char **col_headers();
 	int preprocess();
 };
 

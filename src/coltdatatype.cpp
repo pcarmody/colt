@@ -126,7 +126,7 @@ void *colt_integer::get_value()
 
 char *colt_integer::gen_value_type()
 {
-	return "int";
+	return "int *";
 }
 
 void colt_integer::set_buffer(char *x)

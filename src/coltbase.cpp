@@ -86,6 +86,12 @@ char *colt_base::col_header(int n)
 	return NULL;
 }
 
+char **colt_base::col_headers()
+{
+	COLT_TRACE("*colt_base::col_headers()")
+	return NULL;
+}
+
 char *colt_base::field_val(int rec_num, int col_num)
 {
 	COLT_TRACE("*colt_base::field_val(int rec_num, int col_num)")

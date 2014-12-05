@@ -330,29 +330,7 @@ colt_base *colt_parser::file_name()
 			fatal_error("Expected closing ']' in file datatype definiiton.\n");
 	} else
 		dtype_str[0] = '\0';
-//	char *a = file_name;
-//	char *in = input_buffer;
-//
-//	while(*in && *in != ':' && *in != ',' && *in != ' ' && *in != '\t') *a++ = *in++;
-//	*a = '\0';
-//
-//	input_buffer = in;
-//
-//	if(match(file_name, "thru$"))
-//		return colt_load_thru(file_name);
-//
-//	if(*in == ':') {
-//		col_sep = in[1];
-//		if(in[3] == ':') {
-//			quote_sep = in[4];
-//			if(in[5] == ':')
-//				eol_sep = in[6];
-//		}
-//	}
-//
-//	input_buffer = in;
 
-//	if(strcmp(file_name, "-") == 0)
 	colt_csv *retval = NULL;
 
 	char *a = file_name;
@@ -381,7 +359,7 @@ colt_base *colt_parser::file_name()
 colt_select *colt_parser::select()
 {
 	COLT_TRACE("*colt_parser::select()")
-	consume_token("select:");
+	int nom = !consume_token("select:") && consume_token("ignore:");
 
 	int num_cols = 0;
 	char buffer[COLT_MAX_STRING_SIZE];
@@ -402,7 +380,7 @@ colt_select *colt_parser::select()
 			col_list[num_cols++] = ++b;
 		}
 
-	colt_select *retval = new colt_select(*return_value, col_list, num_cols);
+	colt_select *retval = new colt_select(*return_value, col_list, num_cols, nom);
 
 	return retval;
 }
@@ -475,7 +453,8 @@ colt_add *colt_parser::add()
 	else
 		fatal_error("Expected datatype in add expression.\n");
 
-	consume_keyword(repl_str);
+//	consume_keyword(repl_str);
+	consume_code_segment(repl_str);
 
 	return new colt_add(*return_value, label, type, repl_str);
 }
@@ -975,7 +954,7 @@ colt_base *colt_parser::unary_expression()
 	COLT_TRACE("*colt_parser::unary_expression()")
 	colt_base *object = NULL;
 
-	if(is_token("select"))
+	if(is_token("select") || is_token("ignore"))
 		object = select();
 	else if(is_token("limit"))
 		object = skip_limit();

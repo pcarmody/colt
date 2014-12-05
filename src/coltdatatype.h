@@ -45,7 +45,7 @@ public:
 
 class colt_integer : public colt_datatype {
 public:
-	int	value;
+	long	value;
 
 	colt_integer();
 	virtual ~colt_integer();

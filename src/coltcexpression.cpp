@@ -73,7 +73,7 @@ void colt_cexpression::compile_and_link()
 	c_code << regex_match;
 
 	int cols = num_cols();
-	colt_datatype **the_cells = cells(0);
+	colt_datatype **the_cells = cells(-1);
 //	for(int i=0; i<cols; i++)
 //		c_code << "#define " << col_header(i) << " ((char *) row[" << i << "])\n";
 
@@ -82,20 +82,22 @@ void colt_cexpression::compile_and_link()
 
 	// sample output
 	// int &cola = (int &) row[0];
+	char **head = col_headers();
 	for(int i=0; i<cols; i++) {
 		char *value_type = the_cells[i]->gen_value_type();
-		if(!match(code_string, col_header(i)))
+		if(!match(code_string, head[i]))
 			continue;
 		c_code << value_type
 			<< " "
-			<< col_header(i)
+			<< head[i]
 			<< " = ("
 			<< value_type
 			<< " ) row["
 			<< i
 			<< "];\n";
-//		cout << "name = " << name << "\n";
-//		c_code << "cout << \"" << col_header(i) << " = \" << " << col_header(i) << " << \";\\n\";\n";
+		if(!_trace)
+//			cout << "name = " << name << "\n";
+			c_code << "cout << \"" << head[i] << " = \" << " << head[i] << " << \";\\n\";\n";
 	}
 
 	c_code << "\treturn " << code_string << ";\n";

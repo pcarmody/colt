@@ -24,6 +24,7 @@ public:
 
 	char *record(int line_num);
 	char *col_header(int n);
+	virtual char **col_headers();
 	char *field_val(int rec_num, int col_num);
 	char *extract_str(char *in, char sep_char='\t', char eol_char='\n');
 	virtual char sep_char();

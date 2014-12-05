@@ -47,6 +47,7 @@ public:
 	virtual	char *extract_str(char *in, char sep_char='\t', char eol_char='\n', char quote_char = '\0');
 	virtual	char *record(int line_num);
 	virtual	char *col_header(int n);
+	virtual char **col_headers();
 	virtual	int num_lines();
 	virtual	int num_cols();
 	virtual	int max_size();

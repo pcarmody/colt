@@ -56,6 +56,11 @@ char *colt_cross::col_header(int n)
 	return right->col_header(n - left_cols);
 }
 
+char **colt_cross::col_headers()
+{
+	return NULL;// must fix
+}
+
 char **colt_cross::fields(int rec_num)
 {
 	COLT_TRACE("**colt_cross::fields(int rec_num)")

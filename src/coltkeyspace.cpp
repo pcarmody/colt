@@ -46,6 +46,11 @@ char *colt_keyspace::col_header(int n)
 	return colt_operator::col_header(column_number);
 }
 
+char **colt_keyspace::col_headers()
+{
+	return NULL; // must fix
+}
+
 char **colt_keyspace::fields(int rec_num)
 {
 	column_value = &(operand->fields(index_list[rec_num])[column_number]);

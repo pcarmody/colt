@@ -83,6 +83,14 @@ char *colt_operator::col_header(int n)
 	return operand->col_header(n);
 }
 
+char **colt_operator::col_headers()
+{
+	COLT_TRACE("*colt_operator::col_headers()")
+	if(!operand)
+		throw "colt_operator::col_headers unintialized operand.\n";
+	return operand->col_headers();
+}
+
 char *colt_operator::field_val(int rec_num, int col_num)
 {
 	COLT_TRACE("*colt_operator::field_val(int rec_num, int col_num)")

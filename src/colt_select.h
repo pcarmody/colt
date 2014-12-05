@@ -15,16 +15,16 @@ public:
 	int		count;
 	char	*colt_select_out[100];
 	colt_datatype	*colt_select_cells[100];
+	int		no_match;
 
-	colt_select(colt_base &in, char **l, int c);
+	colt_select(colt_base &in, char **l, int c, int nom=0);
 	virtual ~colt_select();
-
-	virtual colt_base *copy(colt_base *op=NULL);
 
 	char **fields(int rec);
 	colt_datatype **cells(int rec);
 	int num_cols();
 	char *col_header(int n);
+	char **col_headers();
 	int preprocess();
 };
 

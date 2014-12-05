@@ -89,6 +89,7 @@ public:
 	virtual	void set_operand(colt_base *);
 	virtual	char *record(int line_num);
 	virtual char *col_header(int n);
+	virtual char **col_headers();
 	virtual int num_lines();
 	virtual int num_cols();
 	virtual int max_size();

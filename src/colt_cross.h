@@ -23,6 +23,7 @@ public:
 
 	int	num_cols();
 	char *col_header(int n);
+	char **col_headers();
 	char **fields(int rec_num);
 	colt_datatype **cells(int rec_num);
 

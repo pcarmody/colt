@@ -22,8 +22,9 @@ using namespace std;
 //  colt_select
 //
 
-colt_select::colt_select(colt_base &in, char **l, int c):
-	colt_operator(in)
+colt_select::colt_select(colt_base &in, char **l, int c, int nom):
+	colt_operator(in),
+	no_match(nom)
 {
 	i_am = colt_class_select;
 	list = (int *) malloc(sizeof(int) * c);
@@ -31,14 +32,10 @@ colt_select::colt_select(colt_base &in, char **l, int c):
 	count = c;
 
 	for(int i=0; i<count; i++) {
-		headers[i] = (char *) malloc(strlen(l[i]));
-		strcpy(headers[i], l[i]);
+		headers[i] = (char *) malloc(strlen(l[i]) + 2);
+//		strcpy(headers[i], l[i]);
+		sprintf(headers[i], "^%s$", l[i]);
 	}
-}
-
-colt_base *colt_select::copy(colt_base *op)
-{
-	return new colt_select(*op, headers, count);
 }
 
 colt_select::~colt_select()
@@ -90,6 +87,12 @@ char *colt_select::col_header(int n)
 	return colt_operator::col_header(list[n]);
 }
 
+char **colt_select::col_headers()
+{
+	COLT_TRACE("**colt_select::col_headers()")
+	return NULL; // need to fix
+}
+
 int colt_select::preprocess()
 {
 	COLT_TRACE("colt_select::preprocess()")
@@ -101,7 +104,9 @@ int colt_select::preprocess()
 	for(int j=0; j<cols; j++) {
 		char *head = operand->col_header( j );
 		for(int i=0; i<count; i++) {
-			if(strcmp(headers[i], head ) == 0 ) {
+			if((no_match && !match(head, headers[i]) )
+			|| (!no_match && match(head, headers[i]) ) ) {
+//			if(strcmp(headers[i], head ) == 0 ) {
 				list[i] = j;
 			}
 		}

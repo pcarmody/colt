@@ -383,6 +383,12 @@ char *colt_csv::col_header(int n)
 	return headers[n];
 }
 
+char **colt_csv::col_headers()
+{
+	COLT_TRACE("*colt_csv::col_headers()")
+	return headers;
+}
+
 char colt_buffer[1000];
 
 char *colt_csv::field_val(int rec_num, int col_num) 

@@ -20,6 +20,7 @@ public:
 
 	int num_cols();
 	char *col_header(int n);
+	char **col_headers();
 	char **fields(int rec_num);
 	int preprocess();
 	int process(int rec_num);

@@ -22,6 +22,7 @@ public:
 
 	void add_match(const char *s);
 	void indent() { for(int i=0; i<indent_level; i++) std::cout << " "; };
+	int operator !() { return is_match; };
 	colt_trace &start();
 	colt_trace &operator <<(const char *str);
 	colt_trace &operator <<(char *str);
