@@ -448,10 +448,7 @@ void colt_csv::set_datatype(int i, int type)
 		delete cell_objects[i];
 	}
 
-	if(type == COLT_DATATYPE)
-		cell_objects[i] = new colt_datatype;
-	else if(type == COLT_DT_INTEGER)
-		cell_objects[i] = new colt_integer;
+	cell_objects[i] = new_datatype(type);
 }
 
 colt_datatype **colt_csv::cells(int rec_num)

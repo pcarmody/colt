@@ -57,10 +57,11 @@ void colt_out::fill_sequential()
 
 	int k = 0;
 //	for(colt_counter *j=operand->get_col_counter(); !j->done(); j->next()) {
+	char **heads = col_headers();
 	for(int j=0; j<num_cols(); j++) {
 		if(k++ > 0)
 			strcat(out_string, column_sep_char);
-		strcat( out_string, extract_str( operand->col_header( j ) ) );
+		strcat( out_string, extract_str( heads[j] ) );
 	}
 	strcat(out_string, end_of_line_sep_char);
 	cout << out_string;
@@ -69,11 +70,12 @@ void colt_out::fill_sequential()
 	for(int i=0; i<num_lines(); i++) {
 		int k = 0;
 		out_string[0] = '\0';
+		char **fields_out = fields(i);
 		for(int j=0; j<num_cols(); j++) {
 //		for(colt_counter *j=operand->get_col_counter(); !j->done(); j->next()) {
 			if(k++ > 0)
 				strcat(out_string, column_sep_char);
-			strcat(out_string, extract_str(operand->field_val(i, j)));
+			strcat(out_string, extract_str(fields_out[j]));
 		}
 		strcat(out_string, end_of_line_sep_char);
 		cout << out_string;
@@ -88,10 +90,11 @@ int colt_out::preprocess()
 
 	int k = 0;
 
+	char **heads = col_headers();
 	for(int j=0; j<num_cols(); j++) {
 		if(k++ > 0)
 			out_string.append(column_sep_char);
-		out_string.append(col_header(j));
+		out_string.append(heads[j]);
 	}
 
 	out_string.append(end_of_line_sep_char);

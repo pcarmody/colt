@@ -8,9 +8,28 @@
 #include "colt_headers.h"
 #include "coltdatatype.h"
 
+colt_datatype *new_datatype(int type)
+{
+	if(type == COLT_DATATYPE)
+		return new colt_datatype;
+	else if(type == COLT_DT_INTEGER)
+		return new colt_integer;
+	//	else if(type == COLT_DT_DATE)
+	//		return new colt_dt_date();
+	//	else if(type == COLT_DT_INDEX)
+	//		return new colt_dt_index();
+	//	else if(type == COLT_DT_INDEX_LIST)
+	//		return new colt_dt_index_list();
+	//	else if(type == COLT_DT_RANGE)
+	//		return new colt_dt_range();
+	//	else if(type == COLT_DT_BITMAP)
+	//		return new colt_dt_bitmap();
+
+	return new colt_datatype;
+}
 
 //
-//  COLT_INTEGER
+//  COLT_DATATYPE
 //
 
 colt_datatype::colt_datatype() {
@@ -20,26 +39,6 @@ colt_datatype::colt_datatype() {
 
 colt_datatype::~colt_datatype() {
 	// TODO Auto-generated destructor stub
-}
-
-colt_datatype * colt_datatype::new_object(int type)
-{
-	if(type == COLT_DATATYPE)
-		return new colt_datatype();
-	else if(type == COLT_DT_INTEGER)
-		return new colt_integer();
-//	else if(type == COLT_DT_DATE)
-//		return new colt_dt_date();
-//	else if(type == COLT_DT_INDEX)
-//		return new colt_dt_index();
-//	else if(type == COLT_DT_INDEX_LIST)
-//		return new colt_dt_index_list();
-//	else if(type == COLT_DT_RANGE)
-//		return new colt_dt_range();
-//	else if(type == COLT_DT_BITMAP)
-//		return new colt_dt_bitmap();
-
-	return new colt_datatype();
 }
 
 void *colt_datatype::get_value()
@@ -56,6 +55,18 @@ void colt_datatype::set_buffer(char *x)
 {
 	COLT_TRACE("colt_datatype::set_buffer(char *x)")
 	buffer = x;
+}
+
+void colt_datatype::set_value(void *x)
+{
+	COLT_TRACE("colt_datatype::set_value(void *)")
+	buffer = (char *) x;
+}
+
+void *colt_datatype::make_space()
+{
+	COLT_TRACE("colt_datatype::make_space()")
+	return (void *) new char[COLT_MAX_STRING_SIZE];
 }
 
 int colt_datatype::format(char *x)
@@ -136,13 +147,26 @@ void colt_integer::set_buffer(char *x)
 	value = atoi(x);
 }
 
+void colt_integer::set_value(void *x)
+{
+	COLT_TRACE("colt_integer::set_value(void *)")
+	long *xxx = (long *) x;
+	value = *xxx;
+}
+
+void *colt_integer::make_space()
+{
+	COLT_TRACE("colt_integer::make_space()")
+	return (void *) new long;
+}
+
 int colt_integer::format(char *x)
 {
 	COLT_TRACE("colt_integer::format(char *x)")
 	char tmp[100];
 //	itoa(x, tmp, 10);
 	sprintf(tmp, "%d", value);
-	strcat(x, tmp);
+	strcpy(x, tmp);
 
 	return strlen(tmp);
 }

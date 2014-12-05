@@ -26,12 +26,12 @@ public:
 	colt_datatype();
 	virtual ~colt_datatype();
 
-	static colt_datatype * new_object(int type);
-
 	virtual void *get_value();
 	virtual char *gen_value_type();
 
 	virtual	void set_buffer(char *x);
+	virtual void set_value(void *);
+	virtual void *make_space();
 	virtual	int format(char *x);
 	virtual int generate(char *x);
 	virtual	char *consume(char *x);
@@ -42,6 +42,8 @@ public:
 			int operator >=(colt_datatype &x) { return !operator <(x); };
 			int operator >=(char *x) { return !operator <(x); };
 };
+
+colt_datatype *new_datatype(int t);
 
 class colt_integer : public colt_datatype {
 public:
@@ -54,6 +56,8 @@ public:
 	virtual char *gen_value_type();
 
 	virtual	void set_buffer(char *x);
+	virtual void set_value(void *);
+	virtual void *make_space();
 	virtual	int format(char *x);
 	virtual int generate(char *x);
 	virtual	char *consume(char *x);

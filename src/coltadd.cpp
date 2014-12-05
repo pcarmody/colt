@@ -23,6 +23,7 @@ colt_add::colt_add(colt_base &in, char *col_name, int t, char *tstr):
 colt_add::~colt_add()
 {
 	// TODO Auto-generated destructor stub
+	delete colt_add_out[num_cols()-1];
 }
 
 int colt_add::num_cols()
@@ -40,14 +41,19 @@ char **colt_add::fields(int rec_num)
 		return NULL;
 
 	int cols = num_cols();
+	int new_col = cols-1;
 	for(int i=0; i<cols-1; i++)
 		colt_add_out[i] = rec[i];
-//	memcpy(colt_add_out, rec, sizeof(rec[0])*cols);
-	colt_add_out[cols] = (char *) return_values[rec_num];
 
-	(*function_ptr)((void **) colt_add_out);
+	if(!return_values[rec_num])
+		cells(rec_num);
+	else
+		colt_add_cell[new_col]->set_value(return_values[rec_num]);
 
-	return_values[rec_num] = (void *) colt_add_out[cols];
+	if(!colt_add_out[new_col])
+		colt_add_out[new_col] = new char[COLT_MAX_STRING_SIZE];
+
+	colt_add_cell[new_col]->format(colt_add_out[new_col]);
 
 	return colt_add_out;
 }
@@ -56,24 +62,39 @@ colt_datatype **colt_add::cells(int rec_num)
 {
 	COLT_TRACE("**colt_add::cells(int rec_num)")
 	colt_datatype **rec = colt_cexpression::cells(rec_num);
-	if(rec_num == -1)
-		return rec;
-
-	void *cell_values[COLT_MAX_NUM_COLS];
 
 	if(!rec)
 		return NULL;
 
 	int cols = num_cols();
-	for(int i=0; i<cols-1; i++)
-		cell_values[i] = rec[i]->get_value();
-	cell_values[cols] = return_values[rec_num];
 
-//	if(cell_values[cols])
-//		return colt_add_cell;
+	if(return_values[rec_num]) {
+		for(int i=0; i<cols-1; i++)
+			colt_add_cell[i] = rec[i];
+		colt_add_cell[cols-1]->set_value(return_values[rec_num]);
+
+		return colt_add_cell;
+	}
+
+	return_values[rec_num] = colt_add_cell[cols-1]->make_space();
+
+	void *cell_values[COLT_MAX_NUM_COLS];
+	for(int i=0; i<cols-1; i++)
+			cell_values[i] = rec[i]->get_value();
+	cell_values[cols-1] = return_values[rec_num];
 
 	_trace.start() << "call function.\n";
-	int tmp = (*function_ptr)((void **) cell_values);
+	if(function_ptr)
+		(*function_ptr)((void **) cell_values);
+
+	for(int i=0; i<cols-1; i++)
+		colt_add_cell[i] = rec[i];
+	colt_add_cell[cols-1]->set_value(return_values[rec_num]);
+
+	if(!function_ptr) {
+		delete return_values[rec_num];
+		return_values[rec_num] = NULL;
+	}
 
 	return colt_add_cell;
 }
@@ -96,18 +117,20 @@ char **colt_add::col_headers()
 	for(int i=0; i<cols; i++)
 		headers[i] = heads[i];
 	headers[cols] = label;
+	_trace.start() << "lable = " << label << "\n";
 	return headers;
 }
 
 int colt_add::preprocess()
 {
 	COLT_TRACE("colt_add::preprocess()")
-	int retval = colt_cexpression::preprocess();
 
 	char *headers[100];
 	int i;
-	for(i=0; i<colt_cexpression::num_cols(); i++)
-		headers[i] = col_header(i);
+	int cols = colt_cexpression::num_cols();
+	char **heads = col_headers();
+	for(i=0; i<cols; i++)
+		headers[i] = heads[i];
 	headers[i] = label;
 
 	int numlines = num_lines();
@@ -117,6 +140,9 @@ int colt_add::preprocess()
 	for(i=0; i<numlines; i++)
 		return_values[i] = NULL;
 
-	return retval;
+	colt_add_cell[cols] = new_datatype(type);
+	colt_add_out[cols] = new char[COLT_MAX_STRING_SIZE];
+
+	return colt_cexpression::preprocess();
 }
 
