@@ -19,13 +19,11 @@ int sort_direction;
 int datattype_sort_by_col(const void *l, const void *k)
 {
 	int *i = (int *)l, *j = (int *)k;
-	colt_datatype *left = sort_obj->cells(*i)[colt_sort_column];
-	colt_datatype *rite = sort_obj->cells(*j)[colt_sort_column];
 
 	if(sort_direction == 1)
-		return left->compare(*rite);
+		return sort_obj->compare(*i, *j, colt_sort_column);
 
-	return rite->compare(*left);
+	return sort_obj->compare(*i, *j, colt_sort_column);
 }
 
 int	char_sort_by_col(const void *l, const void *k)
@@ -382,8 +380,10 @@ void colt_sort::perform_sort()
 	sort_direction = ascending;
 	tmp_file = operand;
 
-	if(numeric_sort)
-		qsort(index_list, index_count, index_record_size, &int_sort_by_col);
-	else
+	qsort(index_list, index_count, index_record_size, &datattype_sort_by_col);
+//
+//	if(numeric_sort)
+//		qsort(index_list, index_count, index_record_size, &int_sort_by_col);
+//	else
 		qsort(index_list, index_count, index_record_size, &char_sort_by_col);
 }

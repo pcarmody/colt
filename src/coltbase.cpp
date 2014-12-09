@@ -134,6 +134,11 @@ int colt_base::reduce_to(int level, int rec_num)
 	return rec_num;
 }
 
+int colt_base::compare(int a, int b, int c)
+{
+	return a-b;
+}
+
 char *colt_base::extract_str(char *in, char sep_char, char eol_char, char quote_char) 
 {
 	COLT_TRACE("*colt_base::extract_str(char *in, char sep_char, char eol_char, char quote_char) ")

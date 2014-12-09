@@ -103,6 +103,7 @@ public:
 	virtual char *source_file_name();
 	virtual	colt_base *get_datasource(int count=0);
 	virtual int	reduce_to(int level, int rec_num);
+	virtual int compare(int a, int b, int c);
 
 	virtual	void process_all();
 	virtual	int get_next_row();

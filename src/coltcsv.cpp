@@ -97,14 +97,14 @@ colt_csv::~colt_csv() {
 //	if(headers)
 //		free(headers);
 
-	char index_file_name[100];
-	strcpy(index_file_name, file_name);
-	strcat(index_file_name, ".ndx");
-
-	ofstream os(index_file_name, ios::binary);
-	os.write((const char *) &col_count, sizeof(int));
-	os.write((const char *)&lines[0], lines.size() * sizeof(int));
-	os.close();
+//	char index_file_name[100];
+//	strcpy(index_file_name, file_name);
+//	strcat(index_file_name, ".ndx");
+//
+//	ofstream os(index_file_name, ios::binary);
+//	os.write((const char *) &col_count, sizeof(int));
+//	os.write((const char *)&lines[0], lines.size() * sizeof(int));
+//	os.close();
 }
 
 colt_base *colt_csv::copy(colt_base *op)
@@ -201,6 +201,7 @@ int colt_csv::open_file (int set_sep_chars)
       }
 
       base_ptr = p;
+//      col_count = *p;
       fdescriptor = fd;
       size = sb.st_size;
 
@@ -277,6 +278,8 @@ int  colt_csv::load_headers()
 	char *tmp_header = b;
 	char *tmp_array[COLT_MAX_NUM_COLS];
 
+	col_count = 0;
+
 	for(char *x = base_ptr; *x != end_of_line_sep_char; x++) {
 		if(col_count > COLT_MAX_NUM_COLS)
 			continue;
@@ -324,6 +327,11 @@ int colt_csv::preload_data()
 
 	int *p = (int *) mmap (0, sb.st_size, PROT_READ, MAP_SHARED, fd, 0);
 
+//	int *p = (int *) malloc(sb.st_size);
+
+//	read(fd, p, sb.st_size);
+//	if((long)p == -1)
+//		perror("Unable to map file.\n");
 	col_count = *p;
 
 	for(int i=1; i<sb.st_size/sizeof(int); i++) {
@@ -347,10 +355,12 @@ int colt_csv::preload_data()
 	headers = (char **) malloc(sizeof(char*)*col_count);
 	memcpy(headers, tmp_array, col_count*sizeof(char*));
 
-	cell_objects = (colt_datatype **) malloc(sizeof(colt_datatype*)*col_count);
-	for(int i=0; i<col_count; i++) {
-		colt_datatype *tmp = new colt_datatype;
-		cell_objects[i] = tmp;
+	if(!cell_objects) {
+		cell_objects = (colt_datatype **) malloc(sizeof(colt_datatype*)*col_count);
+		for(int i=0; i<col_count; i++) {
+			colt_datatype *tmp = new colt_datatype;
+			cell_objects[i] = tmp;
+		}
 	}
 	preload = 1;
 
@@ -477,6 +487,25 @@ colt_datatype **colt_csv::cells(int rec_num)
 	_trace.start() << " cells filled\n";
 
 	return cell_objects;
+}
+
+int colt_csv::compare(int a, int b, int c)
+{
+	COLT_TRACE("colt_csv::compare(int a, int b, int c)")
+	char *left_ptr = fields(a)[c];
+	char *rite_ptr = fields(b)[c];
+
+	int type = cell_objects[c]->type;
+	colt_datatype left(type);
+	colt_datatype rite(type);
+
+	left = left_ptr;
+	rite = rite_ptr;
+
+	int retval = left.compare(rite);
+	cout << "qqq " << left_ptr << ":" << rite_ptr << ":" << retval << "\n";
+
+	return retval;
 }
 
 bool colt_csv::sort_func(int i, int j)
