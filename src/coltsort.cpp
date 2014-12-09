@@ -26,33 +26,6 @@ int datattype_sort_by_col(const void *l, const void *k)
 	return sort_obj->compare(*i, *j, colt_sort_column);
 }
 
-int	char_sort_by_col(const void *l, const void *k)
-{
-	int *i = (int *)l, *j = (int *)k;
-	char *left = sort_obj->fields(*i)[colt_sort_column];
-	char *rite = sort_obj->fields(*j)[colt_sort_column];
-	if(sort_direction == 1)
-		return strcmp(left, rite);
-//		return strcmp(sort_obj->field_val(*i, colt_sort_column), sort_obj->field_val(*j, colt_sort_column));
-	else
-		return strcmp(rite, left);
-//		return strcmp(sort_obj->field_val(*j, colt_sort_column), sort_obj->field_val(*i, colt_sort_column));
-}
-
-int	int_sort_by_col(const void *l, const void *k)
-{
-	int *i = (int *)l, *j = (int *)k;
-	char *left = sort_obj->fields(*i)[colt_sort_column];
-	char *rite = sort_obj->fields(*j)[colt_sort_column];
-
-	if(sort_direction == 1)
-		return atoi(left) - atoi(rite);
-//		return atoi(sort_obj->field_val(*i, colt_sort_column)) - atoi(sort_obj->field_val(*j, colt_sort_column));
-	else
-		return atoi(rite) - atoi(left);
-//		return atoi(sort_obj->field_val(*i, colt_sort_column)) - atoi(sort_obj->field_val(*j, colt_sort_column));
-}
-
 //
 //  colt_sort declarations
 //
@@ -381,9 +354,4 @@ void colt_sort::perform_sort()
 	tmp_file = operand;
 
 	qsort(index_list, index_count, index_record_size, &datattype_sort_by_col);
-//
-//	if(numeric_sort)
-//		qsort(index_list, index_count, index_record_size, &int_sort_by_col);
-//	else
-		qsort(index_list, index_count, index_record_size, &char_sort_by_col);
 }

@@ -60,7 +60,17 @@ public:
 			break;
 		}
 	}
-	void operator =(long l) { value_type->long_val = l; };
+	void operator =(long &l) {
+		switch(type) {
+		case COLT_DATATYPE:
+			sprintf(tmp_value.str_val, "%d", l);
+			value_type = &tmp_value;
+			break;
+		case COLT_DT_INTEGER:
+			value_type = (value_type_t *) &l;
+			break;
+		}
+	};
 	void operator =(colt_datatype &colt) {
 		type = colt.type;
 		value_type = (value_type_t *) colt.make_space();
@@ -139,8 +149,7 @@ public:
 		case COLT_DATATYPE:
 			return strcmp(value_type->str_val, rite.value_type->str_val);
 		case COLT_DT_INTEGER:
-			std::cout << "qqq compare " << value_type->long_val<<":"<< rite.value_type->long_val<<"\n";
-			return rite.value_type->long_val - value_type->long_val;
+			return  value_type->long_val - rite.value_type->long_val;
 		}
 		return 0;
 	}

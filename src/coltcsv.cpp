@@ -209,10 +209,10 @@ int colt_csv::open_file (int set_sep_chars)
 
       if(!preload) {
 		  find_sep_chars(set_sep_chars);
-		  load_headers();
+		  int curr_index =load_headers();
 
-		  int curr_index = 0;
 		  int next_index;
+		  lines.push_back(curr_index);
 
 		  while((next_index = get_next_index(curr_index, file_size, base_ptr)) > 0) {
 			  lines.push_back(next_index);
@@ -279,8 +279,9 @@ int  colt_csv::load_headers()
 	char *tmp_array[COLT_MAX_NUM_COLS];
 
 	col_count = 0;
+	int retval = 0;
 
-	for(char *x = base_ptr; *x != end_of_line_sep_char; x++) {
+	for(char *x = base_ptr; *x != end_of_line_sep_char; x++, retval++ ) {
 		if(col_count > COLT_MAX_NUM_COLS)
 			continue;
 		if(*x == column_sep_char) {
@@ -302,6 +303,8 @@ int  colt_csv::load_headers()
 	cell_objects = (colt_datatype **) malloc(sizeof(colt_datatype*)*col_count);
 	for(int i=0; i<col_count; i++)
 		cell_objects[i] = new colt_datatype;
+
+	return retval+1;
 }
 
 
@@ -502,10 +505,7 @@ int colt_csv::compare(int a, int b, int c)
 	left = left_ptr;
 	rite = rite_ptr;
 
-	int retval = left.compare(rite);
-	cout << "qqq " << left_ptr << ":" << rite_ptr << ":" << retval << "\n";
-
-	return retval;
+	return left.compare(rite);
 }
 
 bool colt_csv::sort_func(int i, int j)
