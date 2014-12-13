@@ -12,7 +12,7 @@ class colt_expand : public colt_cross {
 	int 			col_number;
 	char			*col_name;
 	char			*expression;
-	colt_dt_index	*dt_thru;
+	colt_base		*dt_thru;
 public:
 	colt_expand(colt_base &in, char *cname, char *exp);
 	virtual ~colt_expand();

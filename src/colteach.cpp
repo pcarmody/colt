@@ -26,7 +26,7 @@ colt_each::~colt_each()
 	delete expression_string;
 }
 
-colt_operator *colt_each::insert_expression(char *expression)
+colt_operator *colt_each::insert_expression(char *expression, int no_destination)
 {
 	COLT_TRACE("*colt_each::insert_expression(char *expression)")
 	colt_operator *retval;
@@ -37,7 +37,8 @@ colt_operator *colt_each::insert_expression(char *expression)
 
 	parse.parse_unary_expressions(retval);
 
-	retval->set_destination(out_object, 0);
+	if(!no_destination)
+		retval->set_destination(out_object, 0);
 
 	return retval;
 }

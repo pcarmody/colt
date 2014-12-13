@@ -113,7 +113,7 @@ int colt_parser::consume_whitespace()
 	COLT_TRACE("colt_parser::consume_whitespace()")
 	char *b = input_buffer;
 
-	while(*b == '\t' || *b == ' ' || *b == '\n') b++;
+	while(*b && *b == '\t' || *b == ' ' || *b == '\n') b++;
 
 	input_buffer = b;
 	return 1;
@@ -216,12 +216,19 @@ int colt_parser::consume_colt_expression(char *out)
 {
 	COLT_TRACE("colt_parser::consume_colt_expression(char *out)")
 	if(!consume_token("["))
-		fatal_error("Syntax error: expected [ colt-expression ]\n");
+		return 0;
 
 	char *b = input_buffer;
 	char exp[COLT_MAX_STRING_SIZE];
 	char *a = out;
-	while(*b && *b != ']') *a++ = *b++;
+	int nest_count = 0;
+	while(*b && (nest_count || *b != ']')) {
+		if(*b == '\\' && *(b+1) == '[' )
+			nest_count--;
+		else if(*b == '[')
+			nest_count++;
+		*a++ = *b++;
+	}
 	*a = '\0';
 	input_buffer = b+1;
 
@@ -270,21 +277,36 @@ colt_out *colt_parser::csv()
 	COLT_TRACE("*colt_parser::csv()")
 	colt_out *retval;
 	char *in = input_buffer;
+	char col_sep = ',';
+	char line_sep = '\n';
+	char quote = '\0';
 
-	if(in[3] != ':')
-		retval = new colt_out(*return_value);
-	else if(in[5] != ':')
-		retval = new colt_out(*return_value, in+4);
-	else if(in[7] != ':')
-		retval = new colt_out(*return_value, in+4, in+6);
-	else
-		retval = new colt_out(*return_value, in+4, in+6, in+8);
+	consume_token("csv");
 
-	while(*in != ' ' && *in != '\t' && *in != '\n') in++;
+	if(consume_token(":")) {
+		col_sep = *input_buffer++;
+		if(consume_token(":")) {
+			line_sep = *input_buffer++;
+			if(consume_token(":"))
+				quote = *input_buffer++;
+		}
+	}
 
-	input_buffer = in;
-
-	return retval;
+	return new colt_out(*return_value, &col_sep, &line_sep, &quote);
+//	if(in[3] != ':')
+//		retval = new colt_out(*return_value);
+//	else if(in[5] != ':')
+//		retval = new colt_out(*return_value, in+4);
+//	else if(in[7] != ':')
+//		retval = new colt_out(*return_value, in+4, in+6);
+//	else
+//		retval = new colt_out(*return_value, in+4, in+6, in+8);
+//
+//	while(*in != ' ' && *in != '\t' && *in != '\n') in++;
+//
+//	input_buffer = in;
+//
+//	return retval;
 }
 
 colt_out_cbf *colt_parser::cbf()
@@ -438,23 +460,29 @@ colt_add *colt_parser::add()
 	consume_token(",");
 
 	int type = 0;
-	if(strcmp(type_str, "string") == 0)
-		type = COLT_DATATYPE;
-	else if(strcmp(type_str, "int") == 0)
-		type = COLT_DT_INTEGER;
-	else if(strcmp(type_str, "date") == 0)
-		type = COLT_DT_DATE;
-	else if(strcmp(type_str, "index") == 0)
-		type = COLT_DT_INDEX;
-	else if(strcmp(type_str, "range") == 0)
-		type = COLT_DT_RANGE;
-	else if(strcmp(type_str, "set") == 0)
-		type = COLT_DT_BITMAP;
-	else
-		fatal_error("Expected datatype in add expression.\n");
 
-//	consume_keyword(repl_str);
-	consume_code_segment(repl_str);
+	if(strcmp(type_str, "source") == 0) {
+
+		type = COLT_DT_SOURCE;
+		if(!consume_colt_expression(repl_str))
+			fatal_error("add expression expected a [colt-expression].\n");
+
+//		return (colt_add *) new colt_link(*return_value, label, repl_str);
+
+	} else {
+
+		if(strcmp(type_str, "string") == 0)
+			type = COLT_DATATYPE;
+		else if(strcmp(type_str, "int") == 0)
+			type = COLT_DT_INTEGER;
+	//		else if(strcmp(type_str, "date") == 0)
+	//			type = COLT_DT_DATE;
+		else
+			fatal_error("Expected datatype in add expression.\n");
+
+		consume_code_segment(repl_str);
+
+	}
 
 	return new colt_add(*return_value, label, type, repl_str);
 }
@@ -472,16 +500,16 @@ colt_link *colt_parser::link()
 
 	int coltype;
 
-	if(consume_token("index"))
-		coltype = COLT_DT_INDEX;
-	else if(consume_token("list"))
-		coltype = COLT_DT_INDEX_LIST;
-	else if(consume_token("range"))
-		coltype = COLT_DT_RANGE;
-	else if(consume_token("bitmap"))
-		coltype = COLT_DT_BITMAP;
-	else
-		fatal_error("Link expected one of 'index', 'list', 'range', or 'bitmap'.\n");
+//	if(consume_token("index"))
+//		coltype = COLT_DT_INDEX;
+//	else if(consume_token("list"))
+//		coltype = COLT_DT_INDEX_LIST;
+//	else if(consume_token("range"))
+//		coltype = COLT_DT_RANGE;
+//	else if(consume_token("bitmap"))
+//		coltype = COLT_DT_BITMAP;
+//	else
+//		fatal_error("Link expected one of 'index', 'list', 'range', or 'bitmap'.\n");
 
 	if(!consume_token(","))
 		fatal_error("Link syntax error expected ',' after link type.\n");
@@ -495,7 +523,7 @@ colt_link *colt_parser::link()
 	if(!consume_token(","))
 		fatal_error("Link syntax error expected ',' after file name.\n");
 
-	return new colt_link(*return_value, col_name, coltype, filename, exp);
+	return new colt_link(*return_value, col_name, exp);
 }
 
 colt_aggregate *colt_parser::aggregate()
@@ -919,36 +947,6 @@ colt_sync *colt_parser::sync()
 	return new colt_sync(*return_value);
 }
 
-colt_sift *colt_parser::sift()
-{
-	COLT_TRACE("*colt_parser::sift()")
-	consume_token("sift:");
-
-	char file_name[COLT_MAX_STRING_SIZE];
-	if(!consume_word(file_name))
-		fatal_error("sift expected a file name.\n");
-
-	if(!consume_token(","))
-		fatal_error("sift expected comma in 'sift:file,cola=colb.\n");
-
-	char index_name[COLT_MAX_STRING_SIZE];
-	if(!consume_word(index_name))
-		fatal_error("sift expected primary column name in 'sift:file,cola=colb.\n");
-
-	int equality = 1;
-	if(!consume_token("="))
-		if(consume_token("!"))
-			equality = 0;
-		else
-			fatal_error("seift expected test condition '=' or '!'.\n");
-
-	char column_name[COLT_MAX_STRING_SIZE];
-	if(!consume_word(column_name))
-		fatal_error("sift expected secondary column name in 'sift:file,cola=colb\n");
-
-	return new colt_sift(*return_value, file_name, index_name, column_name);
-}
-
 colt_base *colt_parser::unary_expression()
 {
 	COLT_TRACE("*colt_parser::unary_expression()")
@@ -994,8 +992,6 @@ colt_base *colt_parser::unary_expression()
 		object = link();
 	else if(is_token("reduce"))
 		object = reduce();
-	else if(is_token("sift"))
-		object = sift();
 
 	consume_whitespace();
 
@@ -1116,7 +1112,7 @@ colt_base *colt_parser::object_expression()
 	return return_value;
 }
 
-colt_base *colt_parser::parse()
+colt_base *colt_parser::parse(int no_default_out)
 {
 	COLT_TRACE("*colt_parser::parse()")
 //	input_buffer = input;
@@ -1129,7 +1125,8 @@ colt_base *colt_parser::parse()
 
 	consume_whitespace();
 
-	output_expression();
+	if(!*input_buffer && !no_default_out)
+		output_expression();
 
 	consume_whitespace();
 

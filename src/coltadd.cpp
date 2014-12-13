@@ -81,19 +81,47 @@ colt_datatype **colt_add::cells(int rec_num)
 	void *cell_values[COLT_MAX_NUM_COLS];
 	for(int i=0; i<cols-1; i++)
 			cell_values[i] = rec[i]->get_value();
-	cell_values[cols-1] = return_values[rec_num];
 
-	_trace.start() << "call function.\n";
-	if(function_ptr)
-		(*function_ptr)((void **) cell_values);
+	if(type == COLT_DT_SOURCE) {
+		colt_parser parse(code_string);
 
-	for(int i=0; i<cols-1; i++)
-		colt_add_cell[i] = rec[i];
-	colt_add_cell[cols-1]->set_value(return_values[rec_num]);
+		colt_base *exp_object = parse.parse(1);
 
-	if(!function_ptr) {
-		delete return_values[rec_num];
-		return_values[rec_num] = NULL;
+		exp_object->process_all();
+
+		coltthru *thru = (coltthru *) exp_object->get_destination();
+
+		colt_datatype *cell = colt_add_cell[cols-1];
+		if(thru->is_a(colt_class_cthru))
+			cell->set_type(COLT_DT_CTHRU);
+		else if(thru->is_a(colt_class_sort))
+			cell->set_type(COLT_DT_SORT);
+		else if(thru->is_a(colt_class_thru))
+			cell->set_type(COLT_DT_THRU);
+		else if(thru->is_a(colt_class_range))
+			cell->set_type(COLT_DT_RANGE);
+		else if(thru->is_a(colt_class_thru))
+			cell->set_type(COLT_DT_BITMAP);
+		else {
+			perror("Add column must add a thru object.\n");
+			exit(1);
+		}
+
+		cell->set_value(thru);
+	} else {
+		_trace.start() << "call function.\n";
+		cell_values[cols-1] = return_values[rec_num];
+		if(function_ptr)
+			(*function_ptr)((void **) cell_values);
+
+		for(int i=0; i<cols-1; i++)
+			colt_add_cell[i] = rec[i];
+		colt_add_cell[cols-1]->set_value(return_values[rec_num]);
+
+		if(!function_ptr) {
+			delete return_values[rec_num];
+			return_values[rec_num] = NULL;
+		}
 	}
 
 	return colt_add_cell;
@@ -117,7 +145,7 @@ char **colt_add::col_headers()
 	for(int i=0; i<cols; i++)
 		headers[i] = heads[i];
 	headers[cols] = label;
-	_trace.start() << "lable = " << label << "\n";
+	_trace.start() << "label = " << label << "\n";
 	return headers;
 }
 
@@ -142,6 +170,9 @@ int colt_add::preprocess()
 
 	colt_add_cell[cols] = new_datatype(type);
 	colt_add_out[cols] = new char[COLT_MAX_STRING_SIZE];
+
+	if(type == COLT_DT_SOURCE)
+		return colt_operator::preprocess();
 
 	return colt_cexpression::preprocess();
 }

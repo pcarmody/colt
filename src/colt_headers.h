@@ -24,8 +24,6 @@
 #include "colteach.h"
 #include "coltonchange.h"
 
-#include "coltdtindex.h"
-
 #include "coltlink.h"
 #include "avl.h"
 #include "AssocArray.h"
@@ -47,8 +45,6 @@
 #include "coltadd.h"
 #include "colt_to_json.h"
 #include "coltcounter.h"
-
-#include "coltsift.h"
 
 #include "colt_cross.h"
 #include "coltexpand.h"

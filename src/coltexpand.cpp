@@ -6,7 +6,6 @@
  */
 
 #include "colt_headers.h"
-#include "coltdtindex.h"
 #include "coltexpand.h"
 
 colt_expand::colt_expand(colt_base &in, char *cname, char *exp):
@@ -43,13 +42,13 @@ int colt_expand::preprocess()
 		throw;
 	}
 
-	dt_thru = (colt_dt_index *) colt_cross::cells(0)[col_number];
-	if(dt_thru->isa_container()) {
-		std::cerr << "Expand expected column '" << col_name << "' to be a container.\n";
-		throw;
-	}
+//	dt_thru = (colt_dt_index *) colt_cross::cells(0)[col_number];
+//	if(dt_thru->isa_container()) {
+//		std::cerr << "Expand expected column '" << col_name << "' to be a container.\n";
+//		throw;
+//	}
 
-	right = dt_thru->get_thru();
+//	right = dt_thru->get_thru();
 
 	return colt_cross::preprocess();
 }

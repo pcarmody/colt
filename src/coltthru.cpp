@@ -391,7 +391,7 @@ int coltthru::process(int rec_num)
 	COLT_TRACE("coltthru::process(int rec_num)")
 	_trace.start() << rec_num << "\n";
 	if(preload)
-		return out_object->process(rec_num);
+		return colt_operator::process(rec_num);
 
 	push_back(rec_num);
 	return 1;

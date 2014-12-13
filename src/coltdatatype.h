@@ -13,9 +13,10 @@
 enum Colt_DataType_Enum {
 	COLT_DATATYPE,
 	COLT_DT_INTEGER,
-	COLT_DT_DATE,
-	COLT_DT_INDEX,
-	COLT_DT_INDEX_LIST,
+	COLT_DT_SOURCE,
+	COLT_DT_THRU,
+	COLT_DT_SORT,
+	COLT_DT_CTHRU,
 	COLT_DT_RANGE,
 	COLT_DT_BITMAP
 };
@@ -38,16 +39,17 @@ public:
 	~colt_datatype() {};
 
 	void set_value(void *val, int init=0) {
-		if(init)
-			value_type = (value_type_t *) make_space();
-		switch(type){
-		case COLT_DATATYPE:
-			strcpy(value_type->str_val, (char *) val);
-			break;
-		case COLT_DT_INTEGER:
-			value_type->long_val = *(long *) val;
-			break;
-		}
+//		if(init)
+//			value_type = (value_type_t *) make_space();
+		value_type = (value_type_t *) val;
+//		switch(type){
+//		case COLT_DATATYPE:
+//			strcpy(value_type->str_val, (char *) val);
+//			break;
+//		case COLT_DT_INTEGER:
+//			value_type->long_val = *(long *) val;
+//			break;
+//		}
 	}
 	void operator =(char *str) {
 		switch(type) {
@@ -58,6 +60,14 @@ public:
 			value_type = &tmp_value;
 			tmp_value.long_val = atol(str);
 			break;
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			perror("Attempted to assign a string to a soure datatype.\n");
+			exit(1);
 		}
 	}
 	void operator =(long &l) {
@@ -69,6 +79,14 @@ public:
 		case COLT_DT_INTEGER:
 			value_type = (value_type_t *) &l;
 			break;
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			perror("Attempted to assign an integer to a soure datatype.\n");
+			exit(1);
 		}
 	};
 	void operator =(colt_datatype &colt) {
@@ -83,6 +101,13 @@ public:
 			return "char *";
 		case COLT_DT_INTEGER:
 			return "long *";
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			return "void *";
 		}
 	}
 
@@ -93,22 +118,35 @@ public:
 			return malloc(100);
 		case COLT_DT_INTEGER:
 			return malloc(sizeof(long));
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			return malloc(sizeof(value_type_t));
 		}
 	};
 	int format(char *x) {
-		int len=0;
 		switch(type) {
 		case COLT_DATATYPE:
 			strcpy(x, value_type->str_val);
-			len = strlen(value_type->str_val);
 			break;
 		case COLT_DT_INTEGER:
-			len = sizeof(value_type->long_val);
-			break;//ltoa(value_type->long_val, x, 10);
+			sprintf(x, "%d", value_type->long_val);
+			break;
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			return format_thru(x);
 		}
 
-		return len;
+		return strlen(x);
 	};
+	int format_thru(char *x);
 	int generate(char *x) {
 		int len=0;
 		switch(type) {
@@ -143,7 +181,7 @@ public:
 
 		return sizeof(type);
 	};
-	int	isa_container() { return type >= COLT_DT_INDEX; };
+	int	isa_container() { return type >= COLT_DT_SOURCE; };
 	int compare(colt_datatype &rite) {
 		switch(type) {
 		case COLT_DATATYPE:
@@ -152,6 +190,10 @@ public:
 			return  value_type->long_val - rite.value_type->long_val;
 		}
 		return 0;
+	}
+	int set_type(int t)
+	{
+		return type = t;
 	}
 };
 

@@ -10,11 +10,11 @@
 
 class colt_link : public colt_each {
 	char *column_name;
-	int	datatype;
-	char *filename;
 public:
-	colt_link(colt_base &in, char *colname, int type, char *fname, char *exp);
+	colt_link(colt_base &in, char *colname, char *exp);
 	virtual ~colt_link();
+
+	int process(int rec_num);
 };
 
 #endif /* COLTLINK_H_ */

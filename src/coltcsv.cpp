@@ -47,6 +47,7 @@ colt_csv::colt_csv(char *fname, int pl)
 	col_count = 0;
 	line_counter = 0;
 	fields_retval = NULL;
+	cell_objects = NULL;
 //	if(colt_index_file_exists(file_name))
 //		preload_data();
 //	else
@@ -66,6 +67,7 @@ colt_csv::colt_csv(char *fname, char col_sep, char eol_sep, char q_char)
 	col_count = 0;
 	line_counter = 0;
 	fields_retval = NULL;
+	cell_objects = NULL;
 }
 
 int colt_csv::open_and_load()
@@ -78,6 +80,12 @@ int colt_csv::open_and_load()
 
 	if(!fields_retval)
 		fields_retval = (char **) malloc(sizeof(char *) * (num_cols() + 1));
+
+	if(!cell_objects) {
+		cell_objects = (colt_datatype **) malloc(sizeof(colt_datatype*)*num_cols());
+		for(int i=0; i<col_count; i++)
+			cell_objects[i] = new colt_datatype;
+	}
 }
 
 colt_csv::~colt_csv() {
@@ -455,6 +463,7 @@ void colt_csv::set_coltype(int num, colt_datatype *x)
 
 void colt_csv::set_datatype(int i, int type)
 {
+	COLT_TRACE("colt_csv::set_datatype(int i, int type)")
 	if(cell_objects[i]) {
 		if(cell_objects[i]->type == type)
 			return;

@@ -8,23 +8,26 @@
 #include "colt_headers.h"
 #include "coltlink.h"
 
-colt_link::colt_link(colt_base &in, char *colname, int type, char *fname, char *exp):
+colt_link::colt_link(colt_base &in, char *colname, char *exp):
 	colt_each(in, exp),
-	datatype(type),
-	filename(NULL),
 	column_name(NULL)
 {
 	// TODO Auto-generated constructor stub
-	column_name = new char[strlen(colname)+1];
-	strcpy(filename, fname);
-	filename = new char[strlen(fname)+1];
-	strcpy(filename, fname);
 }
 
 colt_link::~colt_link()
 {
 	// TODO Auto-generated destructor stub
-	delete column_name;
-	delete filename;
 }
 
+int colt_link::process(int rec_num)
+{
+	COLT_TRACE("colt_link::process(int rec_num)")
+	colt_parser parse(expression_string);
+
+	colt_base *exp_object = parse.parse();
+
+	exp_object->process_all();
+
+	return colt_operator::process(rec_num);
+}

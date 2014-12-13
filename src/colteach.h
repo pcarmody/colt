@@ -17,7 +17,7 @@ public:
 	colt_each(colt_base &in, char *exp);
 	virtual ~colt_each();
 
-	virtual colt_operator *insert_expression(char *expression);
+	virtual colt_operator *insert_expression(char *expression, int no_destination=0);
 	int process(int rec);
 };
 

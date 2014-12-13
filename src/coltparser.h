@@ -67,7 +67,6 @@ public:
 	colt_share			*share();
 	colt_thread 		*threadx();
 	colt_sync			*sync();
-	colt_sift			*sift();
 	colt_base			*unary_expression();
 	colt_base 			*unary_expressions();
 
@@ -77,7 +76,7 @@ public:
 	colt_base 			*file_name();
 	colt_base 			*object_expression();
 
-	colt_base 			*parse();
+	colt_base 			*parse(int no_default_out=0);
 	colt_base			*parse_unary_expressions(colt_base *in);
 };
 
