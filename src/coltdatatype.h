@@ -103,10 +103,16 @@ public:
 			return "long *";
 		case COLT_DT_SOURCE:
 		case COLT_DT_THRU:
+			return "coltthru *";
 		case COLT_DT_SORT:
+			return "coltsort *";
 		case COLT_DT_CTHRU:
+			return "colt_cthru *";
 		case COLT_DT_RANGE:
+			return "colt_range *";
 		case COLT_DT_BITMAP:
+			return "colt_bitmap *";
+		default:
 			return "void *";
 		}
 	}
@@ -124,7 +130,7 @@ public:
 		case COLT_DT_CTHRU:
 		case COLT_DT_RANGE:
 		case COLT_DT_BITMAP:
-			return malloc(sizeof(value_type_t));
+			return malloc(sizeof(void *));
 		}
 	};
 	int format(char *x) {
@@ -156,10 +162,18 @@ public:
 		case COLT_DT_INTEGER:
 			len=sizeof(int);
 			break;
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			return generate_thru(x);
 		}
 		memcpy(x, value_type, len);
 		return len;
 	};
+	int generate_thru(char *x);
 	char *consume(char *x, int t=-1) {
 		if(t>0)
 			type = t;
@@ -171,11 +185,19 @@ public:
 		case COLT_DT_INTEGER:
 			len=sizeof(int);
 			break;
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			return consume_thru(x);
 		}
 		value_type = (value_type_t *) x;
 		x += len;
 		return x;
 	};
+	char *consume_thru(char *x);
 	int gen_header(char *x){
 		memcpy(x, &type, sizeof(type));
 
@@ -188,9 +210,17 @@ public:
 			return strcmp(value_type->str_val, rite.value_type->str_val);
 		case COLT_DT_INTEGER:
 			return  value_type->long_val - rite.value_type->long_val;
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			return compare_thru(rite);
 		}
 		return 0;
 	}
+	int compare_thru(colt_datatype &rite);
 	int set_type(int t)
 	{
 		return type = t;

@@ -21,3 +21,25 @@ int colt_datatype::format_thru(char *x)
 
 	return strlen(x);
 }
+
+int colt_datatype::generate_thru(char *x)
+{
+	coltthru *thru = (coltthru *) value_type;
+
+	return 0;
+}
+
+char *colt_datatype::consume_thru(char *x)
+{
+	coltthru *thru = (coltthru *) value_type;
+
+	return NULL;
+}
+
+int colt_datatype::compare_thru(colt_datatype &rite)
+{
+	coltthru *thru = (coltthru *) value_type;
+
+	return 0;
+}
+
