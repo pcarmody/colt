@@ -52,6 +52,8 @@ public:
 	virtual	int serialize_id_num();
 	virtual int write_config(FILE *);
 	virtual int *read_config(int *);
+	virtual int to_string(char *x);
+	virtual char *from_string(char *input);
 //	virtual int index(int i);
 	virtual void set_begin_end_index(int beg, int end=-1);
 	virtual int show_status(char *baseptr, int indent=0);

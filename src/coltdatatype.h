@@ -117,7 +117,13 @@ public:
 		}
 	}
 
-	void set_buffer(char *x) { set_value(x); };
+	void set_buffer(char *x) {
+		if(type >= COLT_DT_SOURCE)
+			parse_thru(x);
+		else
+			set_value(x);
+	};
+	int parse_thru(char *x);
 	void *make_space() {
 		switch(type) {
 		case COLT_DATATYPE:

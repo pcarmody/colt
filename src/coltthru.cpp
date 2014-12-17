@@ -248,6 +248,38 @@ int *coltthru::read_config(int *base_ptr)
     return base_ptr + sizeof(ident)/sizeof(int);
 }
 
+
+int coltthru::to_string(char *x)
+{
+	COLT_TRACE("coltthru::to_string(char *x)")
+	sprintf(x, "thru:%s", source_file_name());
+	char tmp[20];
+
+	for(int i=0; i<index_count; i++) {
+		sprintf(tmp, ",%d", index_list[i]);
+		strcat(x, tmp);
+	}
+
+	return strlen(x);
+}
+
+char *coltthru::from_string(char *input)
+{
+	char file_name[COLT_MAX_STRING_SIZE];
+
+	sscanf(input, "thru:%s,", file_name);
+
+	while(*input && *input != ',') input++;
+
+	while(*input == ',') {
+		*input++;
+		push_back(atoi(input));
+		while(*input && *input != ',') input++;
+	}
+
+	return input;
+}
+
 void coltthru::save(char *file_name)
 {
 	COLT_TRACE("coltthru::save(char *file_name)")

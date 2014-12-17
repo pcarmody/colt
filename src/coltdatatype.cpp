@@ -17,10 +17,28 @@ int colt_datatype::format_thru(char *x)
 {
 	coltthru *thru = (coltthru *) value_type;
 
-	sprintf(x, "%d", thru->num_lines());
+	return thru->to_string(x);
+//	sprintf(x, "%d", thru->num_lines());
 
-	return strlen(x);
+//	return strlen(x);
 }
+
+int colt_datatype::parse_thru(char *x)
+{
+	if(strcmp("thru:", x) == 0)
+		return ((coltthru *) value_type)->to_string(x);
+	else if(strcmp("sort:", x) == 0)
+		return ((colt_sort *) value_type)->to_string(x);
+	else if(strcmp("cthru:", x) == 0)
+		return ((colt_cthru *) value_type)->to_string(x);
+	else if(strcmp("range:", x) == 0)
+		return ((colt_range *) value_type)->to_string(x);
+	else if(strcmp("bitmap:", x) == 0)
+		return ((coltbitmap *) value_type)->to_string(x);
+
+	return 0;
+}
+
 
 int colt_datatype::generate_thru(char *x)
 {
