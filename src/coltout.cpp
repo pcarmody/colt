@@ -16,7 +16,8 @@ using namespace std;
 
 colt_out::colt_out(colt_base &in, char *col, char *eol, char *quote):
 		colt_operator(in),
-		quote_char(NULL)
+		quote_char(NULL),
+		gen_headers(0)
 {
 	i_am = colt_class_out;
 	if(col) {
@@ -47,11 +48,13 @@ colt_out::~colt_out() {
 
 colt_base *colt_out::copy(colt_base *operand)
 {
+	COLT_TRACE("*colt_out::copy(colt_base *operand)")
 	return new colt_out(*operand, column_sep_char, end_of_line_sep_char, quote_char);
 }
 
 void colt_out::fill_sequential()
 {
+	COLT_TRACE("colt_out::fill_sequential()")
 	char out_string[1000];
 	out_string[0] = '\0';
 
@@ -82,16 +85,17 @@ void colt_out::fill_sequential()
 	}
 }
 
-int colt_out::preprocess()
+int colt_out::headers_out()
 {
-	colt_operator::preprocess();
+	COLT_TRACE("colt_out::headers_out()")
 	string out_string;
 	out_string[0] = '\0';
 
 	int k = 0;
 
 	char **heads = col_headers();
-	for(int j=0; j<num_cols(); j++) {
+	int cols = num_cols();
+	for(int j=0; j<cols; j++) {
 		if(k++ > 0)
 			out_string.append(column_sep_char);
 		out_string.append(heads[j]);
@@ -103,8 +107,19 @@ int colt_out::preprocess()
 	return 1;
 }
 
+int colt_out::preprocess()
+{
+	COLT_TRACE("colt_out::preprocess()")
+//	colt_operator::preprocess();
+	return 1;
+}
+
 int colt_out::process(int i)
 {
+	COLT_TRACE("colt_out::process(int i)")
+	if(!gen_headers)
+		gen_headers = headers_out();
+
 	char **f = fields(i);
 	if(f == NULL)
 		return 0;

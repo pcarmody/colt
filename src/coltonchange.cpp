@@ -59,7 +59,7 @@ int colt_onchange::process(int rec_num)
 
 		current_value = row[column_number];
 
-		expression_object = insert_expression(expression_string);
+		expression_object = insert_expression(expression_string, rec_num);
 		if(!expression_object->preprocess()) {
 			return 0;
 		}

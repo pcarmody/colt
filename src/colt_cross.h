@@ -8,18 +8,21 @@
 #ifndef COLT_CROSS_H_
 #define COLT_CROSS_H_
 
-class colt_cross : public colt_operator {
+class colt_cross : public colt_each {
 public:
-	colt_base		*right;
 	int				current_rec_num;
 	char			**field_list;
 	colt_datatype	**cell_list;
+	char			**cross_headers;
 
-	colt_cross(colt_base &in, colt_base &rite);
-	colt_cross(colt_base &in, colt_base *rite);
+	colt_cross(colt_base&in, char *exp);
+//	colt_cross(colt_base &in, colt_base &rite);
+//	colt_cross(colt_base &in, colt_base *rite);
 	~colt_cross();
 
 	colt_base *copy(colt_base *op=NULL);
+
+	colt_operator *insert_expression(char *expression, int rec_num, int no_destination=1);
 
 	int	num_cols();
 	char *col_header(int n);

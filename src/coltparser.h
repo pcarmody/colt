@@ -20,8 +20,10 @@ public:
 	struct StrFragment substrings[10];
 	int 		numfrags;
 	char		compiled_string[COLT_MAX_STRING_SIZE];
+	colt_base	*parent;
+	int			rec_num;
 
-	colt_parser(char *);
+	colt_parser(char *, colt_base *p=NULL, int num=0);
 	virtual ~colt_parser();
 
 	int find_insertions(char **cols);
@@ -60,6 +62,7 @@ public:
 	colt_range			*search();
 	coltbitmap			*set();
 	colt_each			*each();
+	colt_cross			*cross();
 	colt_partition		*partition();
 	colt_expand			*expand();
 	colt_reduce			*reduce();

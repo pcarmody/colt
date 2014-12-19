@@ -76,7 +76,8 @@ colt_datatype **colt_add::cells(int rec_num)
 		return colt_add_cell;
 	}
 
-	return_values[rec_num] = colt_add_cell[cols-1]->make_space();
+	colt_datatype *new_cell = (colt_datatype *) colt_add_cell[cols-1]->make_space();
+	colt_add_cell[cols-1] = new_cell;
 
 	void *cell_values[COLT_MAX_NUM_COLS];
 	for(int i=0; i<cols-1; i++)
@@ -87,27 +88,28 @@ colt_datatype **colt_add::cells(int rec_num)
 
 		colt_base *exp_object = parse.parse(1);
 
-		exp_object->process_all();
+//		exp_object->process_all();
 
 		coltthru *thru = (coltthru *) exp_object->get_destination();
+		return_values[rec_num] = thru;
+		colt_add_cell[cols-1]->set_value(return_values[rec_num]);
 
-		colt_datatype *cell = colt_add_cell[cols-1];
 		if(thru->is_a(colt_class_cthru))
-			cell->set_type(COLT_DT_CTHRU);
+			new_cell->set_type(COLT_DT_CTHRU);
 		else if(thru->is_a(colt_class_sort))
-			cell->set_type(COLT_DT_SORT);
+			new_cell->set_type(COLT_DT_SORT);
 		else if(thru->is_a(colt_class_thru))
-			cell->set_type(COLT_DT_THRU);
+			new_cell->set_type(COLT_DT_THRU);
 		else if(thru->is_a(colt_class_range))
-			cell->set_type(COLT_DT_RANGE);
+			new_cell->set_type(COLT_DT_RANGE);
 		else if(thru->is_a(colt_class_thru))
-			cell->set_type(COLT_DT_BITMAP);
+			new_cell->set_type(COLT_DT_BITMAP);
 		else {
 			perror("Add column must add a thru object.\n");
 			exit(1);
 		}
 
-		cell->set_value(thru);
+		new_cell->set_value(thru);
 	} else {
 		_trace.start() << "call function.\n";
 		cell_values[cols-1] = return_values[rec_num];

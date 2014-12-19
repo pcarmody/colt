@@ -26,11 +26,11 @@ colt_each::~colt_each()
 	delete expression_string;
 }
 
-colt_operator *colt_each::insert_expression(char *expression, int no_destination)
+colt_operator *colt_each::insert_expression(char *expression, int rec_num, int no_destination)
 {
 	COLT_TRACE("*colt_each::insert_expression(char *expression)")
 	colt_operator *retval;
-	colt_parser parse(expression);
+	colt_parser parse(expression, this, rec_num);
 
 	retval = new colt_operator;
 	retval->operand = operand;
@@ -46,7 +46,7 @@ colt_operator *colt_each::insert_expression(char *expression, int no_destination
 int colt_each::process(int rec_num)
 {
 	COLT_TRACE("colt_each::process(int rec_num)")
-	expression_object = insert_expression(expression_string);
+	expression_object = insert_expression(expression_string, rec_num);
 
 	if(!expression_object->preprocess()) {
 		return 0;

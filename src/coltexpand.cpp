@@ -55,7 +55,7 @@ int colt_expand::preprocess()
 
 int colt_expand::process(int rec_num)
 {
-	colt_each tmp(*right, (char *) expression);
-	right = &tmp;
+//	colt_each tmp(*right, (char *) expression);
+//	right = &tmp;
 	return colt_cross::process(rec_num);
 }

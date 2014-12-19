@@ -38,18 +38,9 @@ public:
 	colt_datatype(int t=COLT_DATATYPE) { type = t; value_type = NULL; };
 	~colt_datatype() {};
 
-	void set_value(void *val, int init=0) {
-//		if(init)
-//			value_type = (value_type_t *) make_space();
+	void set_value(void *val, int init=0)
+	{
 		value_type = (value_type_t *) val;
-//		switch(type){
-//		case COLT_DATATYPE:
-//			strcpy(value_type->str_val, (char *) val);
-//			break;
-//		case COLT_DT_INTEGER:
-//			value_type->long_val = *(long *) val;
-//			break;
-//		}
 	}
 	void operator =(char *str) {
 		switch(type) {
@@ -123,7 +114,7 @@ public:
 		else
 			set_value(x);
 	};
-	int parse_thru(char *x);
+	char *parse_thru(char *x);
 	void *make_space() {
 		switch(type) {
 		case COLT_DATATYPE:

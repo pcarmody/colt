@@ -6,10 +6,12 @@
  */
 #include "colt_headers.h"
 
-colt_parser::colt_parser(char *x):
+colt_parser::colt_parser(char *x, colt_base *p, int num):
 	input_buffer(),
 	return_value(NULL),
-	numfrags(0)
+	numfrags(0),
+	parent(p),
+	rec_num(num)
 {
 	// TODO Auto-generated constructor stub
 	input_buffer = new char[strlen(x)+1];
@@ -133,7 +135,7 @@ char *colt_parser::consume_keyword(char *outbuff)
 		*a = '\0';
 	} else {
 //		while(*b && *b != '\t' && *b != ' ' && *b != '\n')
-		while(isalnum(*b) || *b == '_' || *b == '-' || *b == '/' || *b == '.')
+		while(isalnum(*b) || *b == '_' || *b == '-' || *b == '/' || *b == '.' || *b == '%')
 			*a++ = *b++;
 		*a = '\0';
 	}
@@ -293,20 +295,6 @@ colt_out *colt_parser::csv()
 	}
 
 	return new colt_out(*return_value, &col_sep, &line_sep, &quote);
-//	if(in[3] != ':')
-//		retval = new colt_out(*return_value);
-//	else if(in[5] != ':')
-//		retval = new colt_out(*return_value, in+4);
-//	else if(in[7] != ':')
-//		retval = new colt_out(*return_value, in+4, in+6);
-//	else
-//		retval = new colt_out(*return_value, in+4, in+6, in+8);
-//
-//	while(*in != ' ' && *in != '\t' && *in != '\n') in++;
-//
-//	input_buffer = in;
-//
-//	return retval;
 }
 
 colt_out_cbf *colt_parser::cbf()
@@ -336,6 +324,18 @@ colt_base *colt_parser::file_name()
 	char col_sep='\0', eol_sep='\0', quote_sep='\0';
 
 	consume_keyword(file_name);
+
+	if(file_name[0] == '%') {
+		if(!parent)
+			fatal_error("Cannot parse '&' column reference.\n");
+
+		int cols = parent->num_cols();
+		for(int j=0; j<cols; j++)
+			if(strcmp(file_name+1, parent->col_header( j )) == 0)
+				return (colt_base *) parent->cells(rec_num)[j]->get_value();
+
+		fatal_error("There is no column matching the column reference.\n");
+	}
 
 	if(consume_token(":")) {
 		col_sep = *input_buffer++;
@@ -797,6 +797,25 @@ colt_each *colt_parser::each()
 	return_value = retval;
 }
 
+colt_cross *colt_parser::cross()
+{
+	COLT_TRACE("*colt_parser::cross()")
+
+	consume_token("cross");
+
+	if(*input_buffer != ':' &&
+	   *input_buffer+1 != '[')
+		fatal_error("'cross' expected a colt expression.\n");
+
+	char *b = input_buffer+2;
+	char exp[COLT_MAX_STRING_SIZE];
+	char *a = exp;
+	while(*b && *b != ']') *a++ = *b++;
+	*a = '\0';
+	input_buffer = b+1;
+	return new colt_cross(*return_value, exp);
+}
+
 colt_partition *colt_parser::partition()
 {
 	COLT_TRACE("*colt_parser::partition()")
@@ -970,6 +989,8 @@ colt_base *colt_parser::unary_expression()
 		object = set();
 	else if(is_token("each"))
 		object = each();
+	else if(is_token("cross"))
+		object = cross();
 	else if(is_token("part"))
 		object = partition();
 	else if(is_token("expand"))

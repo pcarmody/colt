@@ -23,20 +23,30 @@ int colt_datatype::format_thru(char *x)
 //	return strlen(x);
 }
 
-int colt_datatype::parse_thru(char *x)
+char *colt_datatype::parse_thru(char *x)
 {
-	if(strcmp("thru:", x) == 0)
-		return ((coltthru *) value_type)->to_string(x);
-	else if(strcmp("sort:", x) == 0)
-		return ((colt_sort *) value_type)->to_string(x);
-	else if(strcmp("cthru:", x) == 0)
-		return ((colt_cthru *) value_type)->to_string(x);
-	else if(strcmp("range:", x) == 0)
-		return ((colt_range *) value_type)->to_string(x);
-	else if(strcmp("bitmap:", x) == 0)
-		return ((coltbitmap *) value_type)->to_string(x);
+	coltthru *thru = NULL;
 
-	return 0;
+	if(value_type)
+		thru = ((coltthru *) value_type);
+	else {
+		if(strcmp("thru:", x) == 0)
+			thru  =  new coltthru();
+//		else if(strcmp("sort:", x) == 0)
+//			return ((colt_sort *) value_type)->from_string(x);
+//		else if(strcmp("cthru:", x) == 0)
+//			return ((colt_cthru *) value_type)->from_string(x);
+//		else if(strcmp("range:", x) == 0)
+//			return ((colt_range *) value_type)->from_string(x);
+//		else if(strcmp("bitmap:", x) == 0)
+//			return ((coltbitmap *) value_type)->from_string(x);
+
+
+		value_type = (value_type_t *) thru;
+	}
+
+	return thru->from_string(x);
+	return NULL;
 }
 
 
