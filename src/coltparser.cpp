@@ -1146,8 +1146,11 @@ colt_base *colt_parser::parse(int no_default_out)
 
 	consume_whitespace();
 
-	if(!*input_buffer && !no_default_out)
+	if(!no_default_out)
 		output_expression();
+	else
+		if(*input_buffer)
+			output_expression();
 
 	consume_whitespace();
 
