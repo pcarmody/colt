@@ -17,7 +17,7 @@ typedef struct {
 	int max_value;
 } colt_range_identifier;
 
-class colt_range : public coltthru {
+class colt_range : public colt_operator {
 public:
 	long	min_value;
 	long 	max_value;
@@ -28,7 +28,7 @@ public:
 	colt_range(colt_base &in, int low, int high);
 	colt_range(colt_base &in, char *destination_file_name=NULL);
 	colt_range(colt_base &b, char *file, char *low, char *high);
-	colt_range(char *fname);
+//	colt_range(char *fname);
 	~colt_range();
 
 	colt_base *copy(colt_base *op);
@@ -39,15 +39,15 @@ public:
 	int in_range(int rec_num);
 	int num_lines();
 
-	virtual	int serialize_id_num();
-	virtual int write_config(FILE *);
-	virtual int *read_config(int *);
-	int show_status(char *baseptr, int indent=0);
+//	virtual	int serialize_id_num();
+//	virtual int write_config(FILE *);
+//	virtual int *read_config(int *);
+//	int show_status(char *baseptr, int indent=0);
 
 	void process_all();
 	int preprocess();
-	int process(int rec_num);
-	void postprocess();
+//	int process(int rec_num);
+//	void postprocess();
 };
 
 #endif

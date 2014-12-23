@@ -9,7 +9,7 @@
 #define COLTBITMAP_H_
 
 #define COLT_MAP_BYTES_IN_ELEM sizeof(long)
-#define COLT_MAP_BITS_IN_ELEM (COLT_MAP_BYTES_IN_ELEM*8)
+#define COLT_MAP_BITS_IN_ELEM (COLT_MAP_BYTES_IN_ELEM*4)
 #define COLT_MAP_HIGH_BIT 0x80000000
 
 typedef struct {
@@ -20,11 +20,13 @@ typedef struct {
 	int num_elements;
 } colt_bitmap_identifier;
 
-class coltbitmap: public colt_range {
+class coltbitmap: public coltthru {
 public:
 	long 	*map;
 	long	num_elements;
 	long	initial_disp;
+	long	min_value;
+	long 	max_value;
 
 	coltbitmap(colt_base &in, char *low, char *high, int all_bits = 0);
 	coltbitmap(colt_base &in, char *destination_file_name=NULL, int all_bits = 0);
@@ -45,7 +47,8 @@ public:
 			return;
 		int num = val - initial_disp;
 		int elem = num / COLT_MAP_BITS_IN_ELEM;
-		int disp = num % COLT_MAP_BITS_IN_ELEM;
+		unsigned long disp = num % COLT_MAP_BITS_IN_ELEM;
+//		cout << "qqq " << val << ":" << elem << ":" << disp << ":" << (COLT_MAP_HIGH_BIT >> (disp)) << "\n";
 		map[elem] = map[elem] | (COLT_MAP_HIGH_BIT >> (disp));
 	};
 	void allocate(int min, int max) {
@@ -65,10 +68,18 @@ public:
 			std::cout << "no elements\n";
 		else
 			for(int i=0; i<num_elements; i++) {
-				bitset<COLT_MAP_BITS_IN_ELEM> x(map[i]);
+				char tmp[100];
+				sprintf(tmp, "%8x", map[i]);
 				std::cout << initial_disp + i*COLT_MAP_BITS_IN_ELEM
-						<< "\t" << x << "\n";
+						<< "\t" << tmp << "\n";
+//				bitset<COLT_MAP_BITS_IN_ELEM> x(map[i]);
+//				std::cout << initial_disp + i*COLT_MAP_BITS_IN_ELEM
+//						<< "\t" << x << "\n";
 			}
+		for(int j=min_value; j<=max_value; j++)
+			if(is_set(j))
+				cout << j << " ";
+		cout << "\n";
 	};
 	int lowest_bit_set(int start=-1);
 	int highest_bit_set(int start=-1);
@@ -80,6 +91,7 @@ public:
 	virtual int *read_config(int *);
 	int show_status(char *baseptr, int indent=0);
 
+	void set_begin_end_index(int beg, int end=-1);
 	char **fields(int rec_num);
 	void process_all();
 	int preprocess();

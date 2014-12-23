@@ -129,10 +129,11 @@ char *colt_parser::consume_keyword(char *outbuff)
 	char quote_char = '\0';
 
 	if(*b == '"' || *b == '\'') {
-		quote_char = *b;
+		quote_char = *b++;
 		while(*b && *b != quote_char)
 			*a++ = *b++;
 		*a = '\0';
+		b++;
 	} else {
 //		while(*b && *b != '\t' && *b != ' ' && *b != '\n')
 		while(isalnum(*b) || *b == '_' || *b == '-' || *b == '/' || *b == '.' || *b == '%')
@@ -205,6 +206,7 @@ int colt_parser::consume_word(char *out)
 {
 	COLT_TRACE("colt_parser::consume_word(char *out)")
 	char *a = input_buffer;
+
 	while(isalnum(*a)
 		|| *a == '.'
 		|| *a == '_') *out++ = *a++;
@@ -744,14 +746,23 @@ colt_range *colt_parser::search()
 	consume_token("search");
 
 	char low[COLT_MAX_STRING_SIZE], high[COLT_MAX_STRING_SIZE];
+	colt_range *retval = NULL;
 
-	if(!consume_token(":")
-	|| !consume_word(low)
-	|| !consume_token(",")
-	|| !consume_word(high))
-		fatal_error("search syntax is 'search:low,high'.\n");
+	if(!consume_token(":"))
+		fatal_error("Search expected a ';'.\n");
 
-	colt_range *retval = new colt_range(*return_value, low, high);
+	if(!consume_keyword(low))
+		fatal_error("Search expected a LOW,hig.\n");
+
+	if(consume_token(","))
+		if(consume_keyword(high))
+			retval = new colt_range(*return_value, low, high);
+		else
+			fatal_error("search syntax is 'search:low,HIGH'.\n");
+	else
+		retval = new colt_range(*return_value, low, low);
+
+	cout << "qqq " << low << ":" << high << ":\n";
 //	return_value = retval;
 	return retval;
 }
@@ -773,7 +784,7 @@ coltbitmap *colt_parser::set()
 	}
 	retval = new coltbitmap(*return_value);
 
-	return_value = retval;
+//	return_value = retval;
 	return retval;
 }
 
@@ -1155,7 +1166,7 @@ colt_base *colt_parser::parse(int no_default_out)
 	consume_whitespace();
 
 	if(*input_buffer) {
-		cerr << "Parsing error at '" << input_buffer << "'";
+		cerr << "Parsing error at '" << input_buffer << "'\n";
 		exit(-1);
 	}
 

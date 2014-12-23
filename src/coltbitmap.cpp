@@ -8,28 +8,34 @@
 #include "colt_headers.h"
 
 coltbitmap::coltbitmap(char *fname):
-	colt_range(fname),
+	coltthru(fname),
 	map(NULL),
 	num_elements(0),
-	initial_disp(0)
+	initial_disp(0),
+	min_value(0),
+	max_value(LONG_MAX)
 {
 	i_am = colt_class_bitmap;
 }
 
 coltbitmap::coltbitmap(colt_base &in, char *destination_file_name, int all_bits):
-	colt_range(in, destination_file_name),
+	coltthru(in, destination_file_name),
 	map(NULL),
 	num_elements(0),
-	initial_disp(0)
+	initial_disp(0),
+	min_value(0),
+	max_value(LONG_MAX)
 {
 	i_am = colt_class_bitmap;
 }
 
 coltbitmap::coltbitmap(colt_base &b, char *file, char *low, char *high, int all_bits):
-	colt_range(b, file, low, high),
+	coltthru(b, file),
 	map(NULL),
 	num_elements(0),
-	initial_disp(0)
+	initial_disp(0),
+	min_value(0),
+	max_value(LONG_MAX)
 {
 	i_am = colt_class_bitmap;
 	if(max_value != LONG_MAX && !all_bits) {
@@ -38,10 +44,12 @@ coltbitmap::coltbitmap(colt_base &b, char *file, char *low, char *high, int all_
 }
 
 coltbitmap::coltbitmap(colt_base &in, char *low, char *high, int all_bits):
-	colt_range(in, low, high),
+	coltthru(in),
 	map(NULL),
 	num_elements(0),
-	initial_disp(0)
+	initial_disp(0),
+	min_value(0),
+	max_value(-1)
 {
 	i_am = colt_class_bitmap;
 	if(max_value != LONG_MAX && !all_bits) {
@@ -187,26 +195,36 @@ int *coltbitmap::read_config(int *base_ptr)
 
 int coltbitmap::show_status(char *baseptr, int indent)
 {
-	colt_range_identifier ident;
-
-	 memcpy((void *) &ident, (void *) baseptr, sizeof(ident));
-
-	 char indent_str[60];
-	 for(int i=0; i<60; i++) indent_str[i] = ' ';
-	 indent_str[indent*2] = '\0';
-
-	 std::cout << indent_str << "bitmap:\t" << file_name << "\n";
-	 std::cout << indent_str << "min_val:\t" << ident.min_value << "\n";
-	 std::cout << indent_str << "max_val:\t" << ident.max_value << "\n";
-
-//	 show();
-	 if(match(ident.file_name, "\.thru")) {
-		 std::cout << indent_str << "data_source:\n";
-		 colt_load_thru(ident.file_name, indent+1);
-	 } else
-		 std::cout << indent_str << "data_source:" << ident.file_name << "\n";
+//	coltthru_identifier ident;
+//
+//	 memcpy((void *) &ident, (void *) baseptr, sizeof(ident));
+//
+//	 char indent_str[60];
+//	 for(int i=0; i<60; i++) indent_str[i] = ' ';
+//	 indent_str[indent*2] = '\0';
+//
+//	 std::cout << indent_str << "bitmap:\t" << file_name << "\n";
+//	 std::cout << indent_str << "min_val:\t" << ident.min_value << "\n";
+//	 std::cout << indent_str << "max_val:\t" << ident.max_value << "\n";
+//
+////	 show();
+//	 if(match(ident.file_name, "\.thru")) {
+//		 std::cout << indent_str << "data_source:\n";
+//		 colt_load_thru(ident.file_name, indent+1);
+//	 } else
+//		 std::cout << indent_str << "data_source:" << ident.file_name << "\n";
 
 	 return 1;
+}
+
+void coltbitmap::set_begin_end_index(int beg, int end)
+{
+	COLT_TRACE("coltbitmap::set_begin_end_index(int beg, int end)")
+	coltthru::set_begin_end_index(beg, end);
+
+	iterate_count = beg;
+	min_value = beg;
+	max_value = end;
 }
 
 char **coltbitmap::fields(int rec_num)
@@ -236,16 +254,12 @@ void coltbitmap::process_all()
 
 int coltbitmap::preprocess()
 {
-//	if(parent_thru()->preloaded())
 	if(preloaded())
 		return !out_object || out_object->preprocess();
 
-	if(!map) {
-//		allocate(0, operand->num_lines());
-		allocate(0, max_size());
-//		min_value = LONG_MAX;
-//		max_value = 0;
-	}
+//	if(!map) {
+//		allocate(min_value, max_value);
+//	}
 
 	return out_object && out_object->preprocess();
 }
@@ -253,6 +267,8 @@ int coltbitmap::preprocess()
 int coltbitmap::process(int rec_num)
 {
 	if(!preloaded()) {
+		if(!map)
+			allocate(rec_num, operand->num_lines());
 		set(rec_num);
 	}
 	return !out_object || out_object->process(rec_num);
@@ -292,5 +308,5 @@ void coltbitmap::postprocess()
 	}
 
 	coltthru::postprocess();
-//	show();
+	show();
 }

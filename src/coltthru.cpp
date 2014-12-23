@@ -75,8 +75,8 @@ colt_base *colt_load_thru(char *file_name, int status)
 		retval = new colt_sort(file_name);
 	else if(version_number == colt_cthru_version)
 		retval = new colt_cthru(file_name);
-	else if(version_number == colt_range_version)
-		retval = new colt_range(file_name);
+//	else if(version_number == colt_range_version)
+//		retval = new colt_range(file_name);
 	else if(version_number == colt_bitmap_version)
 		retval = new coltbitmap(file_name);
 	else if(version_number == colt_keyspace_version)
@@ -436,7 +436,8 @@ void coltthru::postprocess()
 		if(file_name[0])
 			save(file_name);
 		preload = 1;
-		for(int i=0; i<index_count; i++)
+		preprocess();
+		for(int i=iterate_count; i<end_index; i++)
 			process(i);
 	}
 
