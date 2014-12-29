@@ -57,6 +57,7 @@ public:
 	colt_aggregate		*aggregate();
 	colt_aggregate_row	*aggregate_row();
 	colt_sort			*sort();
+	coltthru			*thru();
 	colt_keyspace		*keyspace();
 	colt_cthru			*cthru();
 	colt_range			*search();

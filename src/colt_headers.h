@@ -6,6 +6,8 @@
 #include <limits.h>
 #include <bitset>
 
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+
 #include "coltdatatype.h"
 
 #include "coltbase.h"

@@ -36,8 +36,8 @@ char *colt_datatype::parse_thru(char *x)
 //			return ((colt_sort *) value_type)->from_string(x);
 //		else if(strcmp("cthru:", x) == 0)
 //			return ((colt_cthru *) value_type)->from_string(x);
-//		else if(strcmp("range:", x) == 0)
-//			return ((colt_range *) value_type)->from_string(x);
+		else if(strcmp("range:", x) == 0)
+			return ((colt_range *) value_type)->from_string(x);
 //		else if(strcmp("bitmap:", x) == 0)
 //			return ((coltbitmap *) value_type)->from_string(x);
 
