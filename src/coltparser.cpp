@@ -6,22 +6,28 @@
  */
 #include "colt_headers.h"
 
-colt_parser::colt_parser(char *x, colt_base *p, int num):
+colt_parser::colt_parser(char *x, colt_datatype **p, char **heads, int num):
 	input_buffer(),
 	return_value(NULL),
 	numfrags(0),
-	parent(p),
-	rec_num(num)
+	cells(p),
+	col_headers(heads),
+	num_cols(num)
 {
 	// TODO Auto-generated constructor stub
-	input_buffer = new char[strlen(x)+1];
-	strcpy(input_buffer, x);
+	if(!cells) {
+		input_buffer = new char[strlen(x)+1];
+		strcpy(input_buffer, x);
+	} else
+		input_buffer = replace_string(x);
 }
 
 colt_parser::~colt_parser()
 {
 //	if(return_value)
 //		delete return_value;
+//	if(input_buffer && input_buffer != compiled_string)
+//		delete input_buffer;
 }
 
 int colt_parser::is_a(Colt_Class c)
@@ -36,7 +42,7 @@ int colt_parser::find_insertions(char **cols)
 	substrings[numfrags].index = -1;
 	substrings[numfrags].substring[0] = '\0';
 	for(char *a=input_buffer; *a; a++) {
-		if(*a == '$') {
+		if(*a == '%') {
 			for(int j=0; j<5; j++) {
 				int col_len = strlen(cols[j]);
 				if(strncmp(a+1, cols[j], col_len) == 0) {
@@ -80,6 +86,43 @@ char *colt_parser::replace_strings(char **vals)
 			strcat(compiled_string, vals[substrings[i].index]);
 		}
 	}
+
+	return compiled_string;
+}
+
+char *colt_parser::replace_string(char *in)
+{
+	COLT_TRACE("colt_parser::replace_string(char *)")
+	char *b = compiled_string;
+
+	for(char *a=in; *a; a++) {
+		if (strncmp(a, "&{", 2) == 0) {
+			for (int j=0; j<num_cols; j++) {
+				int col_len = strlen(col_headers[j]);
+				if(strncmp(a+2, col_headers[j], col_len) == 0 && a[col_len+2] == '}') {
+					a += col_len+2;
+					int len = cells[j]->format(b);
+					b += len;
+					break;
+					break;
+				}
+			}
+		} else if(*a == '%') {
+			for(int j=0; j<num_cols; j++) {
+				int col_len = strlen(col_headers[j]);
+				if(strncmp(a+1, col_headers[j], col_len) == 0) {
+					a += col_len;
+					int len = cells[j]->format(b);
+					b += len;
+					break;
+				}
+			}
+		}  else  {
+			*b++ = *a;
+		}
+	}
+
+	*b = '\0';
 
 	return compiled_string;
 }
@@ -136,7 +179,7 @@ char *colt_parser::consume_keyword(char *outbuff)
 		b++;
 	} else {
 //		while(*b && *b != '\t' && *b != ' ' && *b != '\n')
-		while(isalnum(*b) || *b == '_' || *b == '-' || *b == '/' || *b == '.' || *b == '%')
+		while(isalnum(*b) || *b == '_' || *b == '-' || *b == '/' || *b == '.' || *b == '^')
 			*a++ = *b++;
 		*a = '\0';
 	}
@@ -327,14 +370,13 @@ colt_base *colt_parser::file_name()
 
 	consume_keyword(file_name);
 
-	if(file_name[0] == '%') {
-		if(!parent)
+	if(file_name[0] == '^') {
+		if(!cells)
 			fatal_error("Cannot parse '&' column reference.\n");
 
-		int cols = parent->num_cols();
-		for(int j=0; j<cols; j++)
-			if(strcmp(file_name+1, parent->col_header( j )) == 0)
-				return (colt_base *) parent->cells(rec_num)[j]->get_value();
+		for(int j=0; j<num_cols; j++)
+			if(strcmp(file_name+1, col_headers[j] ) == 0)
+				return (colt_base *) cells[j]->get_value();
 
 		fatal_error("There is no column matching the column reference.\n");
 	}
@@ -762,8 +804,6 @@ colt_range *colt_parser::search()
 	else
 		retval = new colt_range(*return_value, low, low);
 
-	cout << "qqq " << low << ":" << high << ":\n";
-//	return_value = retval;
 	return retval;
 }
 
@@ -781,8 +821,8 @@ coltbitmap *colt_parser::set()
 		*a = '\0';
 		input_buffer = b;
 		retval = new coltbitmap(*return_value, file_name);
-	}
-	retval = new coltbitmap(*return_value);
+	} else
+		retval = new coltbitmap(*return_value);
 
 //	return_value = retval;
 	return retval;

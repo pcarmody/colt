@@ -17,7 +17,7 @@ typedef struct {
 	int max_value;
 } colt_range_identifier;
 
-class colt_range : public colt_operator {
+class colt_range : public coltthru {
 public:
 	long	min_value;
 	long 	max_value;
@@ -44,10 +44,15 @@ public:
 //	virtual int *read_config(int *);
 //	int show_status(char *baseptr, int indent=0);
 
+	int num_cols();
+	char **fields(int rec_num);
+	colt_datatype **cells(int rec_num);
+	char *col_header(int i);
+	char **col_headers();
 	void process_all();
 	int preprocess();
-//	int process(int rec_num);
-//	void postprocess();
+	int process(int rec_num);
+	void postprocess();
 };
 
 #endif

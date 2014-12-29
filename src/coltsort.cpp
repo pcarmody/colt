@@ -339,8 +339,13 @@ void colt_sort::search_highest_high(int low, int high)
 void colt_sort::postprocess()
 {
 	COLT_TRACE("colt_sort::postprocess()")
-	if(!preload)
+	if(!preload) {
 		perform_sort();
+		if(end_index == -1) {
+			iterate_count=0;
+			end_index=index_count;
+		}
+	}
 
 	coltthru::postprocess();
 }

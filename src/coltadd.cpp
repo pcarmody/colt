@@ -76,15 +76,11 @@ colt_datatype **colt_add::cells(int rec_num)
 		return colt_add_cell;
 	}
 
-	colt_datatype *new_cell = (colt_datatype *) colt_add_cell[cols-1]->make_space();
+	colt_datatype *new_cell = new_datatype(type);//(colt_datatype *) colt_add_cell[cols-1]->make_space();
 	colt_add_cell[cols-1] = new_cell;
 
-	void *cell_values[COLT_MAX_NUM_COLS];
-	for(int i=0; i<cols-1; i++)
-			cell_values[i] = rec[i]->get_value();
-
 	if(type == COLT_DT_SOURCE) {
-		colt_parser parse(code_string);
+		colt_parser parse(code_string, rec, col_headers(), cols-1);
 
 		colt_base *exp_object = parse.parse(1);
 
@@ -92,6 +88,7 @@ colt_datatype **colt_add::cells(int rec_num)
 
 		coltthru *thru = (coltthru *) exp_object->get_destination();
 		return_values[rec_num] = thru;
+
 		colt_add_cell[cols-1]->set_value(return_values[rec_num]);
 
 		if(thru->is_a(colt_class_cthru))
@@ -102,7 +99,7 @@ colt_datatype **colt_add::cells(int rec_num)
 			new_cell->set_type(COLT_DT_THRU);
 		else if(thru->is_a(colt_class_range))
 			new_cell->set_type(COLT_DT_RANGE);
-		else if(thru->is_a(colt_class_thru))
+		else if(thru->is_a(colt_class_bitmap))
 			new_cell->set_type(COLT_DT_BITMAP);
 		else {
 			perror("Add column must add a thru object.\n");
@@ -112,6 +109,11 @@ colt_datatype **colt_add::cells(int rec_num)
 		new_cell->set_value(thru);
 	} else {
 		_trace.start() << "call function.\n";
+
+		void *cell_values[COLT_MAX_NUM_COLS];
+		for(int i=0; i<cols-1; i++)
+			cell_values[i] = rec[i]->get_value();
+
 		cell_values[cols-1] = return_values[rec_num];
 		if(function_ptr)
 			(*function_ptr)((void **) cell_values);

@@ -20,14 +20,16 @@ public:
 	struct StrFragment substrings[10];
 	int 		numfrags;
 	char		compiled_string[COLT_MAX_STRING_SIZE];
-	colt_base	*parent;
-	int			rec_num;
+	colt_datatype	**cells;
+	char			**col_headers;
+	int				num_cols;
 
-	colt_parser(char *, colt_base *p=NULL, int num=0);
+	colt_parser(char *, colt_datatype **p=NULL, char **heads=NULL, int num=0);
 	virtual ~colt_parser();
 
 	int find_insertions(char **cols);
 	char *replace_strings(char **vals);
+	char *replace_string(char *in);
 //	char *replace_strings(colt_datatype **types);
 
 	int is_a(Colt_Class c);

@@ -24,7 +24,7 @@
 //}
 
 colt_range::colt_range(colt_base &in, char *destination_file_name):
-	colt_operator(in),
+	coltthru(in),
 	search_low(NULL),
 	search_high(NULL),
 	min_value(0),
@@ -34,7 +34,7 @@ colt_range::colt_range(colt_base &in, char *destination_file_name):
 }
 
 colt_range::colt_range(colt_base &b, char *file, char *low, char *high):
-	colt_operator(b),
+		coltthru(b),
 	search_low(NULL),
 	search_high(NULL),
 	min_value(0),
@@ -48,7 +48,7 @@ colt_range::colt_range(colt_base &b, char *file, char *low, char *high):
 }
 
 colt_range::colt_range(colt_base &in, char *low, char *high):
-	colt_operator(in),
+		coltthru(in),
 	search_low(NULL),
 	search_high(NULL),
 	min_value(0),
@@ -62,7 +62,7 @@ colt_range::colt_range(colt_base &in, char *low, char *high):
 }
 
 colt_range::colt_range(colt_base &in, int low, int high):
-	colt_operator(in),
+		coltthru(in),
 	search_low(NULL),
 	search_high(NULL),
 	min_value(low),
@@ -160,6 +160,31 @@ int colt_range::num_lines()
 //    return base_ptr + sizeof(ident)/sizeof(int);
 //}
 
+int colt_range::num_cols()
+{
+	return operand->num_cols();
+}
+
+char **colt_range::fields(int rec_num)
+{
+	return operand->fields(rec_num);
+}
+
+colt_datatype **colt_range::cells(int rec_num)
+{
+	return operand->cells(rec_num);
+}
+
+char *colt_range::col_header(int i)
+{
+	return operand->col_header(i);
+}
+
+char **colt_range::col_headers()
+{
+	return operand->col_headers();
+}
+
 void colt_range::process_all()
 {
 	COLT_TRACE("colt_range::process_all()")
@@ -199,6 +224,15 @@ int colt_range::preprocess()
 	return out_object->preprocess();
 }
 
+int colt_range::process(int rec_num)
+{
+	return operand->process(rec_num);
+}
+
+void colt_range::postprocess()
+{
+	return operand->postprocess();
+}
 //int colt_range::process(int rec_num)
 //{
 //	COLT_TRACE("colt_range::process(int rec_num)")

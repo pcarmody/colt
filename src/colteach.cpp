@@ -30,7 +30,8 @@ colt_operator *colt_each::insert_expression(char *expression, int rec_num, int n
 {
 	COLT_TRACE("*colt_each::insert_expression(char *expression)")
 	colt_operator *retval;
-	colt_parser parse(expression, this, rec_num);
+	colt_parser parse(expression, cells(rec_num), col_headers(), num_cols());
+
 
 	retval = new colt_operator;
 	retval->operand = operand;
