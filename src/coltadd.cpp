@@ -84,7 +84,7 @@ colt_datatype **colt_add::cells(int rec_num)
 
 		colt_base *exp_object = parse.parse(1);
 
-//		exp_object->process_all();
+		exp_object->process_all();
 
 		coltthru *thru = (coltthru *) exp_object->get_destination();
 		return_values[rec_num] = thru;

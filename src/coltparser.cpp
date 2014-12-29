@@ -149,7 +149,7 @@ void colt_parser::fatal_error(char const *err)
 
 int colt_parser::is_token(const char *token)
 {
-	COLT_TRACE("colt_parser::is_token(const char *token)")
+//	COLT_TRACE("colt_parser::is_token(const char *token)")
 	return strncmp(input_buffer, token, strlen(token)) == 0;
 }
 
@@ -322,8 +322,6 @@ colt_to_json *colt_parser::json()
 colt_out *colt_parser::csv()
 {
 	COLT_TRACE("*colt_parser::csv()")
-	colt_out *retval;
-	char *in = input_buffer;
 	char col_sep = ',';
 	char line_sep = '\n';
 	char quote = '\0';
@@ -364,7 +362,6 @@ colt_base *colt_parser::file_name()
 {
 	COLT_TRACE("*colt_parser::file_name()")
 	char file_name[COLT_MAX_STRING_SIZE];
-	char tmp[COLT_MAX_STRING_SIZE];
 	char dtype_str[COLT_MAX_STRING_SIZE];
 	char col_sep='\0', eol_sep='\0', quote_sep='\0';
 
@@ -455,7 +452,6 @@ colt_select *colt_parser::select()
 colt_skip_limit *colt_parser::skip_limit()
 {
 	COLT_TRACE("*colt_parser::skip_limit()")
-	char *in = input_buffer;
 	consume_token("limit:");
 	int limit = consume_integer();
 	int skip = 0;
@@ -541,8 +537,6 @@ colt_link *colt_parser::link()
 
 	if(!consume_token(","))
 		fatal_error("Link syntax error expected ',' after column name.\n");
-
-	int coltype;
 
 //	if(consume_token("index"))
 //		coltype = COLT_DT_INDEX;
@@ -709,6 +703,26 @@ colt_sort *colt_parser::sort()
 	return retval;
 }
 
+coltthru *colt_parser::thru()
+{
+	COLT_TRACE("*colt_parser::thru()")
+	char file_name[COLT_MAX_STRING_SIZE];
+
+	consume_token("thru");
+
+	coltthru *retval = NULL;
+
+	if(consume_token(":")) {
+		if(consume_word("file_name"))
+			retval = new coltthru(*return_value, file_name);
+		else
+			fatal_error("Unable to parse file_name in 'thru'.\n");
+	} else
+		retval = new coltthru(*return_value);
+
+	return retval;
+}
+
 colt_keyspace *colt_parser::keyspace()
 {
 	COLT_TRACE("*colt_parser::keyspace()")
@@ -776,8 +790,6 @@ colt_cthru *colt_parser::cthru()
 		retval = new colt_cthru(*return_value, file_name, key, type, direction);
 	else
 		retval = new colt_cthru(*return_value, key, type, direction);
-
-//	return_value = retval;
 
 	return retval;
 }
@@ -1036,6 +1048,8 @@ colt_base *colt_parser::unary_expression()
 		object = cthru();
 	else if(is_token("search"))
 		object = search();
+	else if(is_token("thru"))
+		object = thru();
 	else if(is_token("set"))
 		object = set();
 	else if(is_token("each"))

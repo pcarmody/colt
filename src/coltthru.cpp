@@ -413,7 +413,7 @@ int coltthru::preprocess()
 	if(index_list)
 		free(index_list);
 
-	index_list = (int *) malloc(max_size());
+	index_list = (int *) malloc(max_size() * sizeof(int));
 
 	return colt_operator::preprocess();
 }
@@ -437,7 +437,7 @@ void coltthru::postprocess()
 			save(file_name);
 		preload = 1;
 		preprocess();
-		for(int i=iterate_count; i<end_index; i++)
+		for(int i=iterate_count; i<=end_index; i++)
 			process(i);
 	}
 

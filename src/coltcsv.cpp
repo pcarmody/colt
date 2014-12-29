@@ -507,6 +507,8 @@ int colt_csv::compare(int a, int b, int c)
 	char *left_ptr = fields(a)[c];
 	char *rite_ptr = fields(b)[c];
 
+	_trace.start() << "left = " << left_ptr << ": right = " << rite_ptr << "\n";
+
 	int type = cell_objects[c]->type;
 	colt_datatype left(type);
 	colt_datatype rite(type);
