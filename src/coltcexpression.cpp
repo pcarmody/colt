@@ -31,6 +31,7 @@ int match(const char *string, char *pattern)\n\
 	return(1);\n\
 }\n"
 
+int colt_cexpression::expression_count = 0;
 
 colt_cexpression::colt_cexpression(colt_base &b, char *in):
 	colt_operator(b),
@@ -57,9 +58,9 @@ void colt_cexpression::compile_and_link()
 	char so_name[80];
 	char fn_name[80];
 
-	sprintf(code_name, "/tmp/ifcode_%d.cc", (int) getpid());
-	sprintf(so_name, "/tmp/ifcode_%d.so", (int) getpid());
-	sprintf(fn_name, "if_%d", (int) getpid());
+	sprintf(code_name, "/tmp/ifcode_%d_%d.cc", (int) getpid(), expression_count);
+	sprintf(so_name, "/tmp/ifcode_%d_%d.so", (int) getpid(), expression_count);
+	sprintf(fn_name, "if_%d_%d", (int) getpid(), expression_count++);
 
 	_trace.start() << ": code file name is " << code_name << "\n";
 	std::ofstream c_code(code_name);

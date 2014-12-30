@@ -19,11 +19,14 @@ int sort_direction;
 int datattype_sort_by_col(const void *l, const void *k)
 {
 	int *i = (int *)l, *j = (int *)k;
+	int retval = (sort_direction)?
+			sort_obj->compare(*i, *j, colt_sort_column):
+			sort_obj->compare(*j, *i, colt_sort_column);
 
-	if(sort_direction == 1)
-		return sort_obj->compare(*i, *j, colt_sort_column);
+	if(retval == 0)
+		return *i - *j;
 
-	return sort_obj->compare(*i, *j, colt_sort_column);
+	return retval;
 }
 
 //

@@ -11,6 +11,7 @@
 typedef int(*COLT_C_FUNC)(void **row);
 
 class colt_cexpression : public colt_operator {
+	static int expression_count;
 public:
 	COLT_C_FUNC		function_ptr;
 	char		*code_string;

@@ -56,7 +56,10 @@ colt_operator *colt_cross::insert_expression(char *expression, int rec_num, int 
 {
 	COLT_TRACE("*colt_cross::insert_expression(char *expression)")
 	colt_operator *retval;
-	colt_parser parse(expression, cells(rec_num), col_headers(), num_cols());
+	int cols = num_cols();
+	char **heads = col_headers();
+
+	colt_parser parse(expression, cells(rec_num), heads, cols);
 
 	retval = (colt_operator *) parse.parse(1);
 
