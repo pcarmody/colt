@@ -193,6 +193,48 @@ int *coltbitmap::read_config(int *base_ptr)
     return base_ptr + sizeof(ident)/sizeof(int);
 }
 
+int coltbitmap::to_string(char *x)
+{
+	COLT_TRACE("coltbitmap::to_string(char *x)")
+	char tmp[COLT_MAX_STRING_SIZE];
+	char tmp2[20];
+
+	tmp[0] = '\0';
+
+	for(int i=0; i<num_elements; i++) {
+		sprintf(tmp2, "%04x", map[i]);
+		strcat(tmp, tmp2);
+	}
+
+	sprintf(x, "bitmap:%s,%d,%d,%s", source_file_name(), min_value, max_value, tmp);
+//	char tmp[20];
+//
+//	for(int i=0; i<index_count; i++) {
+//		sprintf(tmp, ",%d", index_list[i]);
+//		strcat(x, tmp);
+//	}
+
+	return strlen(x);
+}
+
+char *coltbitmap::from_string(char *input)
+{
+	COLT_TRACE("coltbitmap::from_string(char *intpu)")
+	char file_name[COLT_MAX_STRING_SIZE];
+
+	sscanf(input, "thru:%s,", file_name);
+
+	while(*input && *input != ',') input++;
+
+	while(*input == ',') {
+		*input++;
+		push_back(atoi(input));
+		while(*input && *input != ',') input++;
+	}
+
+	return input;
+}
+
 int coltbitmap::show_status(char *baseptr, int indent)
 {
 //	coltthru_identifier ident;
@@ -234,6 +276,7 @@ char **coltbitmap::fields(int rec_num)
 
 void coltbitmap::process_all()
 {
+	COLT_TRACE("coltbitmap::process_all()")
 	if(!out_object)
 		return;
 
@@ -254,6 +297,7 @@ void coltbitmap::process_all()
 
 int coltbitmap::preprocess()
 {
+	COLT_TRACE("coltbitmap::preprocess()")
 	if(preloaded())
 		return !out_object || out_object->preprocess();
 
@@ -261,11 +305,12 @@ int coltbitmap::preprocess()
 //		allocate(min_value, max_value);
 //	}
 
-	return out_object && out_object->preprocess();
+	return !out_object || out_object->preprocess();
 }
 
 int coltbitmap::process(int rec_num)
 {
+	COLT_TRACE("coltbitmap::process(int rec_num)")
 	if(!preloaded()) {
 		if(!map)
 			allocate(rec_num, operand->num_lines());
@@ -276,6 +321,7 @@ int coltbitmap::process(int rec_num)
 
 void coltbitmap::postprocess()
 {
+	COLT_TRACE("coltbitmap::postprocess()")
 	if(preloaded())
 		return;
 
@@ -308,5 +354,5 @@ void coltbitmap::postprocess()
 	}
 
 	coltthru::postprocess();
-	show();
+//	show();
 }

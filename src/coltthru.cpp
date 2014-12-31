@@ -248,7 +248,6 @@ int *coltthru::read_config(int *base_ptr)
     return base_ptr + sizeof(ident)/sizeof(int);
 }
 
-
 int coltthru::to_string(char *x)
 {
 	COLT_TRACE("coltthru::to_string(char *x)")

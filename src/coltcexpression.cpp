@@ -54,9 +54,9 @@ colt_cexpression::colt_cexpression(colt_base &in, COLT_C_FUNC func):
 void colt_cexpression::compile_and_link()
 {
 	COLT_TRACE("colt_cexpression::compile_and_link()")
-	char code_name[80];
-	char so_name[80];
-	char fn_name[80];
+	char code_name[COLT_MAX_STRING_SIZE];
+	char so_name[COLT_MAX_STRING_SIZE];
+	char fn_name[COLT_MAX_STRING_SIZE];
 
 	sprintf(code_name, "/tmp/ifcode_%d_%d.cc", (int) getpid(), expression_count);
 	sprintf(so_name, "/tmp/ifcode_%d_%d.so", (int) getpid(), expression_count);
@@ -107,7 +107,7 @@ void colt_cexpression::compile_and_link()
 	c_code.close();
 	_trace.start() << ":" << code_name << "\n";
 
-	char pipe_string[100];
+	char pipe_string[COLT_MAX_STRING_SIZE];
 	//	sprintf(pipe_string, "g++ -fPIC -shared %s -o %s", code_name, so_name);
 	sprintf(pipe_string, "gcc -Wall -Werror -Werror=unused-variable -fpic -shared %s -o %s", code_name, so_name);
 

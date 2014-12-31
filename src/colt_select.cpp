@@ -90,7 +90,11 @@ char *colt_select::col_header(int n)
 char **colt_select::col_headers()
 {
 	COLT_TRACE("**colt_select::col_headers()")
-	return NULL; // need to fix
+	char **heads = colt_operator::col_headers();
+	for(int i=0; i<num_cols(); i++)
+		selected_headers[i] = heads[list[i]];
+
+	return selected_headers; // need to fix
 }
 
 int colt_select::preprocess()
