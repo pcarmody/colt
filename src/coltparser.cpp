@@ -469,9 +469,18 @@ colt_if *colt_parser::ifx()
 {
 	COLT_TRACE("*colt_parser::ifx()")
 	char in[1000];
-	input_buffer += 3;
 
-	consume_code_segment(in);
+	consume_token("if:");
+
+	if(*input_buffer == '{')
+		consume_code_segment(in);
+	else {
+		char lookup_key[COLT_MAX_STRING_SIZE];
+		consume_keyword(lookup_key);
+		consume_token(",");
+		consume_code_segment(in);
+		return new colt_if(*return_value, in, lookup_key);
+	}
 
 	return new colt_if(*return_value, in);
 }

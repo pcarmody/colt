@@ -32,15 +32,23 @@ int match(const char *string, char *pattern)\n\
 }\n"
 
 int colt_cexpression::expression_count = 0;
+AssocArray<COLT_C_FUNC> cexpression_list;
 
-colt_cexpression::colt_cexpression(colt_base &b, char *in):
+colt_cexpression::colt_cexpression(colt_base &b, char *in, char *str):
 	colt_operator(b),
-	function_ptr(NULL)
+	function_ptr(NULL),
+	lookup_key(NULL)
 {
 	i_am = colt_class_c_expression;
 	return_type = "int";
 	code_string = new char[strlen(in)+1];
 	strcpy(code_string, in);
+	if(str) {
+		lookup_key = new char[strlen(str)+1];
+		strcpy(lookup_key, str);
+		if(cexpression_list.IsItem(str))
+			function_ptr = cexpression_list[str];
+	}
 }
 
 colt_cexpression::colt_cexpression(colt_base &in, COLT_C_FUNC func):
@@ -54,6 +62,9 @@ colt_cexpression::colt_cexpression(colt_base &in, COLT_C_FUNC func):
 void colt_cexpression::compile_and_link()
 {
 	COLT_TRACE("colt_cexpression::compile_and_link()")
+	if(function_ptr)
+		return;
+
 	char code_name[COLT_MAX_STRING_SIZE];
 	char so_name[COLT_MAX_STRING_SIZE];
 	char fn_name[COLT_MAX_STRING_SIZE];
@@ -126,6 +137,10 @@ void colt_cexpression::compile_and_link()
 	}
 
 	function_ptr = (COLT_C_FUNC) dlsym(handle, fn_name);
+
+	if(lookup_key)
+		cexpression_list.AddItem(lookup_key, function_ptr);
+
 }
 
 

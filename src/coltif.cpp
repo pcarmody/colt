@@ -15,8 +15,8 @@
 #include "colt_headers.h"
 #include "coltif.h"
 
-colt_if::colt_if(colt_base &b, char *in):
-	colt_cexpression(b, in)
+colt_if::colt_if(colt_base &b, char *in, char *str):
+	colt_cexpression(b, in, str)
 {
 	i_am = colt_class_if;
 }

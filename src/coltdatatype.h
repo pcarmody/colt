@@ -64,7 +64,7 @@ public:
 	void operator =(long &l) {
 		switch(type) {
 		case COLT_DATATYPE:
-			sprintf(tmp_value.str_val, "%d", l);
+			sprintf(tmp_value.str_val, "%ld", l);
 			value_type = &tmp_value;
 			break;
 		case COLT_DT_INTEGER:
@@ -136,7 +136,7 @@ public:
 			strcpy(x, value_type->str_val);
 			break;
 		case COLT_DT_INTEGER:
-			sprintf(x, "%d", value_type->long_val);
+			sprintf(x, "%ld", value_type->long_val);
 			break;
 		case COLT_DT_SOURCE:
 		case COLT_DT_THRU:

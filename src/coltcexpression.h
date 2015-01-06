@@ -16,8 +16,9 @@ public:
 	COLT_C_FUNC		function_ptr;
 	char		*code_string;
 	char		*return_type;
+	char		*lookup_key;
 
-	colt_cexpression(colt_base &in, char *exp);
+	colt_cexpression(colt_base &in, char *exp, char *str=NULL);
 	colt_cexpression(colt_base &in, COLT_C_FUNC func);
 	virtual ~colt_cexpression();
 

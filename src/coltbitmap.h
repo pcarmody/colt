@@ -69,7 +69,7 @@ public:
 		else
 			for(int i=0; i<num_elements; i++) {
 				char tmp[100];
-				sprintf(tmp, "%8x", map[i]);
+				sprintf(tmp, "%8lx", (unsigned long) map[i]);
 				std::cout << initial_disp + i*COLT_MAP_BITS_IN_ELEM
 						<< "\t" << tmp << "\n";
 //				bitset<COLT_MAP_BITS_IN_ELEM> x(map[i]);
