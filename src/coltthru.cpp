@@ -432,11 +432,15 @@ void coltthru::postprocess()
 {
 	COLT_TRACE("coltthru::postprocess()")
 	if(!preload) {
+		if(end_index == -1) {
+			iterate_count=0;
+			end_index=index_count-1;
+		}
 		if(file_name[0])
 			save(file_name);
 		preload = 1;
 		preprocess();
-		for(int i=iterate_count; i<=end_index; i++)
+		for(int i=iterate_count; i<end_index; i++)
 			process(i);
 	}
 

@@ -277,6 +277,11 @@ void colt_sort::search_lowest_low(int low, int high)
 	} else
 		condition = strncmp(search_low_str, field_val(center, col_num()), search_low_str_len);
 
+	_trace.start() << search_low_str << ":" << field_val(center, col_num()) <<
+			":" << condition <<
+			":" << low <<
+			":" << high
+				<< "\n";
 	if(condition == 0) {
 		int cond = 0;
 		if(numeric_sort) {
@@ -344,10 +349,6 @@ void colt_sort::postprocess()
 	COLT_TRACE("colt_sort::postprocess()")
 	if(!preload) {
 		perform_sort();
-		if(end_index == -1) {
-			iterate_count=0;
-			end_index=index_count;
-		}
 	}
 
 	coltthru::postprocess();
