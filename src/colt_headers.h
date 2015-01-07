@@ -30,6 +30,7 @@
 #include "avl.h"
 #include "AssocArray.h"
 #include "coltpartition.h"
+#include "coltuniq.h"
 #include "coltshare.h"
 #include "coltcthru.h"
 

@@ -62,14 +62,15 @@ public:
 	coltthru			*thru();
 	colt_keyspace		*keyspace();
 	colt_cthru			*cthru();
-	colt_range			*search();
-	coltbitmap			*set();
+	colt_range			*range();
+	coltbitmap			*bitmap();
 	colt_each			*each();
 	colt_cross			*cross();
 	colt_partition		*partition();
 	colt_expand			*expand();
 	colt_reduce			*reduce();
 	colt_onchange		*onchange();
+	colt_uniq			*uniq();
 	colt_share			*share();
 	colt_thread 		*threadx();
 	colt_sync			*sync();

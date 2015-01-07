@@ -803,44 +803,41 @@ colt_cthru *colt_parser::cthru()
 	return retval;
 }
 
-colt_range *colt_parser::search()
+colt_range *colt_parser::range()
 {
-	COLT_TRACE("*colt_parser::search()")
-	consume_token("search");
+	COLT_TRACE("*colt_parser::range()")
+	consume_token("range");
 
 	char low[COLT_MAX_STRING_SIZE], high[COLT_MAX_STRING_SIZE];
 	colt_range *retval = NULL;
 
 	if(!consume_token(":"))
-		fatal_error("Search expected a ';'.\n");
+		fatal_error("range expected a ';'.\n");
 
 	if(!consume_keyword(low))
-		fatal_error("Search expected a LOW,hig.\n");
+		fatal_error("range expected a LOW,hig.\n");
 
 	if(consume_token(","))
 		if(consume_keyword(high))
 			retval = new colt_range(*return_value, low, high);
 		else
-			fatal_error("search syntax is 'search:low,HIGH'.\n");
+			fatal_error("range syntax is 'range:low,HIGH'.\n");
 	else
 		retval = new colt_range(*return_value, low, low);
 
 	return retval;
 }
 
-coltbitmap *colt_parser::set()
+coltbitmap *colt_parser::bitmap()
 {
-	COLT_TRACE("*colt_parser::set()")
-	input_buffer += 3;
+	COLT_TRACE("*colt_parser::bitmap()")
+
+	consume_token("bitmap");
 	coltbitmap *retval = NULL;
 
-	if(*input_buffer == ':') {
-		char *b = input_buffer+1;
+	if(consume_token(":")) {
 		char file_name[COLT_MAX_STRING_SIZE];
-		char *a = file_name;
-		while(*b && *b != '-' && *b != ' '  && *b != '\n') *a++ = *b++;
-		*a = '\0';
-		input_buffer = b;
+		consume_keyword(file_name);
 		retval = new coltbitmap(*return_value, file_name);
 	} else
 		retval = new coltbitmap(*return_value);
@@ -992,6 +989,22 @@ colt_onchange *colt_parser::onchange()
 	return retval;
 }
 
+colt_uniq *colt_parser::uniq()
+{
+	COLT_TRACE("colt_parser::uniq()")
+	consume_token("uniq:");
+
+	char col_name[COLT_MAX_STRING_SIZE];
+	int last=0;
+
+	consume_keyword(col_name);
+
+	if(consume_token("!"))
+		last = 1;
+
+	return new colt_uniq(*return_value, col_name, last);
+}
+
 colt_share *colt_parser::share()
 {
 	COLT_TRACE("*colt_parser::share()")
@@ -1055,12 +1068,12 @@ colt_base *colt_parser::unary_expression()
 		object = keyspace();
 	else if(is_token("cthru"))
 		object = cthru();
-	else if(is_token("search"))
-		object = search();
+	else if(is_token("range"))
+		object = range();
 	else if(is_token("thru"))
 		object = thru();
-	else if(is_token("set"))
-		object = set();
+	else if(is_token("bitmap"))
+		object = bitmap();
 	else if(is_token("each"))
 		object = each();
 	else if(is_token("cross"))
@@ -1071,6 +1084,8 @@ colt_base *colt_parser::unary_expression()
 		object = expand();
 	else if(is_token("onchange"))
 		object = onchange();
+	else if(is_token("uniq"))
+		object = uniq();
 	else if(is_token("aggrow"))
 		object = aggregate_row();
 	else if(is_token("agg"))

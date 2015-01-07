@@ -16,8 +16,10 @@ colt_each::colt_each(colt_base &in, char *exp):
 {
 	i_am = colt_class_each;
 	// TODO Auto-generated constructor stub
-	expression_string = new char[strlen(exp)+1];
-	strcpy(expression_string, exp);
+	if(exp) {
+		expression_string = new char[strlen(exp)+1];
+		strcpy(expression_string, exp);
+	}
 }
 
 colt_each::~colt_each()

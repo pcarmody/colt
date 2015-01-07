@@ -58,6 +58,17 @@ template <class T> class AssocArray {
 		  return true;
 	  }
 
+	  void Reset(string name, T data)
+	  {
+		  Data search;
+		  search.name = name;
+		  Data *d = tree.find(search);
+		  if(d && d->rec_num > 0)
+			  stack[d->rec_num] = data;
+		  else
+			  stack[0] = data;
+	  }
+
 	  T& operator [] (string name)
 	  {
 //		  for(int i=0; i<Size(); i++)

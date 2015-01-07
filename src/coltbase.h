@@ -41,6 +41,7 @@ enum Colt_Class {
 	colt_class_each,
 	colt_class_partition,
 	colt_class_onchange,
+	colt_class_uniq,
 	colt_class_share,
 	colt_class_thread,
 	colt_class_sync,
