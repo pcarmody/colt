@@ -102,16 +102,19 @@ int colt_select::preprocess()
 	COLT_TRACE("colt_select::preprocess()")
 	if(list)
 		delete list;
-	list = new int[count];
+	list = new int[COLT_MAX_NUM_COLS];
 
 	int cols = colt_operator::num_cols();
+	int num = count;
+	count = 0;
+
 	for(int j=0; j<cols; j++) {
 		char *head = operand->col_header( j );
-		for(int i=0; i<count; i++) {
+		for(int i=0; i<num; i++) {
 			if((no_match && !match(head, headers[i]) )
 			|| (!no_match && match(head, headers[i]) ) ) {
 //			if(strcmp(headers[i], head ) == 0 ) {
-				list[i] = j;
+				list[count++] = j;
 			}
 		}
 	}
