@@ -24,10 +24,10 @@ using namespace std;
 
 colt_select::colt_select(colt_base &in, char **l, int c, int nom):
 	colt_operator(in),
-	no_match(nom)
+	no_match(nom),
+	list(NULL)
 {
 	i_am = colt_class_select;
-	list = (int *) malloc(sizeof(int) * c);
 	headers = (char **) malloc(sizeof(char*) * c);
 	count = c;
 
@@ -96,30 +96,57 @@ char **colt_select::col_headers()
 
 	return selected_headers; // need to fix
 }
+//
+//int colt_select::preprocess()
+//{
+//	COLT_TRACE("colt_select::preprocess()")
+//	if(list)
+//		delete list;
+//	list = new int[COLT_MAX_NUM_COLS];
+//
+//	int cols = colt_operator::num_cols();
+//	int num = count;
+//	count = 0;
+//
+//	for(int j=0; j<cols; j++) {
+//		char *head = operand->col_header( j );
+//		for(int i=0; i<num; i++) {
+//			if((no_match && !match(head, headers[i]) )
+//			|| (!no_match && match(head, headers[i]) ) ) {
+////			if(strcmp(headers[i], head ) == 0 ) {
+//				list[count++] = j;
+//			}
+//		}
+//	}
+//
+//	int retval = colt_operator::preprocess();
+//
+//	return retval;
+//}
 
-int colt_select::preprocess()
+int colt_select::process(int rec_num)
 {
-	COLT_TRACE("colt_select::preprocess()")
-	if(list)
-		delete list;
-	list = new int[COLT_MAX_NUM_COLS];
+	COLT_TRACE("colt_select::process(int rec_num)")
 
-	int cols = colt_operator::num_cols();
-	int num = count;
-	count = 0;
+	if(!list) {
 
-	for(int j=0; j<cols; j++) {
-		char *head = operand->col_header( j );
-		for(int i=0; i<num; i++) {
-			if((no_match && !match(head, headers[i]) )
-			|| (!no_match && match(head, headers[i]) ) ) {
-//			if(strcmp(headers[i], head ) == 0 ) {
-				list[count++] = j;
+		list = new int[COLT_MAX_NUM_COLS];
+
+		int cols = colt_operator::num_cols();
+		int num = count;
+		count = 0;
+
+		for(int j=0; j<cols; j++) {
+			char *head = operand->col_header( j );
+			for(int i=0; i<num; i++) {
+				if((no_match && !match(head, headers[i]) )
+				|| (!no_match && match(head, headers[i]) ) ) {
+	//			if(strcmp(headers[i], head ) == 0 ) {
+					list[count++] = j;
+				}
 			}
 		}
 	}
 
-	int retval = colt_operator::preprocess();
-
-	return retval;
+	return colt_operator::process(rec_num);
 }

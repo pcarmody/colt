@@ -84,7 +84,12 @@ char *colt_cross::col_header(int n)
 	int left_cols = colt_each::num_cols();
 	if(n < left_cols)
 		return colt_each::col_header(n);
-	return expression_object->col_header(n - left_cols);
+
+	if(!cross_headers)
+		col_headers();
+
+	return cross_headers[n];
+//	return expression_object->col_header(n - left_cols);
 }
 
 char **colt_cross::col_headers()
@@ -106,8 +111,11 @@ char **colt_cross::col_headers()
 	int i=0;
 	for(i=0; i<left_cols; i++)
 		cross_headers[i] = left_headers[i];
-	for(int j=0; j<right_cols; j++)
-		cross_headers[i+j] = right_headers[j];
+	for(int j=0; j<right_cols; j++) {
+		char *tmp = new char[COLT_MAX_STRING_SIZE];
+		sprintf(tmp, "%s.%s", expression_object->source_file_name(),right_headers[j]);
+		cross_headers[i+j] = tmp; //right_headers[j];
+	}
 
 	return cross_headers;
 }

@@ -26,7 +26,7 @@ public:
 	int num_cols();
 	char *col_header(int n);
 	char **col_headers();
-	int preprocess();
+	int process(int rec_num);
 };
 
 #endif /* COLT_select_H_ */
