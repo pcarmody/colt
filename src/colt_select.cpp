@@ -143,6 +143,7 @@ int colt_select::process(int rec_num)
 				|| (!no_match && match(head, headers[i]) ) ) {
 	//			if(strcmp(headers[i], head ) == 0 ) {
 					list[count++] = j;
+					break;
 				}
 			}
 		}

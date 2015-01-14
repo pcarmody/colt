@@ -19,6 +19,7 @@
 #include "coltsort.h"
 #include "coltkeyspace.h"
 #include "coltcthru.h"
+#include "coltadd.h"
 #include "coltcexpression.h"
 #include "coltif.h"
 #include "coltaggregate.h"
@@ -45,7 +46,6 @@
 #include "colt_out_vertical.h"
 #include "colt_skip_limit.h"
 #include "colt_select.h"
-#include "coltadd.h"
 #include "colt_to_json.h"
 #include "coltcounter.h"
 

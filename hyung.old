@@ -1,78 +1,78 @@
-id	name	rank
-1	Ki Cho Hyung	White
-2	Cho Geup Hyung	Yellow
-3	Joong Geup Hyung	Blue
-4	Go geup Hyung	Red
-5	Dae Geup Hyung	Brown
-6	Geum Mu Hyung	Dahn Bo Nim
-7	Baek Pal Ki Hyung	Jyo Kyo Nim
-8	Kyuk Pah Hyung	Kyo Sa Nim
-9	Sam Bong Cho Hyung #1	Pu Sa Bum Nim
-10	Sam Bong Cho hyung #2	Sa Bum Nim
-11	You Ahm Hyung	Sa Bum Nim
-12	Oon Hak hyung	Kwan Jang Nim
-13	Ki Bon Soo	White
-14	Son Mok Soo	Yellow
-15	Eue Bok Soo	Yellow
-16	Ahn Son Mok Soo	Blue
-17	Maek Chi Ki	Blue
-18	Maek Cha Ki	Red
-19	Joong Mak Maga Ki Bon Soo	Red
-20	Joong Geup Son Mok Soo	Brown
-21	Ap Eue Bok Soo	Brown
-22	Dwi Eue Bok Soo	Dahn Bo Nim
-23	Kwan Jul Ki	Dahn Bo Nim
-24	Two Ki	Dahn Bo Nim
-25	Bong Two Ki	Dahn Bo Nim
-26	mak Jul Ki	Dahn Bo Nim
-27	Yang Sohn Mok Soo	Dahn Bo Nim
-28	Ssang Soo	Dahn Bo Nim
-29	Dahn Do Maki	Dahn Bo Nim
-30	Ki Bon bon	Jyo Kyo Nim
-31	Gok Do Bub	Jyo Kyo Nim
-32	Jhun Hwahn Bub	Jyo Kyo Nim
-33	Go Geup Son Mok Soo	Jyo Kyo Nim
-34	Go Geup Eue Bok Soo	Jyo Kyo Nim
-35	Jwa Ki	Jyo Kyo Nim
-36	Wah Ki	Jyo Kyo Nim
-37	Ee In Jae Ap Soo	Jyo Kyo Nim
-38	Jok Bonga Sool	Jyo Kyo Nim
-39	Jap Ki	Jyo Kyo Nim
-40	Gung Dae Ryun	Jyo Kyo Nim
-41	Jae Ap Sool	Kyo Sa Nim
-42	Un Haeng Sool	Kyo Sa Nim
-43	Je Penge Sool	Kyo Sa Nim
-44	Po Bok Sool	Kyo sa Nim
-45	Pyung Soo	Pu Sa Bum Nim
-46	Bok Sool	Pu Sa Bum Nim
-47	Bu Chae Sool	Pu Sa Bum Nim
-48	Bong Wan Ki	Sa Bum Nim
-49	Chul Sa Jang	Sa Bum Nim
-50	Ssang Jae Ap Sool	Sa Bum Nim
-51	Som Sa Ee In Jae Ap Sool	Sa Bum Nim
-52	Joong Bong Jeul Li Ki	Dahn Bo Nim
-53	Joong Bong Hyung	Dahn Bo Nim
-54	Bong Dae Ryun 1	Jyo Kyo Nim
-55	Bong Dae Ryun 2	Kyo Sa Nim
-56	Joong Geum Hung	Jyo Kyo Nim
-57	Yuk Geum Hyung	Kyo Sa Nim
-58	Dahn Bong 	Jyo Kyo Nim
-59	Ssang Dahn Bong Hyung	Jyo Kyo Nim
-60	Ssang Dahn Geum Hyung	Pu Sa Bum Nim
-61	Beki Yunsup	kyo Sa Nim
-62	Beki Hyung	Kwan Jang Nim
-63	Change Bong Hyung	Pu Sa Bum Nim
-64	Jang Ssang Geum Hung	Sa Bum Nim
-65	Jul Bong Hyung	Kyo Sa Nim
-66	Ssang Jul Bong Hyung	Pu Sa Bum Nim
-67	Joong Bong Hyung	Kyo Sa Nim
-68	Ssang Joong Bong Hyung	Kyo Sa Nim
-69	Pam Bong Hyung	Pu Sa Bum Nim
-70	Ssang Pam Bong Hyun	Sa Bum Nim
-71	Sae	Sa Bum Nim
-72	Tora Bong Hyung	Sa Bum Nim
-73	Sam Jul Bong	Kwan Jang Nim
-74	Ssang Sam Jul bong	Join Kwan Jang Nim
-75	Ssang Bong Hyung 1	Kwan Jang Nim
-76	Ssang Bong Hyung 2	Join Kwan Jang Nim
-77	Bong Jok Sool	Kwan Jang Nim
+id	name	rank	count
+1	Ki Cho Hyung	White	6
+2	Cho Geup Hyung	Yellow	3
+3	Joong Geup Hyung	Blue	2
+4	Go geup Hyung	Red	1
+5	Dae Geup Hyung	Brown	1
+6	Geum Mu Hyung	Dahn Bo Nim	1
+7	Baek Pal Ki Hyung	Jyo Kyo Nim	1
+8	Kyuk Pah Hyung	Kyo Sa Nim	1
+9	Sam Bong Cho Hyung #1	Pu Sa Bum Nim	1
+10	Sam Bong Cho hyung #2	Sa Bum Nim	1
+11	You Ahm Hyung	Sa Bum Nim	1
+12	Oon Hak hyung	Kwan Jang Nim	1
+13	Ki Bon Soo	White	15
+14	Son Mok Soo	Yellow	11
+15	Eue Bok Soo	Yellow	13
+16	Ahn Son Mok Soo	Blue	6
+17	Maek Chi Ki	Blue	15
+18	Maek Cha Ki	Red	15
+19	Joong Mak Maga Ki Bon Soo	Red	15
+20	Joong Geup Son Mok Soo	Brown	7
+21	Ap Eue Bok Soo	Brown	20
+22	Dwi Eue Bok Soo	Dahn Bo Nim	23
+23	Kwan Jul Ki	Dahn Bo Nim	13
+24	Two Ki	Dahn Bo Nim	13
+25	Bong Two Ki	Dahn Bo Nim	10
+26	mak Jul Ki	Dahn Bo Nim	5
+27	Yang Sohn Mok Soo	Dahn Bo Nim	15
+28	Ssang Soo	Dahn Bo Nim	15
+29	Dahn Do Maki	Dahn Bo Nim	15
+30	Ki Bon bon	Jyo Kyo Nim	10
+31	Gok Do Bub	Jyo Kyo Nim	10
+32	Jhun Hwahn Bub	Jyo Kyo Nim	10
+33	Go Geup Son Mok Soo	Jyo Kyo Nim	15
+34	Go Geup Eue Bok Soo	Jyo Kyo Nim	15
+35	Jwa Ki	Jyo Kyo Nim	15
+36	Wah Ki	Jyo Kyo Nim	15
+37	Ee In Jae Ap Soo	Jyo Kyo Nim	10
+38	Jok Bonga Sool	Jyo Kyo Nim	15
+39	Jap Ki	Jyo Kyo Nim	20
+40	Gung Dae Ryun	Jyo Kyo Nim	8
+41	Jae Ap Sool	Kyo Sa Nim	10
+42	Un Haeng Sool	Kyo Sa Nim	10
+43	Je Penge Sool	Kyo Sa Nim	10
+44	Po Bok Sool	Kyo sa Nim	10
+45	Pyung Soo	Pu Sa Bum Nim	10
+46	Bok Sool	Pu Sa Bum Nim	10
+47	Bu Chae Sool	Pu Sa Bum Nim	10
+48	Bong Wan Ki	Sa Bum Nim	5
+49	Chul Sa Jang	Sa Bum Nim	10
+50	Ssang Jae Ap Sool	Sa Bum Nim	10
+51	Som Sa Ee In Jae Ap Sool	Sa Bum Nim	6
+52	Joong Bong Jeul Li Ki	Dahn Bo Nim	15
+53	Joong Bong Hyung	Dahn Bo Nim	1
+54	Bong Dae Ryun 1	Jyo Kyo Nim	1
+55	Bong Dae Ryun 2	Kyo Sa Nim	1
+56	Joong Geum Hung	Jyo Kyo Nim	1
+57	Yuk Geum Hyung	Kyo Sa Nim	1
+58	Dahn Bong 	Jyo Kyo Nim	1
+59	Ssang Dahn Bong Hyung	Jyo Kyo Nim	1
+60	Ssang Dahn Geum Hyung	Pu Sa Bum Nim	1
+61	Beki Yunsup	kyo Sa Nim	1
+62	Beki Hyung	Kwan Jang Nim	4
+63	Change Bong Hyung	Pu Sa Bum Nim	2
+64	Jang Ssang Geum Hung	Sa Bum Nim	3
+65	Jul Bong Hyung	Kyo Sa Nim	1
+66	Ssang Jul Bong Hyung	Pu Sa Bum Nim	1
+67	Joong Bong Hyung	Kyo Sa Nim	1
+68	Ssang Joong Bong Hyung	Kyo Sa Nim	1
+69	Pam Bong Hyung	Pu Sa Bum Nim	1
+70	Ssang Pam Bong Hyun	Sa Bum Nim	1
+71	Sae	Sa Bum Nim	1
+72	Tora Bong Hyung	Sa Bum Nim	1
+73	Sam Jul Bong	Kwan Jang Nim	1
+74	Ssang Sam Jul bong	Join Kwan Jang Nim	1
+75	Ssang Bong Hyung 1	Kwan Jang Nim	1
+76	Ssang Bong Hyung 2	Join Kwan Jang Nim	1
+77	Bong Jok Sool	Kwan Jang Nim	12

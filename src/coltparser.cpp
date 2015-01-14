@@ -529,7 +529,12 @@ colt_add *colt_parser::add()
 		else
 			fatal_error("Expected datatype in add expression.\n");
 
-		consume_code_segment(repl_str);
+		if(is_token("{")) {
+			consume_code_segment(repl_str);
+
+			return new colt_cexpression(*return_value, label, type, repl_str);
+		} else
+			consume_keyword(repl_str);
 
 	}
 

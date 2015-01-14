@@ -34,29 +34,19 @@ int match(const char *string, char *pattern)\n\
 int colt_cexpression::expression_count = 0;
 AssocArray<COLT_C_FUNC> cexpression_list;
 
-colt_cexpression::colt_cexpression(colt_base &b, char *in, char *str):
-	colt_operator(b),
+colt_cexpression::colt_cexpression(colt_base &b, char *col_name, int t, char *str, char *lup):
+	colt_add(b, col_name, t, str),
 	function_ptr(NULL),
 	lookup_key(NULL)
 {
 	i_am = colt_class_c_expression;
 	return_type = "int";
-	code_string = new char[strlen(in)+1];
-	strcpy(code_string, in);
-	if(str) {
-		lookup_key = new char[strlen(str)+1];
-		strcpy(lookup_key, str);
-		if(cexpression_list.IsItem(str))
-			function_ptr = cexpression_list[str];
+	if(lup) {
+		lookup_key = new char[strlen(lup)+1];
+		strcpy(lookup_key, lup);
+		if(cexpression_list.IsItem(lup))
+			function_ptr = cexpression_list[lup];
 	}
-}
-
-colt_cexpression::colt_cexpression(colt_base &in, COLT_C_FUNC func):
-	colt_operator(in),
-	function_ptr(func)
-{
-	i_am = colt_class_c_expression;
-	return_type = "int";
 }
 
 void colt_cexpression::compile_and_link()
@@ -85,6 +75,9 @@ void colt_cexpression::compile_and_link()
 	c_code << regex_match;
 
 	int cols = num_cols();
+	char code[COLT_MAX_STRING_SIZE];
+
+	strcpy(code, value);
 	colt_datatype **the_cells = cells(0);
 //	for(int i=0; i<cols; i++)
 //		c_code << "#define " << col_header(i) << " ((char *) row[" << i << "])\n";
@@ -98,7 +91,7 @@ void colt_cexpression::compile_and_link()
 	for(int i=0; i<cols; i++) {
 		_trace.start() << "i = " << i << ";" << head[i] << "\n";
 		char *value_type = the_cells[i]->gen_value_type();
-		if(!match(code_string, head[i]))
+		if(!match(code, head[i]))
 			continue;
 		c_code << value_type
 			<< " "
@@ -113,7 +106,7 @@ void colt_cexpression::compile_and_link()
 			c_code << "cout << \"" << head[i] << " = \" << " << head[i] << " << \";\\n\";\n";
 	}
 
-	c_code << "\treturn (long) " << code_string << ";\n";
+	c_code << "\treturn (long) " << code << ";\n";
 	c_code << "}\n";
 	c_code.close();
 	_trace.start() << ":" << code_name << "\n";
@@ -143,6 +136,33 @@ void colt_cexpression::compile_and_link()
 
 }
 
+void colt_cexpression::get_value(int rec_num)
+{
+	COLT_TRACE("colt_cexpression::get_value()")
+	if(!label)
+		return;
+
+	colt_datatype **rec = colt_operator::cells(rec_num);
+
+	void *cell_values[COLT_MAX_NUM_COLS];
+	int cols = num_cols();
+
+	for(int i=0; i<cols-1; i++)
+		cell_values[i] = rec[i]->get_value();
+
+	cell_values[cols-1] = value;
+	if(function_ptr)
+		(*function_ptr)((void **) cell_values);
+
+	for(int i=0; i<cols-1; i++)
+		colt_add_cell[i] = rec[i];
+	colt_add_cell[cols-1]->set_value(value);
+
+	if(!function_ptr) {
+		value[0] = '\0';
+	}
+}
+
 
 colt_cexpression::~colt_cexpression() {
 	// TODO Auto-generated destructor stub
@@ -152,7 +172,7 @@ int colt_cexpression::preprocess()
 {
 	COLT_TRACE("colt_cexpression::preprocess()")
 
-	int retval =  colt_operator::preprocess();
+	int retval =  colt_add::preprocess();
 	compile_and_link();
 
 	return retval;

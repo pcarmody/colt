@@ -16,19 +16,24 @@
 #include "coltif.h"
 
 colt_if::colt_if(colt_base &b, char *in, char *str):
-	colt_cexpression(b, in, str)
+	colt_cexpression(b, NULL, COLT_DT_INTEGER, in, str)
 {
 	i_am = colt_class_if;
 }
 
-colt_if::colt_if(colt_base &b, COLT_C_FUNC cond):
-	colt_cexpression(b, cond)
-{
-	i_am = colt_class_if;
-}
+//colt_if::colt_if(colt_base &b, COLT_C_FUNC cond)
+//{
+//	i_am = colt_class_if;
+//}
 
 colt_if::~colt_if() {
 	// TODO Auto-generated destructor stub
+}
+
+
+void colt_if::get_value(int rec_num)
+{
+
 }
 
 int colt_if::process(int i)
