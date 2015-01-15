@@ -9,7 +9,8 @@
 #include "coltadd.h"
 
 colt_add::colt_add(colt_base &in, char *col_name, int t, char *tstr):
-	colt_operator(in)
+	colt_operator(in),
+	label(NULL)
 {
 	// TODO Auto-generated constructor stub
 	i_am = colt_class_add;
@@ -31,7 +32,9 @@ colt_add::~colt_add()
 int colt_add::num_cols()
 {
 	COLT_TRACE("colt_add::num_cols()")
-	return colt_operator::num_cols()+1;
+	if(label)
+		return colt_operator::num_cols()+1;
+	return colt_operator::num_cols();
 }
 
 void colt_add::get_value(int rec_num)

@@ -33,6 +33,7 @@ enum Colt_Class {
 	colt_class_select,
 	colt_class_c_expression,
 	colt_class_add,
+	colt_class_add_source,
 	colt_class_if,
 	colt_class_aggregate,
 	colt_class_aggregate_row,

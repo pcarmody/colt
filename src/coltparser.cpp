@@ -516,7 +516,7 @@ colt_add *colt_parser::add()
 		if(!consume_colt_expression(repl_str))
 			fatal_error("add expression expected a [colt-expression].\n");
 
-//		return (colt_add *) new colt_link(*return_value, label, repl_str);
+		return new colt_add_source(*return_value, label, type, repl_str);
 
 	} else {
 
