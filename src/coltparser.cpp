@@ -518,6 +518,14 @@ colt_add *colt_parser::add()
 
 		return new colt_add_source(*return_value, label, type, repl_str);
 
+	} else if(strcmp(type_str, "bash") == 0) {
+
+		type = COLT_DATATYPE;
+		if(!consume_colt_expression(repl_str))
+			fatal_error("add expression expected a [bash-expression].\n");
+
+		return new colt_bash(*return_value, label, type, repl_str);
+
 	} else {
 
 		if(strcmp(type_str, "string") == 0)

@@ -23,6 +23,7 @@
 #include "coltcexpression.h"
 #include "coltif.h"
 #include "coltaddsource.h"
+#include "coltbash.h"
 #include "coltaggregate.h"
 #include "coltaggregagerow.h"
 #include "colteach.h"
