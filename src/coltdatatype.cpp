@@ -30,7 +30,7 @@ char *colt_datatype::parse_thru(char *x)
 	if(value_type)
 		thru = ((coltthru *) value_type);
 	else {
-		if(strcmp("thru:", x) == 0)
+		if(strncmp("thru:", x, 5) == 0)
 			thru  =  new coltthru();
 //		else if(strcmp("sort:", x) == 0)
 //			return ((colt_sort *) value_type)->from_string(x);

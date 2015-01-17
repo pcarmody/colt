@@ -120,7 +120,10 @@ coltthru::coltthru(char *source):
 	end_index(-1)
 {
 	i_am = colt_class_thru;
-	strcpy(file_name, source);
+	if(source)
+		strcpy(file_name, source);
+	else
+		file_name[0] = '\0';
 //	load(source);
 }
 
@@ -269,6 +272,17 @@ char *coltthru::from_string(char *input)
 	sscanf(input, "thru:%s,", file_name);
 
 	while(*input && *input != ',') input++;
+
+	if(!input)
+		return input;
+
+	char *a = input+1;
+	while(*a)
+		if(*a++ == ',')
+			index_count++;
+
+	int count=0;
+	index_list = (int *) malloc(count * sizeof(int));
 
 	while(*input == ',') {
 		*input++;

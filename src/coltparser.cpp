@@ -387,10 +387,10 @@ colt_base *colt_parser::file_name()
 		}
 	}
 
-	if(consume_token("[")) {
-		consume_keyword(dtype_str);
-		if(!consume_token("]"))
-			fatal_error("Expected closing ']' in file datatype definiiton.\n");
+	if(is_token("[")) {
+		consume_colt_expression(dtype_str);
+//		if(!consume_token("]"))
+//			fatal_error("Expected closing ']' in file datatype definiiton.\n");
 	} else
 		dtype_str[0] = '\0';
 
@@ -413,9 +413,14 @@ colt_base *colt_parser::file_name()
 
 	if(dtype_str[0])
 		for(int i=0; i<strlen(dtype_str); i++)
-			if(dtype_str[i] == 'I')
+			switch (dtype_str[i]) {
+			case 'I':
 				retval->set_datatype(i, COLT_DT_INTEGER);
-
+				break;
+			case 'D':
+				retval->set_datatype(i, COLT_DT_SOURCE);
+				break;
+			}
 	return retval;
 }
 

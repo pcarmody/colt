@@ -254,7 +254,7 @@ int	colt_csv:: find_sep_chars(int set_sep_chars)
 	  int test[127];
 	  for(int i=0; i<127; i++) test[i] = '\0';
 	  column_sep_char = 0;
-	  int line_count = 3;
+	  int line_count = 1;
 	  for(char *x=base_ptr; *x; x++) {
 		  if(*x == '\n')
 			  if(!--line_count)
@@ -464,6 +464,11 @@ void colt_csv::set_coltype(int num, colt_datatype *x)
 void colt_csv::set_datatype(int i, int type)
 {
 	COLT_TRACE("colt_csv::set_datatype(int i, int type)")
+
+    if(i >= num_cols()) {
+    	perror("Column type definition is out of range.\n");
+    	exit(-1);
+    }
 	if(cell_objects[i]) {
 		if(cell_objects[i]->type == type)
 			return;
