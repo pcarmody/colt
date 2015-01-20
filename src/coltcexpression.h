@@ -12,6 +12,7 @@ typedef int(*COLT_C_FUNC)(void **row);
 
 class colt_cexpression : public colt_add {
 	static int expression_count;
+	IntAssocArray<char *>	elements;
 public:
 	COLT_C_FUNC		function_ptr;
 	char		*return_type;

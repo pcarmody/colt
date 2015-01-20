@@ -13,13 +13,13 @@
 #include "avl.h"
 using namespace std;
 
-template <class T> class AssocArray {
+template <class T, class S> class Generic_Assoc_Array {
   private:
 	  class Data
 	  {
 	  public:
 		  int		rec_num;
-		  string 	name;
+		  S 	name;
 		  Data() {};
 		  bool operator < (Data &d) { return name < d.name; };
 		  bool operator > (Data &d) { return name > d.name; };
@@ -33,7 +33,7 @@ template <class T> class AssocArray {
 		  return stack.size();
 	  }
 
-	  bool IsItem(string name)
+	  bool IsItem(S name)
 	  {
 //		  for(int i=0; i<Size(); i++)
 //		  {
@@ -46,7 +46,7 @@ template <class T> class AssocArray {
 		  return tree.find(search);
 	  }
 
-	  bool AddItem(string name, T data)
+	  bool AddItem(S name, T data)
 	  {
 		  if(IsItem(name))
 			  return false;
@@ -58,7 +58,7 @@ template <class T> class AssocArray {
 		  return true;
 	  }
 
-	  void Reset(string name, T data)
+	  void Reset(S name, T data)
 	  {
 		  Data search;
 		  search.name = name;
@@ -69,7 +69,7 @@ template <class T> class AssocArray {
 			  stack[0] = data;
 	  }
 
-	  T& operator [] (string name)
+	  T& operator [] (S name)
 	  {
 //		  for(int i=0; i<Size(); i++)
 //		  {
@@ -89,7 +89,7 @@ template <class T> class AssocArray {
 //		  return stack[idx].data;
 	  }
 
-//	  string GetItemName(long index)
+//	  S GetItemName(long index)
 //	  {
 //		  if(index<0)
 //			  index = 0;
@@ -113,5 +113,7 @@ template <class T> class AssocArray {
 
 };
 
+template <class T> class AssocArray : public Generic_Assoc_Array<T, string> {};
+template <class T> class IntAssocArray : public Generic_Assoc_Array<T, int> {};
 
 #endif /* ASSOCARRAY_H_ */

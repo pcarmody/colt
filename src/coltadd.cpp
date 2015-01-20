@@ -37,6 +37,26 @@ int colt_add::num_cols()
 	return colt_operator::num_cols();
 }
 
+int colt_add::compare(int a, int b, int c)
+{
+	COLT_TRACE("colt_add::compare(int a, int b, int c)")
+	if(c < num_cols()-1  || !label)
+		return colt_operator::compare(a,b,c);
+
+	char left_ptr[COLT_MAX_STRING_SIZE];
+	get_value(a);
+	strcpy(left_ptr, value);
+	get_value(b);
+
+	colt_datatype left(type);
+	colt_datatype rite(type);
+
+	left = left_ptr;
+	rite = value;
+
+	return left.compare(rite);
+}
+
 void colt_add::get_value(int rec_num)
 {
 	int cols = num_cols();
@@ -86,7 +106,7 @@ colt_datatype **colt_add::cells(int rec_num)
 		colt_add_cell[i] = rec[i];
 
 	if(colt_add_cell[cols-1]) {
-//		colt_add_cell[cols-1]->set_value(value);
+		colt_add_cell[cols-1]->set_value(value);
 
 		return colt_add_cell;
 	}

@@ -9,6 +9,7 @@
 #define COLT_CROSS_H_
 
 class colt_cross : public colt_each {
+	IntAssocArray<colt_base *>	elements;
 public:
 	int				current_rec_num;
 	char			**field_list;

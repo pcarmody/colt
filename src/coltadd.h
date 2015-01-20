@@ -23,6 +23,7 @@ public:
 
 	virtual void get_value(int rec_num=0);
 
+	int compare(int a, int b, int c);
 	char **fields(int rec);
 	colt_datatype **cells(int rec);
 	int num_cols();

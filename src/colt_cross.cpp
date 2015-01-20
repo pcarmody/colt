@@ -167,10 +167,13 @@ int colt_cross::process(int rec_num)
 
 	expression_object->set_destination(this);
 
+	elements.AddItem(rec_num, expression_object);
+
 	expression_object->process_all();
 
-	colt_base *destination = expression_object->get_destination();
-	destination->out_object = NULL;
+//	colt_base *destination = expression_object->get_destination();
+//	destination->out_object = NULL;
+
 //	delete expression_object;
 //	delete expression_object;
 

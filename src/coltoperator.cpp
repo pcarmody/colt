@@ -132,6 +132,12 @@ int colt_operator::num_cols()
 	return operand->num_cols();
 }
 
+int colt_operator::compare(int a, int b, int c)
+{
+	COLT_TRACE("colt_add::compare(int a, int b, int c)")
+	return operand->compare(a,b,c);
+}
+
 char **colt_operator::fields(int rec_num)
 {
 	COLT_TRACE("**colt_operator::fields(int rec_num)")

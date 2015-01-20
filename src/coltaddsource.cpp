@@ -22,12 +22,17 @@ colt_add_source::~colt_add_source() {
 
 void colt_add_source::get_value(int rec_num)
 {
+	int cols = num_cols();
+
+	if(elements.IsItem(rec_num)) {
+		colt_datatype *new_cell = colt_add_cell[cols-1];
+		new_cell->set_value(elements[rec_num]);
+		new_cell->format(value);
+	}
 	colt_datatype **rec = colt_operator::cells(rec_num);
 
 	if(!rec)
 		return;
-
-	int cols = num_cols();
 
 	colt_parser parse(code_string, rec, col_headers(), cols-1);
 
@@ -54,6 +59,7 @@ void colt_add_source::get_value(int rec_num)
 		exit(1);
 	}
 
+	elements.AddItem(rec_num, thru);
 	new_cell->set_value(thru);
 	new_cell->format(value);
 }

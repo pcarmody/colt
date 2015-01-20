@@ -142,10 +142,16 @@ void colt_cexpression::get_value(int rec_num)
 	if(!label)
 		return;
 
+	int cols = num_cols();
+
+	if(elements.IsItem(rec_num)) {
+		colt_datatype *new_cell = colt_add_cell[cols-1];
+		new_cell->set_value(elements[rec_num]);
+		strcpy(value, elements[rec_num]);
+	}
 	colt_datatype **rec = colt_operator::cells(rec_num);
 
 	void *cell_values[COLT_MAX_NUM_COLS];
-	int cols = num_cols();
 
 	for(int i=0; i<cols-1; i++)
 		cell_values[i] = rec[i]->get_value();
@@ -156,11 +162,15 @@ void colt_cexpression::get_value(int rec_num)
 
 	for(int i=0; i<cols-1; i++)
 		colt_add_cell[i] = rec[i];
-	colt_add_cell[cols-1]->set_value(value);
+	colt_add_cell[cols-1]->set_value(cell_values[cols-1]);
+	colt_add_cell[cols-1]->format(value);
 
 	if(!function_ptr) {
 		value[0] = '\0';
 	}
+	char *new_str = new char[strlen(value)+1];
+	strcpy(new_str, value);
+	elements.AddItem(rec_num, new_str);
 }
 
 

@@ -10,6 +10,7 @@
 
 class colt_add_source : public colt_add {
 	char code_string[COLT_MAX_STRING_SIZE];
+	IntAssocArray<coltthru *>	elements;
 
 public:
 	colt_add_source(colt_base &in, char *col_name, int t, char *tstr);

@@ -8,6 +8,9 @@
 
 #pragma GCC diagnostic ignored "-Wwrite-strings"
 
+#include "avl.h"
+#include "AssocArray.h"
+
 #include "coltdatatype.h"
 
 #include "coltbase.h"
@@ -30,8 +33,6 @@
 #include "coltonchange.h"
 
 #include "coltlink.h"
-#include "avl.h"
-#include "AssocArray.h"
 #include "coltpartition.h"
 #include "coltuniq.h"
 #include "coltshare.h"
