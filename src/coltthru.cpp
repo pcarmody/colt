@@ -40,6 +40,14 @@ int match(const char *string, char *pattern)
 colt_base *colt_load_thru(char *file_name, int status)
 {
 	COLT_TRACE("*colt_load_thru(char *file_name, int status)")
+
+	char *extension = strrchr(file_name, '.');
+	if(strcmp(extension, ".thru") != 0) {
+		colt_csv *retval = new colt_csv(file_name, 1);
+		retval->open_and_load();
+		return retval;
+	}
+
 	struct stat sb;
 	int fd;
 
@@ -240,12 +248,7 @@ int *coltthru::read_config(int *base_ptr)
 
     index_count = ident.index_count;
 
-	if(match(ident.file_name, "thru$"))
-		operand = colt_load_thru(ident.file_name);
-	else {
-		operand = new colt_csv(ident.file_name, 1);
-		((colt_csv *) operand)->open_and_load();
-	}
+	operand = colt_load_thru(ident.file_name);
     operand->out_object = this;
 
     return base_ptr + sizeof(ident)/sizeof(int);
@@ -267,28 +270,39 @@ int coltthru::to_string(char *x)
 
 char *coltthru::from_string(char *input)
 {
+	COLT_TRACE("coltthru::from_string(char *input)")
 	char file_name[COLT_MAX_STRING_SIZE];
 
-	sscanf(input, "thru:%s,", file_name);
+	char *b = input+5;
+	char *c = file_name;
+	while(*b && *b != ',')
+		*c++ = *b++;
+	*c = '\0';
+
+//	sscanf(input, "thru:%s,", file_name);
 
 	while(*input && *input != ',') input++;
 
 	if(!input)
 		return input;
 
+	int count = 0;
 	char *a = input+1;
 	while(*a)
 		if(*a++ == ',')
-			index_count++;
+			count++;
 
-	int count=0;
-	index_list = (int *) malloc(count * sizeof(int));
+	index_list = (int *) malloc(count+1 * sizeof(int));
 
-	while(*input == ',') {
-		*input++;
-		push_back(atoi(input));
+	while(*input++ == ',') {
+		int index = atoi(input);
+		push_back(index);
 		while(*input && *input != ',') input++;
 	}
+
+	operand = colt_load_thru(file_name);
+    operand->out_object = this;
+    end_index = index_count-1;
 
 	return input;
 }

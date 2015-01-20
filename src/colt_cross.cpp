@@ -19,22 +19,6 @@ colt_cross::colt_cross(colt_base&in, char *exp):
 {
 	i_am = colt_class_cross;
 }
-//colt_cross::colt_cross(colt_base &in, colt_base &rite):
-//	colt_each(in),
-//	expression_object(&rite),
-//	current_rec_num(-1),
-//	field_list(NULL)
-//{
-//	i_am = colt_class_cross;
-//}
-//colt_cross::colt_cross(colt_base &in, colt_base *rite):
-//	colt_each(in),
-//	expression_object(rite),
-//	current_rec_num(-1),
-//	field_list(NULL)
-//{
-//	i_am = colt_class_cross;
-//}
 
 colt_cross::~colt_cross()
 {
@@ -181,28 +165,17 @@ int colt_cross::process(int rec_num)
 	tmp_op = operand;
 	expression_object = insert_expression(expression_string, rec_num, 1);
 
-//	colt_operator *endl = NULL;
-//	endl = (colt_operator *)  expression_object->get_destination();
-//	endl->set_destination(out_object);
 	expression_object->set_destination(this);
 
 	expression_object->process_all();
 
-//	endl->out_object = NULL;
-//	if(!expression_object->preprocess()) {
-//		return 0;
-//	}
-//
-//	int i;
-//	while((i = expression_object->get_next_row()) >= 0)
-//		if(!colt_operator::process(i))
-//			return 0;
-//
-//	expression_object->postprocess();
-
-	delete expression_object;
+	colt_base *destination = expression_object->get_destination();
+	destination->out_object = NULL;
+//	delete expression_object;
+//	delete expression_object;
 
 	expression_object = NULL;
+	operand = tmp_op;
 
 	return 1;
 }
