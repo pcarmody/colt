@@ -62,4 +62,6 @@ void colt_add_source::get_value(int rec_num)
 	elements.AddItem(rec_num, thru);
 	new_cell->set_value(thru);
 	new_cell->format(value);
+	if(colt_add_cell[cols-1])
+		colt_add_cell[cols-1]->set_value(thru);
 }

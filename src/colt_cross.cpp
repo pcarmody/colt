@@ -114,7 +114,12 @@ int colt_cross::compare(int a, int b, int c)
 	if(c < left_num_cols)
 		return colt_each::compare(xrefa->left, xrefb->left, c);
 
-	return xrefa->expression->compare(xrefa->right, xrefb->right, c-left_num_cols);
+	colt_datatype *left= xrefa->expression->cells(xrefa->right)[c-left_num_cols];
+	colt_datatype *rite= xrefb->expression->cells(xrefb->right)[c-left_num_cols];
+
+	return left->compare(*rite);
+
+//	return xrefa->expression->compare(xrefa->right, xrefb->right, c-left_num_cols);
 }
 
 char **colt_cross::fields(int rec_num)
