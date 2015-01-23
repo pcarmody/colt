@@ -123,7 +123,7 @@ coltthru::coltthru(char *source):
 	index_list(NULL),
 	index_count(0),
 	index_record_size(sizeof(int)),
-	preload(1),
+	preload(0),
 	iterate_count(0),
 	end_index(-1)
 {
@@ -176,6 +176,10 @@ int coltthru::num_lines()
 void coltthru::push_back(int i)
 {
 	COLT_TRACE("coltthru::push_back(int i)")
+	if(index_count >= buffer_size) {
+		buffer_size += max_size();
+		index_list = (int *) realloc(index_list, buffer_size);
+	}
 	index_list[index_count++] = i;
 };
 
@@ -437,10 +441,9 @@ int coltthru::preprocess()
 
 	index_count = 0;
 
-	if(index_list)
-		free(index_list);
+	buffer_size = 1000; //max_size();
 
-	index_list = (int *) malloc(max_size() * sizeof(int));
+	index_list = (int *) malloc(buffer_size * sizeof(int));
 
 	return colt_operator::preprocess();
 }

@@ -22,6 +22,7 @@ class colt_range;
 class colt_sort : public coltthru {
 protected:
 	int column_number;
+	char column_name[COLT_MAX_STRING_SIZE];
 	int numeric_sort;
 	int ascending;
 public:

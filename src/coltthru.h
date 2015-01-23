@@ -26,13 +26,14 @@ int match(const char *string, char *pattern);
 
 class coltthru : public colt_operator {
 public:
-	char		file_name[100];
+	char		file_name[COLT_MAX_STRING_SIZE];
 	int			*index_list;
 	int			index_count;
 	int			iterate_count;
 	int			index_record_size;
 	int			preload;
 	int			end_index;
+	int			buffer_size;
 
 	coltthru(colt_base &in, char *destination_file_name=NULL);
 	coltthru(char *source=NULL);

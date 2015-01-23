@@ -15,7 +15,9 @@ colt_cross::colt_cross(colt_base&in, char *exp):
 	colt_each(in, exp),
 	current_rec_num(-1),
 	field_list(NULL),
-	cross_headers(NULL)
+	cross_headers(NULL),
+	left_num_cols(0),
+	right_num_cols(0)
 {
 	i_am = colt_class_cross;
 }
@@ -56,17 +58,17 @@ colt_operator *colt_cross::insert_expression(char *expression, int rec_num, int 
 int colt_cross::num_cols()
 {
 	COLT_TRACE("colt_cross::num_cols()")
-	if(!expression_object)
-		return colt_each::num_cols();
-
-	return colt_each::num_cols() + expression_object->num_cols();
+//	if(!expression_object)
+//		return colt_each::num_cols();
+//
+//	return colt_each::num_cols() + expression_object->num_cols();
+	return left_num_cols + right_num_cols;
 }
 
 char *colt_cross::col_header(int n)
 {
 	COLT_TRACE("*colt_cross::col_header(int n)")
-	int left_cols = colt_each::num_cols();
-	if(n < left_cols)
+	if(n < left_num_cols)
 		return colt_each::col_header(n);
 
 	if(!cross_headers)
@@ -83,19 +85,19 @@ char **colt_cross::col_headers()
 
 	char **left_headers = colt_operator::col_headers();
 
-	if(!expression_object)
+	if(right_num_cols == 0)
 		return left_headers;
+
+	if(!expression_object)
+		expression_object = xrefs.nth(0)->expression;
 
 	char **right_headers = expression_object->col_headers();
 
-	int left_cols = colt_operator::num_cols();
-	int right_cols = expression_object->num_cols();
-
-	cross_headers = (char **) malloc(sizeof(char *) * (left_cols+right_cols));
+	cross_headers = (char **) malloc(sizeof(char *) * (left_num_cols+right_num_cols));
 	int i=0;
-	for(i=0; i<left_cols; i++)
+	for(i=0; i<left_num_cols; i++)
 		cross_headers[i] = left_headers[i];
-	for(int j=0; j<right_cols; j++) {
+	for(int j=0; j<right_num_cols; j++) {
 		char *tmp = new char[COLT_MAX_STRING_SIZE];
 		sprintf(tmp, "%s.%s", expression_object->source_file_name(),right_headers[j]);
 		cross_headers[i+j] = tmp; //right_headers[j];
@@ -104,27 +106,40 @@ char **colt_cross::col_headers()
 	return cross_headers;
 }
 
+int colt_cross::compare(int a, int b, int c)
+{
+	colt_cross_xrefs *xrefa = xrefs[a];
+	colt_cross_xrefs *xrefb = xrefs[b];
+
+	if(c < left_num_cols)
+		return colt_each::compare(xrefa->left, xrefb->left, c);
+
+	return xrefa->expression->compare(xrefa->right, xrefb->right, c-left_num_cols);
+}
+
 char **colt_cross::fields(int rec_num)
 {
 	COLT_TRACE("**colt_cross::fields(int rec_num)")
-	char **left = colt_each::fields(current_rec_num);
+	colt_cross_xrefs *xref = xrefs[rec_num];
+	char **left = colt_each::fields(xref->left);
 
-	if(!expression_object)
+	if(!xref)
 		return left;
 
-	char **rite = expression_object->fields(rec_num);
+	char **rite = xref->expression->fields(xref->right);
 
-	if(field_list) {
-		free(field_list);
-		field_list = NULL;
-	}
+//	if(field_list) {
+//		free(field_list);
+//		field_list = NULL;
+//	}
 
-	field_list = (char **) malloc(sizeof(char *) * num_cols());
+	if(!field_list)
+		field_list = (char **) malloc(sizeof(char *) * num_cols());
 
 	int i;
-	for(i=0; i<colt_each::num_cols(); i++)
+	for(i=0; i<left_num_cols; i++)
 		field_list[i] = left[i];
-	for(int j=0; j<expression_object->num_cols(); j++)
+	for(int j=0; j<right_num_cols; j++)
 		field_list[i++] = rite[j];
 
 	return field_list;
@@ -144,12 +159,19 @@ colt_datatype **colt_cross::cells(int rec_num)
 		cell_list = (colt_datatype **) malloc(sizeof(colt_datatype *) * num_cols());
 
 	int i;
-	for(i=0; i<colt_each::num_cols(); i++)
+	for(i=0; i<left_num_cols; i++)
 		cell_list[i] = left[i];
-	for(int j=0; j<expression_object->num_cols(); j++)
+	for(int j=0; j<right_num_cols; j++)
 		cell_list[i++] = rite[j];
 
 	return cell_list;
+}
+
+int	colt_cross::preprocess()
+{
+	if(!left_num_cols)
+		left_num_cols = colt_each::num_cols();
+	return colt_each::preprocess();
 }
 
 int colt_cross::process(int rec_num)
@@ -159,18 +181,30 @@ int colt_cross::process(int rec_num)
 
 	if(expression_object) {
 		operand = tmp_op;
-		return colt_operator::process(rec_num);
+		int curr = xrefs.Size();
+		xrefs.AddItem(curr, new colt_cross_xrefs(current_rec_num, rec_num, expression_object));
+		return colt_operator::process(curr-1);
 	}
 	current_rec_num = rec_num;
 	tmp_op = operand;
 	expression_object = insert_expression(expression_string, rec_num, 1);
 
+	right_num_cols = expression_object->num_cols();
+
 	expression_object->set_destination(this);
 
-	elements.AddItem(rec_num, expression_object);
+//	expression_object->process_all();
+	int rec;
+	if(!expression_object->preprocess())
+		return 0;
 
-	expression_object->process_all();
+	try {
+		while((rec = expression_object->get_next_row()) >= 0) {
+			expression_object->process(rec);
+		}
+	} catch (colt_exception *e) {
 
+	}
 //	colt_base *destination = expression_object->get_destination();
 //	destination->out_object = NULL;
 

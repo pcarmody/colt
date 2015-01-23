@@ -111,6 +111,18 @@ template <class T, class S> class Generic_Assoc_Array {
 		  return stack[index];
 	  }
 
+	  T& nth (long index)
+	  {
+		  if(index < 0)
+			  index = 0;
+//		  for(int i=0; i<Size(); i++)
+//		  {
+//			  if(i == index)
+//				  return stack[i].data;
+//		  }
+		  return stack[index];
+	  }
+
 };
 
 template <class T> class AssocArray : public Generic_Assoc_Array<T, string> {};

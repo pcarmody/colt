@@ -58,18 +58,7 @@ colt_sort::colt_sort(colt_base &b, char *col_name, int numeric, int asc):
 	ascending(asc)
 {
 	i_am = colt_class_sort;
-	for(int j=0; j<coltthru::num_cols(); j++) {
-		char *head = coltthru::col_header( j );
-		if(strcmp(col_name, head ) == 0 ) {
-			column_number = j;
-			break;
-		}
-	}
-
-	if(column_number == -1) {
-		cerr << "Unknown sort key '" << col_name << "'\n";
-		exit(-1);
-	}
+	strcpy(column_name, col_name);
 }
 
 
@@ -347,6 +336,20 @@ void colt_sort::search_highest_high(int low, int high)
 void colt_sort::postprocess()
 {
 	COLT_TRACE("colt_sort::postprocess()")
+	char **heads = col_headers();
+	for(int j=0; j<coltthru::num_cols(); j++) {
+//		char *head = coltthru::col_header( j );
+		if(strcmp(column_name, heads[j] ) == 0 ) {
+			column_number = j;
+			break;
+		}
+	}
+
+	if(column_number == -1) {
+		cerr << "Unknown sort key '" << column_name << "'\n";
+		return;
+	}
+
 	if(!preload) {
 		perform_sort();
 	}

@@ -9,12 +9,27 @@
 #define COLT_CROSS_H_
 
 class colt_cross : public colt_each {
-	IntAssocArray<colt_base *>	elements;
+	class colt_cross_xrefs {
+	public:
+		int	left;
+		int	right;
+		colt_operator *expression;
+
+		colt_cross_xrefs(int l, int r, colt_operator *e):
+			left(l),
+			right(r),
+			expression(e)
+		{};
+		~colt_cross_xrefs() {};
+	};
+	IntAssocArray<colt_cross_xrefs *>	xrefs;
 public:
 	int				current_rec_num;
 	char			**field_list;
 	colt_datatype	**cell_list;
 	char			**cross_headers;
+	int				left_num_cols;
+	int				right_num_cols;
 
 	colt_cross(colt_base&in, char *exp);
 //	colt_cross(colt_base &in, colt_base &rite);
@@ -28,10 +43,12 @@ public:
 	int	num_cols();
 	char *col_header(int n);
 	char **col_headers();
+
+	virtual int compare(int a, int b, int c);
 	char **fields(int rec_num);
 	colt_datatype **cells(int rec_num);
 
-//	int preprocess();
+	int preprocess();
 	int process(int rec_num);
 };
 
