@@ -30,6 +30,7 @@ public:
 	char			**cross_headers;
 	int				left_num_cols;
 	int				right_num_cols;
+	colt_operator	*first_expression;
 
 	colt_cross(colt_base&in, char *exp);
 //	colt_cross(colt_base &in, colt_base &rite);

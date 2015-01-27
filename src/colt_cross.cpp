@@ -89,7 +89,7 @@ char **colt_cross::col_headers()
 		return left_headers;
 
 	if(!expression_object)
-		expression_object = xrefs.nth(0)->expression;
+		expression_object = xrefs.nth(xrefs.Size()-1)->expression;
 
 	char **right_headers = expression_object->col_headers();
 
@@ -188,13 +188,14 @@ int colt_cross::process(int rec_num)
 		operand = tmp_op;
 		int curr = xrefs.Size();
 		xrefs.AddItem(curr, new colt_cross_xrefs(current_rec_num, rec_num, expression_object));
-		return colt_operator::process(curr-1);
+		return colt_operator::process(curr);
 	}
 	current_rec_num = rec_num;
 	tmp_op = operand;
 	expression_object = insert_expression(expression_string, rec_num, 1);
 
 	right_num_cols = expression_object->num_cols();
+	colt_base *destination = expression_object->get_destination();
 
 	expression_object->set_destination(this);
 
@@ -210,11 +211,9 @@ int colt_cross::process(int rec_num)
 	} catch (colt_exception *e) {
 
 	}
-//	colt_base *destination = expression_object->get_destination();
 //	destination->out_object = NULL;
 
-//	delete expression_object;
-//	delete expression_object;
+	expression_object->postprocess();
 
 	expression_object = NULL;
 	operand = tmp_op;

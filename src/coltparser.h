@@ -66,6 +66,7 @@ public:
 	coltbitmap			*bitmap();
 	colt_each			*each();
 	colt_cross			*cross();
+	colt_race			*race();
 	colt_partition		*partition();
 	colt_expand			*expand();
 	colt_reduce			*reduce();

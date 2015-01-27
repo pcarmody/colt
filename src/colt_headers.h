@@ -53,6 +53,7 @@
 #include "coltcounter.h"
 
 #include "colt_cross.h"
+#include "coltrace.h"
 #include "coltexpand.h"
 #include "colt_range.h"
 #include "colt_range_list.h"

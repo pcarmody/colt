@@ -462,11 +462,15 @@ int coltthru::process(int rec_num)
 void coltthru::postprocess()
 {
 	COLT_TRACE("coltthru::postprocess()")
+	if(!out_object)
+		return;
+
 	if(!preload) {
 		if(end_index == -1) {
 			iterate_count=0;
 			end_index=index_count-1;
 		}
+
 		if(file_name[0])
 			save(file_name);
 		preload = 1;

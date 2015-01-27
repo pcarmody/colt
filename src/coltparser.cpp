@@ -903,6 +903,52 @@ colt_cross *colt_parser::cross()
 	return new colt_cross(*return_value, exp);
 }
 
+colt_race *colt_parser::race()
+{
+	COLT_TRACE("*colt_parser::cross()")
+
+	consume_token("race");
+
+	if(!consume_token(":"))
+		fatal_error("Expected ':' after 'race'.\n");
+
+	char col_name[COLT_MAX_STRING_SIZE];
+	char left_name[COLT_MAX_STRING_SIZE];
+	char right_name[COLT_MAX_STRING_SIZE];
+	char command[COLT_MAX_STRING_SIZE];
+	char flags[COLT_MAX_STRING_SIZE];
+
+	if(input_buffer[0] == '0' || input_buffer[0] == '1') {
+		consume_keyword(flags);
+
+		if(!consume_token(","))
+			fatal_error("Expected ',' after race:flags\n");
+	} else
+		strcpy(flags, "01");
+
+	consume_keyword(col_name);
+
+	if(!consume_token(","))
+		fatal_error("Expected ',' after race:flags.\n");
+
+	consume_keyword(left_name);
+
+	if(!consume_token(","))
+		fatal_error("Expected ',' after race:flags,col_name,left_key.\n");\
+
+	consume_keyword(right_name);
+
+	if(!consume_token(","))
+		fatal_error("Expected ',' after race:flags,col_name,left_key,right_key.\n");
+
+	if(*input_buffer != '[')
+		fatal_error("'race' expected a colt expression.\n");
+
+	consume_colt_expression(command);
+
+	return new colt_race(*return_value, col_name, left_name, right_name, flags, command);
+}
+
 colt_partition *colt_parser::partition()
 {
 	COLT_TRACE("*colt_parser::partition()")
@@ -1096,6 +1142,8 @@ colt_base *colt_parser::unary_expression()
 		object = each();
 	else if(is_token("cross"))
 		object = cross();
+	else if(is_token("race"))
+		object = race();
 	else if(is_token("part"))
 		object = partition();
 	else if(is_token("expand"))
