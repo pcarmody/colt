@@ -184,6 +184,11 @@ char *colt_range::from_string(char *input)
 	return input;
 }
 
+int colt_range::contains(int rec_num)
+{
+	return (min_value <= rec_num) && (rec_num <= max_value);
+}
+
 int colt_range::num_cols()
 {
 	return operand->num_cols();

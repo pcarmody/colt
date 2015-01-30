@@ -40,6 +40,7 @@ enum Colt_Class {
 
 	// compound expressions
 	colt_class_each,
+	colt_class_isin,
 	colt_class_partition,
 	colt_class_onchange,
 	colt_class_uniq,
@@ -103,9 +104,11 @@ public:
 	virtual char find_sep_char(char *row, char end_char='\n');
 	virtual char sep_char();
 	virtual char *source_file_name();
+	virtual char *index_file_name();
 	virtual	colt_base *get_datasource(int count=0);
 	virtual int	reduce_to(int level, int rec_num);
 	virtual int compare(int a, int b, int c);
+	virtual int contains(int rec_num);
 
 	virtual	void process_all();
 	virtual	int get_next_row();

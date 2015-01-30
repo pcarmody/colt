@@ -59,6 +59,8 @@ public:
 	virtual	bool sort_func(int i, int j);
 	virtual	int show_status(int indent_level=0);
 	virtual int compare(int a, int b, int c);
+	virtual int contains(int rec_num);
+	virtual char *index_file_name();
 
 	virtual	char *source_file_name();
 

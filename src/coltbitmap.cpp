@@ -235,6 +235,11 @@ char *coltbitmap::from_string(char *input)
 	return input;
 }
 
+int coltbitmap::contains(int rec_num)
+{
+	return  is_set(rec_num);
+}
+
 int coltbitmap::show_status(char *baseptr, int indent)
 {
 //	coltthru_identifier ident;

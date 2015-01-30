@@ -31,6 +31,9 @@ public:
 	virtual int num_lines();
 	virtual int num_cols();
 	int compare(int a, int b, int c);
+	int contains(int rec_num);
+	char *index_file_name();
+
 	virtual int max_size();
 	virtual char **fields(int rec_num);
 	virtual void set_coltype(int num, colt_datatype *x);

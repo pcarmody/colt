@@ -205,12 +205,27 @@ coltthru &coltthru::operator <<(int xx)
 	return *this;
 }
 
+int coltthru::contains(int rec_num)
+{
+	for(int i=0; i<index_count; i++)
+		if(index_list[i] == rec_num)
+			return 1;
+	return 0;
+}
+
 char *coltthru::source_file_name()
 {
 	COLT_TRACE("*coltthru::source_file_name()")
 	if(file_name[0])
 		return file_name;
 	return colt_operator::source_file_name();
+}
+
+char *coltthru::index_file_name()
+{
+	if(!operand)
+		return NULL;
+	return operand->source_file_name();
 }
 
 colt_base *coltthru::get_datasource(int count)
@@ -358,6 +373,7 @@ int coltthru::load(char *file_name, int status)
 //    	perror("Mismatched file data version.\n");
     index_list = read_config(index_list);
     end_index = index_count;
+    preload = 1;
 
     if(status)
     	return show_status(p, status);

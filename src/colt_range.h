@@ -45,6 +45,7 @@ public:
 	int show_status(char *baseptr, int indent=0);
 	int to_string(char *x);
 	char *from_string(char *input);
+	int contains(int rec_num);
 
 	int num_cols();
 	char **fields(int rec_num);

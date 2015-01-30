@@ -116,6 +116,11 @@ int colt_base::max_size()
 	return 0; 
 };
 
+char *colt_base::index_file_name()
+{
+	return NULL;
+}
+
 char *colt_base::source_file_name() 
 { 
 	COLT_TRACE("*colt_base::source_file_name() ")
@@ -137,6 +142,11 @@ int colt_base::reduce_to(int level, int rec_num)
 int colt_base::compare(int a, int b, int c)
 {
 	return a-b;
+}
+
+int colt_base::contains(int rec_num)
+{
+	return 0;
 }
 
 char *colt_base::extract_str(char *in, char sep_char, char eol_char, char quote_char) 

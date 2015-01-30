@@ -30,6 +30,7 @@
 #include "coltaggregate.h"
 #include "coltaggregagerow.h"
 #include "colteach.h"
+#include "coltisin.h"
 #include "coltonchange.h"
 
 #include "coltlink.h"

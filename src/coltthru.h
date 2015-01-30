@@ -49,6 +49,7 @@ public:
 	void save(char *file_name);
 	int load(char *file_name, int status=0);
 	char *source_file_name();
+	char *index_file_name();
 	virtual void push_back(int i);
 	virtual	int serialize_id_num();
 	virtual int write_config(FILE *);
@@ -60,6 +61,7 @@ public:
 	virtual int show_status(char *baseptr, int indent=0);
 	virtual colt_base *get_datasource(int count=0);
 	virtual int reduce_to(int level, int rec_num);
+	virtual int contains(int rec_num);
 
 	char **fields(int rec_num);
 	colt_datatype **cells(int rec_num);

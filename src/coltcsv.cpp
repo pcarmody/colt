@@ -524,6 +524,16 @@ int colt_csv::compare(int a, int b, int c)
 	return left.compare(rite);
 }
 
+int colt_csv::contains(int rec_num)
+{
+	return rec_num < num_lines();
+}
+
+char *colt_csv::index_file_name()
+{
+	return file_name;
+}
+
 bool colt_csv::sort_func(int i, int j)
 {
 	COLT_TRACE("colt_csv::sort_func(int i, int j)")

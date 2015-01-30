@@ -740,7 +740,7 @@ coltthru *colt_parser::thru()
 	coltthru *retval = NULL;
 
 	if(consume_token(":")) {
-		if(consume_word("file_name"))
+		if(consume_keyword(file_name))
 			retval = new coltthru(*return_value, file_name);
 		else
 			fatal_error("Unable to parse file_name in 'thru'.\n");
@@ -882,6 +882,27 @@ colt_each *colt_parser::each()
 	colt_each *retval = new colt_each(*return_value, exp);
 
 	return_value = retval;
+}
+
+colt_isin *colt_parser::isin()
+{
+	COLT_TRACE("*colt_parser::isin()")
+
+	int negative = consume_token("notin");
+	if(!negative)
+		consume_token("isin");
+
+	if(!consume_token(":"))
+		fatal_error("isin/notin expected a ':'.\n");
+
+	if(input_buffer[0] != '[')
+		fatal_error("isin/notin expected a colt expression.\n");
+
+	char command[COLT_MAX_STRING_SIZE];
+
+	consume_colt_expression(command);
+
+	return new colt_isin(*return_value, command, negative);
 }
 
 colt_cross *colt_parser::cross()
@@ -1140,6 +1161,10 @@ colt_base *colt_parser::unary_expression()
 		object = bitmap();
 	else if(is_token("each"))
 		object = each();
+	else if(is_token("isin"))
+		object = isin();
+	else if(is_token("notin"))
+		object = isin();
 	else if(is_token("cross"))
 		object = cross();
 	else if(is_token("race"))

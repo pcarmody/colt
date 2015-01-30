@@ -138,6 +138,18 @@ int colt_operator::compare(int a, int b, int c)
 	return operand->compare(a,b,c);
 }
 
+int colt_operator::contains(int rec_num)
+{
+	return operand && operand->contains(rec_num);
+}
+
+char *colt_operator::index_file_name()
+{
+	if(!operand)
+		return NULL;
+	return operand->index_file_name();
+}
+
 char **colt_operator::fields(int rec_num)
 {
 	COLT_TRACE("**colt_operator::fields(int rec_num)")

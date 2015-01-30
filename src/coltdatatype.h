@@ -57,7 +57,7 @@ public:
 		case COLT_DT_CTHRU:
 		case COLT_DT_RANGE:
 		case COLT_DT_BITMAP:
-			perror("Attempted to assign a string to a soure datatype.\n");
+			perror("Attempted to assign a string to a source datatype.\n");
 			exit(1);
 		}
 	}
@@ -76,7 +76,7 @@ public:
 		case COLT_DT_CTHRU:
 		case COLT_DT_RANGE:
 		case COLT_DT_BITMAP:
-			perror("Attempted to assign an integer to a soure datatype.\n");
+			perror("Attempted to assign an integer to a source datatype.\n");
 			exit(1);
 		}
 	};
@@ -225,26 +225,5 @@ public:
 };
 
 colt_datatype *new_datatype(int t);
-
-class colt_integer : public colt_datatype {
-public:
-//	long	value;
-
-	colt_integer(): colt_datatype(COLT_DT_INTEGER) {};
-	~colt_integer() {};
-
-//	virtual void *get_value();
-//	virtual char *gen_value_type();
-//
-//	virtual	void set_buffer(char *x);
-//	virtual void set_value(void *);
-//	virtual void *make_space();
-//	virtual	int format(char *x);
-//	virtual int generate(char *x);
-//	virtual	char *consume(char *x);
-//	virtual int operator <(char *x);
-//	virtual int operator <(colt_datatype &x);
-//	virtual int compare(colt_datatype &r);
-};
 
 #endif /* COLTDATATYPE_H_ */

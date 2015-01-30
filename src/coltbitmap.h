@@ -92,6 +92,7 @@ public:
 	int show_status(char *baseptr, int indent=0);
 	int to_string(char *x);
 	char *from_string(char *input);
+	int contains(int rec_num);
 
 	void set_begin_end_index(int beg, int end=-1);
 	char **fields(int rec_num);
