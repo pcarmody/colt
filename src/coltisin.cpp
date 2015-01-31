@@ -28,7 +28,10 @@ int colt_isin::process(int rec_num)
 
 	colt_base *expression = parse.parse(1);
 
-	cout << "qqq " << index_file_name() << " <=> " << expression->source_file_name() << " <+> " << expression->index_file_name() << "\n";
+	if(!same_index_source(expression)) {
+		perror("isin/notin index_source mismatch.\n");
+		exit(-1);
+	}
 
 	if(!expression->preprocess()) {
 		return 0;

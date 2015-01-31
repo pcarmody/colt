@@ -70,7 +70,15 @@ enum Colt_Class {
 
 class colt_exception {
 public:
-	colt_exception() {};
+	int level;
+	string message;
+
+	enum {
+		STANDARD,
+		FATAL
+	};
+	colt_exception() { level = 0; };
+	colt_exception(int l, string &msg) { level = l; message = msg; };
 	~colt_exception() {};
 };
 
@@ -86,6 +94,8 @@ public:
 	virtual int is_a(Colt_Class c);
 	virtual	colt_base *copy_expression(colt_base *op=NULL);
 	virtual colt_base *copy(colt_base *op=NULL);
+
+	virtual int same_index_source(colt_base *xx) { return strcmp(source_file_name(), xx->index_file_name()) == 0; };
 
 	virtual void set_destination(colt_base *obj, int bothways=1);
 	virtual colt_base *get_destination();
