@@ -358,6 +358,31 @@ colt_out_cbf *colt_parser::cbf()
 	return retval;
 }
 
+colt_ask *colt_parser::ask()
+{
+	COLT_TRACE("*colt_parser:colt_ask()")
+	consume_token("ask:");
+
+	char hostname[COLT_MAX_STRING_SIZE];
+	char port[COLT_MAX_STRING_SIZE];
+	char expression[COLT_MAX_STRING_SIZE];
+
+	consume_keyword(hostname);
+
+	if(!consume_token(":"))
+		fatal_error("'ask' expected ask:host:port,[colt expression]' missing colon.\n");
+
+	consume_keyword(port);
+
+	if(!consume_token(","))
+		fatal_error("'ask' expected ask:host:port,[colt expression]' missing comma.\n");
+
+	if(!consume_colt_expression(expression))
+		fatal_error("'ask' expected ask:host:port,[colt expression]' missing expression.\n");
+
+	return new colt_ask(expression, hostname, port);
+}
+
 colt_base *colt_parser::file_name()
 {
 	COLT_TRACE("*colt_parser::file_name()")
@@ -1307,6 +1332,8 @@ colt_base *colt_parser::object_expression()
 		return_value = unionx();
 	else if(is_token("comp"))
 		return_value = complement();
+	else if(is_token("ask"))
+		return_value = ask();
 	else
 		return_value = file_name();
 

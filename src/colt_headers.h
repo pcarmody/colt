@@ -14,9 +14,11 @@
 #include "coltdatatype.h"
 
 #include "coltbase.h"
+#include "coltask.h"
 #include "coltcsv.h"
 #include "coltsequentialcsv.h"
 #include "coltoperator.h"
+#include "colttell.h"
 #include "coltreduce.h"
 #include "coltthru.h"
 #include "coltsort.h"

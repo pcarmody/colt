@@ -147,7 +147,8 @@ int colt_out::process(int i)
 			strcat(out_string, x );
 	}
 	strcat(out_string, end_of_line_sep_char);
-	cout << out_string;
+	fwrite(out_string, strlen(out_string), 1, stdout);
+//	cout << out_string;
 //	free(out_string);
 
 	return 1;
