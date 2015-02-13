@@ -25,7 +25,8 @@ using namespace std;
 colt_select::colt_select(colt_base &in, char **l, int c, int nom):
 	colt_operator(in),
 	no_match(nom),
-	list(NULL)
+	list(NULL),
+	selected_headers(NULL)
 {
 	i_am = colt_class_select;
 	headers = (char **) malloc(sizeof(char*) * c);
@@ -42,6 +43,8 @@ colt_select::~colt_select()
 {
 	// TODO Auto-generated destructor stub
 	//free(index_list);
+	free(selected_headers);
+	delete list;
 }
 
 int colt_select::num_cols()
@@ -84,70 +87,72 @@ colt_datatype **colt_select::cells(int rec_num)
 char *colt_select::col_header(int n)
 {
 	COLT_TRACE("*colt_select::col_header(int n)")
-	return colt_operator::col_header(list[n]);
+	return selected_headers[n];// colt_operator::col_header(list[n]);
 }
 
 char **colt_select::col_headers()
 {
 	COLT_TRACE("**colt_select::col_headers()")
-	char **heads = colt_operator::col_headers();
-	for(int i=0; i<num_cols(); i++)
-		selected_headers[i] = heads[list[i]];
 
 	return selected_headers; // need to fix
 }
-//
-//int colt_select::preprocess()
-//{
-//	COLT_TRACE("colt_select::preprocess()")
-//	if(list)
-//		delete list;
-//	list = new int[COLT_MAX_NUM_COLS];
-//
-//	int cols = colt_operator::num_cols();
-//	int num = count;
-//	count = 0;
-//
-//	for(int j=0; j<cols; j++) {
-//		char *head = operand->col_header( j );
-//		for(int i=0; i<num; i++) {
-//			if((no_match && !match(head, headers[i]) )
-//			|| (!no_match && match(head, headers[i]) ) ) {
-////			if(strcmp(headers[i], head ) == 0 ) {
-//				list[count++] = j;
-//			}
-//		}
-//	}
-//
-//	int retval = colt_operator::preprocess();
-//
-//	return retval;
-//}
+
+int colt_select::preprocess()
+{
+	COLT_TRACE("colt_select::preprocess()")
+
+	int cols = colt_operator::num_cols();
+	int num = count;
+	count = 0;
+
+	if(list)
+		delete list;
+	list = new int[COLT_MAX_NUM_COLS];
+	selected_headers = (char **) malloc(sizeof(char *) * cols);
+	char **heads = operand->col_headers();
+
+	for(int i=0; i<num; i++) {
+		for(int j=0; j<cols; j++) {
+			char *head = heads[j];
+			if((no_match && !match(head, headers[i]) )
+			|| (!no_match && match(head, headers[i]) ) ) {
+				cout << "qqq " << count << ":" << j << ":" << head << "\n";
+				selected_headers[count] = head;
+				list[count++] = j;
+			}
+		}
+	}
+
+	int retval = colt_operator::preprocess();
+
+	return retval;
+}
 
 int colt_select::process(int rec_num)
 {
 	COLT_TRACE("colt_select::process(int rec_num)")
 
-	if(!list) {
-
-		list = new int[COLT_MAX_NUM_COLS];
-
-		int cols = colt_operator::num_cols();
-		int num = count;
-		count = 0;
-
-		for(int j=0; j<cols; j++) {
-			char *head = operand->col_header( j );
-			for(int i=0; i<num; i++) {
-				if((no_match && !match(head, headers[i]) )
-				|| (!no_match && match(head, headers[i]) ) ) {
-	//			if(strcmp(headers[i], head ) == 0 ) {
-					list[count++] = j;
-					break;
-				}
-			}
-		}
-	}
+//	if(!list) {
+//
+//		int cols = colt_operator::num_cols();
+//		int num = count;
+//		list = new int[COLT_MAX_NUM_COLS];
+//		selected_headers = (char **) malloc(sizeof(char *) * cols);
+//		count = 0;
+//
+//		for(int j=0; j<cols; j++) {
+//			char *head = operand->col_header( j );
+//			for(int i=0; i<num; i++) {
+//				if((no_match && !match(head, headers[i]) )
+//				|| (!no_match && match(head, headers[i]) ) ) {
+//	//			if(strcmp(headers[i], head ) == 0 ) {
+//					selected_headers[count] = head;
+//					list[count++] = j;
+//					break;
+//				}
+//			}
+//		}
+//	}
 
 	return colt_operator::process(rec_num);
 }

@@ -76,12 +76,16 @@ colt_ask::~colt_ask() {
 
 int colt_ask::num_cols()
 {
+	COLT_TRACE("colt_ask::num_cols()")
 	return column_count;
 }
 
 int colt_ask::get_next_row()
 {
-	cout << "qqq colt_ask::get_next_row()\n";
+	COLT_TRACE("colt_ask::get_next_row(")
+	if(column_count <= 0)
+		return -1;
+
 	for(int i=0; i<column_count; i++) {
 		char field[COLT_MAX_STRING_SIZE];
 		int n;
@@ -113,25 +117,25 @@ int colt_ask::get_next_row()
 
 char **colt_ask::fields(int rec_num)
 {
-	cout << "qqq cotl_ask::fields()\n";
+	COLT_TRACE("colt_ask::fields(int rec_num")
 	return ask_fields;
 }
 
 colt_datatype **colt_ask::cells(int rec_num)
 {
-	cout << "cells\n";
+	COLT_TRACE("colt_ask::cells(int rec_num")
 	return NULL;
 }
 
 char **colt_ask::col_headers()
 {
-	cout << "qqq cotl_ask::col_headers()\n";
+	COLT_TRACE("colt_ask::col_headers(")
 	return headers;
 }
 
 int colt_ask::preprocess()
 {
-	cout << "qqq cotl_ask::preprocess()\n";
+	COLT_TRACE("colt_ask::preprocess(")
     int n = read(sockfd,&column_count,sizeof(column_count));
     if (n < 0)
     	return 0;
@@ -156,14 +160,10 @@ int colt_ask::preprocess()
 
     return out_object->preprocess();
 }
-//
-//int colt_ask::process(int rec_num)
-//{
-//	return out_object->process(rec_num);
-//}
 
 void colt_ask::postprocess()
 {
+	COLT_TRACE("colt_ask::postprocess(")
     close(sockfd);
     colt_base::postprocess();
 }

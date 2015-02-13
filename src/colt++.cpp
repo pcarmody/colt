@@ -67,13 +67,41 @@ static void wait_for_child(int sig)
 void handle(int newsock)
 {
 	COLT_TRACE("main handler.")
-    /* recv(), send(), close() */
-	colt_tell tell(newsock);
 
-	colt_trace::show = 1;
-	_trace.add_match(".*");
-	tell.process_all();
+	char command[COLT_MAX_STRING_SIZE];
+//	colt_tell tell(newsock);
+    char buff[COLT_MAX_STRING_SIZE];
+    int len = read(newsock, buff, COLT_MAX_STRING_SIZE);
+
+    if(len < 0) {
+    	perror("Listen handle command.");
+    	exit(-1);
+    }
+
+	sprintf(command, "%s tell:%d", buff, newsock);
+
+    cout << getpid() << ": Executing '" << command << "'\n";
+
+    colt_parser parse(command);
+    colt_base *expression = parse.parse();
+
+    int ok = (expression) ? -1: 0;
+    len = write(newsock, &ok, sizeof(ok));
+
+    if(len < 0) {
+    	perror("Listen verify command.");
+    	exit(-1);
+    }
+
+//	colt_trace::show = 1;
+//	_trace.add_match(".*");
+	expression->process_all();
+
+	cout << getpid() << ": Successfully processed " << expression->num_lines() << " rows\n";
+
+	delete expression;
 }
+
 void error(const char *msg)
 {
     perror(msg);

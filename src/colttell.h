@@ -10,11 +10,8 @@
 
 class colt_tell : public colt_operator {
 	int socket_desc;
-//	char *colt_expression;
-	colt_base *expression;
-	int recursive;
 public:
-	colt_tell(int sock);
+	colt_tell(colt_base &in, int sock);
 	virtual ~colt_tell();
 
 	void fatal_error(char *m);

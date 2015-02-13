@@ -11,7 +11,7 @@
 class colt_select : public colt_operator {
 public:
 	char 	**headers;
-	char	*selected_headers[COLT_MAX_NUM_COLS];
+	char	**selected_headers;
 	int		*list;
 	int		count;
 	char	*colt_select_out[100];
@@ -26,6 +26,8 @@ public:
 	int num_cols();
 	char *col_header(int n);
 	char **col_headers();
+
+	int preprocess();
 	int process(int rec_num);
 };
 

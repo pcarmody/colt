@@ -383,6 +383,16 @@ colt_ask *colt_parser::ask()
 	return new colt_ask(expression, hostname, port);
 }
 
+colt_tell *colt_parser::tell()
+{
+	COLT_TRACE("*colt_parser::tell()")
+	consume_token("tell:");
+
+	int sockid = consume_integer();
+
+	return new colt_tell(*return_value, sockid);
+}
+
 colt_base *colt_parser::file_name()
 {
 	COLT_TRACE("*colt_parser::file_name()")
@@ -1258,6 +1268,9 @@ colt_base *colt_parser::output_expression()
 
 	if(is_token("cbf"))
 		return cbf();
+
+	if(is_token("tell"))
+		return tell();
 
 	return new colt_out(*return_value, "\t");
 }
