@@ -116,7 +116,6 @@ int colt_select::preprocess()
 			char *head = heads[j];
 			if((no_match && !match(head, headers[i]) )
 			|| (!no_match && match(head, headers[i]) ) ) {
-				cout << "qqq " << count << ":" << j << ":" << head << "\n";
 				selected_headers[count] = head;
 				list[count++] = j;
 			}
