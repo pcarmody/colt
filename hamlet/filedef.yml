@@ -1,0 +1,65 @@
+mycsv:
+  path: /home/paul/mydatabase/mycsv.csv
+  thrudir: /home/paul/mydtabase/mycsv/thrus
+  columns:
+    index:
+      type: integer
+      unique: true
+      incremented: true
+    name:
+      type: string
+      format: "/(.*) (.*)/$2, $1/"
+    col2:
+      type: date
+      format: "|%m %d, %Y|%Y/%m/%d|"
+    dollar_amt:
+      type: float
+      format: "$%'.2Lf\n"
+      stats:
+        mean: 50000.00
+        range: 
+          lowest: 0.0
+          highest: 1000000.00
+        stddev: 125000.00
+        quartile:
+          lower: 750000.00
+          upper: 250000.00
+    10:
+      outname: "unnamed column"
+      type: default
+  order:
+    keys: index
+    card: 1
+  thrus:
+    first:
+      path: first.thru
+      expresion: "mycsv sort:index"
+    first_plus:
+      path: first_plus.thru
+      type: cthru
+      expression: "first cthru:date,dollar_amt:dollar_amt"
+      order:
+        keys: [date,dollar_amt]
+        agg_cols: dollar_amt
+        key_distribution: [20,2]
+    notstored:
+      path: ""
+      type: thru
+      expression: "mycsv if:xyz,{now() - mydate < days(3)}"
+
+othercsv:
+  path: /home/paul/mydatabase/other.csv
+  columns:
+    id:
+      type: integer
+      unique: true
+      incremented: true
+    my_id:
+      defined by: mycsv.index
+      unique: false
+    my_count:
+      type: integer
+
+myjoin:
+  path: /home/paul/mydatabase/myjoin.csv
+  expression: "othercsv add:first,source,[cross:[first search:my_id]"

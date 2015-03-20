@@ -50,6 +50,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <netdb.h>
+#include <regex>
 
 #define BACKLOG     10  /* Passed to listen() */
 
@@ -214,10 +215,56 @@ int listen_server(char *port)
     return 0;
 }
 
+char *regex_sub(char *in, char *pattern, char *out)
+{
+	const std::string s = in; //"/home/toto/FILE_mysymbol_EVENT.DAT";
+	std::smatch match;
+
+	char outexp[COLT_MAX_STRING_SIZE];
+	char expression[COLT_MAX_STRING_SIZE];
+	char *a = expression;
+
+	pattern++;
+	while(*pattern && *pattern != '/') *a++ = *pattern++;
+	*a = '\0';
+
+	a = outexp;
+	pattern++;
+	while(*pattern && *pattern != '/') *a++ = *pattern++;
+	*a = '\0';
+
+	std::regex rgx(expression);
+
+	std::regex_match(s, match, rgx);
+    if (std::regex_search(s.begin(), s.end(), match, rgx)) {
+
+		char *b = out;
+		a = outexp;
+		while(*a) {
+			if(*a == '\\') {
+				a++;
+				if(isdigit(*a)) {
+					int i = *a++ - '0';
+					string c = match[i];
+					strcpy(b, c.c_str());
+					b += strlen(b);
+				} else
+					*b++ = *a;
+			} else
+				*b++ = *a++;
+		}
+    }
+
+    return out;
+}
+
 int main(int argc, char **argv)
 {
 	COLT_TRACE("main");
 	colt_base *base_obj = NULL;
+//	char out[COLT_MAX_STRING_SIZE];
+//	std::cout << regex_sub("/home/toto/FILE_mysymbol_EVENT.DAT", "/.*FILE_(\\w+)_(\\w+)\\.DAT.*/alpha \\1 beta \\2 gamma/", out);
+//	    exit(0);
 
 	if(argc > 1 &&
 		(strcmp(argv[1], "-h") == 0
