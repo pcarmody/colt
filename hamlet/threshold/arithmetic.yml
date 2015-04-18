@@ -1,0 +1,87 @@
+---
+arithmetic: additive < addop arithmetic >
+additive: multiply <  multop additive >
+addop: = | - 
+multiply: integer < multop integer >
+multop: * | /
+integer: !ruby/regexp /[0-9]+/
+
+---
+arithmetic: additive |arithmetic_predicate
+arithmeetic_predicate: addop arithmetic
+additive: multiply |additive_predicate
+additive_predicate: multop additive
+addop: = | - 
+multiply: integer |multiply_predicate
+multiply_predicate: multop integer
+multop: * | /
+integer: !ruby/regexp /[0-9]+/
+
+statement:
+  - if_statement
+  - let_statement
+  - arithmetic_statement
+
+----
+query: [ datasource, content-expression, format-expressions, output_expressions ]
+
+datasource: [ thru-expression, dc-content, join-expression ]
+
+thru-expression: [ thru-access, meta-expression ]
+
+meta-expression:
+- [ '[', datasource, ']', meta-expression ]
+- Yes
+
+thru-access:
+- thru-name
+- [ SEARCH, thru-name ]
+- [ MERGE, key, data-source ]
+- Yes
+
+join-expression:
+- [ CROSS, datasource ]
+- [ RACE, datasource, datasource ]
+- Yes
+
+dc-content: [ '(', content-expression, ')' ]
+
+content-expression: [ content, content-expression ]
+
+content:
+- row-expression
+- column-expression
+- Yes
+
+row-expression:
+- [ IF_, key, c-string ]
+- [ LIMIT, number ]
+- [ ISIN, datasource ]
+- [ NOTIN, datasource ]
+- [ INDEX, number-list ]
+- [ AGGROW, function, key, number ]
+
+column-expression:
+- [ SELECT, column-list ]
+- [ IGNORE, column-list ]
+- [ ADD, name, type, datasource ]
+- [ RENAME, name, name ]
+
+format-expression:
+- [ JUSTIFY, name-list ]
+- [ PARSEGEN, regex, [ regex, Yes ]  ]
+- Yes
+
+output-expression: [ output-type, [ file-name, Yes ] ]
+
+output-type:
+- CSV
+- [ SORT, key-list ]
+- [ ATHRU, key-list, column-list ]
+- PTHRU
+- QTHRU
+- 'NULL'
+
+key: !ruby/regex "/[aZ_][09aZ_]*/"
+
+number: !ruby/regex "/[-+]?[09]+/"

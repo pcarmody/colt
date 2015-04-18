@@ -2,9 +2,10 @@ require_relative "dsl"
 
 class Threshold < DSL
   attr_init :source
-  expression_with_parms :out, :CSV, :field => :string, :line => :string, :quote => :string
-#  expression :out, :CSV, :field, :line, :quote
+#  expression_with_parms :out, :CSV, :field => :string, :line => :string, :quote => :string
+  expression :out, :CSV, :field, :line, :quote
   expression :out, :VERTICAL
+  expression :out, :HTML
   expression :out, :JSON, :key
 
   expression :row_terms, :LIMIT, :count, :skip
@@ -12,16 +13,22 @@ class Threshold < DSL
     'if:#{@key},{#{@condition}}'
   end
   expression :row_terms, :RACE, :flags, :left_column, :right_source, :right_column
+  expression_with_parms :row_terms, :PART, :key => :string, :command => :nested
+  expression_with_parms :row_terms, :INDEX, :indexes => :list, :file_name => :string do
+    'index:#{@indexes.join(",")}:#{@file_name}'
+  end
+  attr_nested :row_terms, :isin
+  attr_nested :row_terms, :notin
+  expression :row_terms, :AGG, :function
+  expression :row_terms, :AGGROW, :function
 
   list_expression :thru_terms, :SORT, :column_name
   expression :thru_terms, :SEARCH, :low, :high
 
   list_expression :column_terms, :SELECT, :column_name
   list_expression :column_terms, :IGNORE, :column_name
-
- expression_with_parms :row_terms, :PART, :key => :string, :command => :nested
- expression_with_parms :row_terms, :INDEX, :indexes => :list, :file_name => :string do
-    'index:#{@indexes.join(",")}:#{@file_name}'
+  expression :column_terms, :ADD, :colname, :datatype, :code_segment do
+    'add:#{@colname},#{@datatype},{#{@code_segment}}'
   end
 
   def initialize(&block) 
@@ -40,8 +47,6 @@ class Threshold < DSL
       @name ?  "#{@name}:[#{super}]" : "[#{super}]" 
     end
   end
-
-  attr_nested :row_terms, :isin
 
   def to_s
     "#{@source} #{@row_terms.join(' ')} #{@column_terms.join(' ')} #{@out}"

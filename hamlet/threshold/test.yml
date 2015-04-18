@@ -1,0 +1,34 @@
+xxx:
+  source: Kosh
+  if: 
+    key: xyz
+    condition: 'strcmp(cola, "alpha") == 0'
+  limit:
+  select: [ cola, colb, colc, cold ]
+  csv:  
+    line: L
+    field: F
+    quote: Q 
+  isin: 
+    source: subset
+  part: 
+    key: mykey
+    command: 
+      source: Vorlon
+      limit:
+      isin: 
+        source: Shadows
+      vertical:
+  index:
+    indexes: [1,2,3,5,8,13,21.44,65 ]
+---
+yyy:
+- source: Kosh
+- part:
+    key: mykey
+    command:
+    - source: Vorlon
+    - limit: 5
+    - isin:
+        source: FirstOnes
+    - vertical

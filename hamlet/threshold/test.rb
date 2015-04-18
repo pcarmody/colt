@@ -2,7 +2,7 @@ require_relative "threshold.rb"
 
 xxx = query do
   source "Kosh"
-  if_ { key 'xyz'; condition '{strcmp(cola, "alpha") == 0}' }
+  if_ { key 'xyz'; condition 'strcmp(cola, "alpha") == 0' }
   limit
   select [ :cola, :colb, :colc ] do
     column_name :cold
@@ -13,8 +13,8 @@ xxx = query do
   isin do
     source "subset"
   end
-  part do
-    key "mykey"
+  part :key => "mykey" do
+#    key "mykey"
     command do
       source "Vorlon"
       limit
