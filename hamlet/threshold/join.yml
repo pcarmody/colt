@@ -1,0 +1,46 @@
+---
+customers:
+  where: <local customer condition>
+  invoices:
+    on: id==cust_id
+	lines:
+      on: id==invoice_id
+      items:
+        on: item_id==id
+        vendor:
+          on: vendor_id==if
+          locations:
+            on: location_id==id
+            as: vendor_address
+    where: < inv-lines-items-vendor-locations condition >
+  locations:
+    on: location_id==id
+    as: cust_address
+  order:
+    cusomters.name:
+      direction: ascending
+      onchange: < expression >
+      invoice.date:
+        direction: ascending
+        onchange: < expression >
+---
+items:
+  where: list
+  lines:
+    on: id == item_id
+    purchase_orders: 
+      on: po_id == id
+      vendors:
+        on: vendor_id == id
+        bitmap: vendor_out
+vendor_out:
+  locations:
+    location_id == id
+  add: count, integer, 1
+  order:
+  - name:
+    share:
+      - aggregate: count=sum(count),name="Total"
+      - noop
+  - state
+  - city
