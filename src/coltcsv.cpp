@@ -20,8 +20,24 @@ using namespace std;
 #include "coltbase.h"
 #include "coltcsv.h"
 #include "colttrace.h"
+#include "colt_headers.h"
 
 #define COLT_TRACE(MSG) colt_trace _trace(MSG);
+
+
+const char *COLT_CSV_COLUMN_HEADERS[] = {
+	"source_file_name",
+	"num_lines",
+	"num_cols",
+	"current_index",
+	"column_sep_char",
+	"quote_char",
+	"end_of_line_sep_char",
+	"type",
+	"data"
+};
+
+#define COLT_CSV_NUM_COLUMN_HEADERS 9
 
 int colt_index_file_exists(char *file_name)
 {
@@ -48,9 +64,11 @@ colt_csv::colt_csv(char *fname, int pl)
 	line_counter = 0;
 	fields_retval = NULL;
 	cell_objects = NULL;
+	metadata_fields = NULL;
+	metadata_cells = NULL;
 //	if(colt_index_file_exists(file_name))
 //		preload_data();
-//	else
+//	elseconst int
 //		open_file(1);
 }
 
@@ -68,6 +86,8 @@ colt_csv::colt_csv(char *fname, char col_sep, char eol_sep, char q_char)
 	line_counter = 0;
 	fields_retval = NULL;
 	cell_objects = NULL;
+	metadata_fields = NULL;
+	metadata_cells = NULL;
 }
 
 int colt_csv::open_and_load()
@@ -147,6 +167,104 @@ int colt_csv::max_size()
 
 	return file_size;
 };
+
+int colt_csv::meta_num_cols()
+{
+	return COLT_CSV_NUM_COLUMN_HEADERS;
+}
+
+char *colt_csv::meta_col_header(int n)
+{
+	return (char *) COLT_CSV_COLUMN_HEADERS[n];
+}
+
+char **colt_csv::meta_col_headers()
+{
+	return (char **) COLT_CSV_COLUMN_HEADERS;
+}
+
+char **colt_csv::meta_fields(int rec_num)
+{
+	if(metadata_fields != NULL)
+		return metadata_fields;
+
+	metadata_fields = new char*[COLT_CSV_NUM_COLUMN_HEADERS];
+
+	metadata_fields[0] = file_name;
+
+	metadata_fields[1] = new char[10];
+	sprintf(metadata_fields[1], "%d", num_lines());
+
+
+	metadata_fields[2] = new char[10];
+	sprintf(metadata_fields[2], "%d", col_count);
+
+	metadata_fields[3] = new char[10];
+	sprintf(metadata_fields[3], "%d", curr_index);
+
+	metadata_fields[4] = new char[2];
+	metadata_fields[4][0] = column_sep_char;
+
+	metadata_fields[5] = new char[2];
+	metadata_fields[5][0] = quote_char;
+
+	metadata_fields[6] = new char[2];
+	metadata_fields[6][0] = end_of_line_sep_char;
+
+	metadata_fields[7] = "csv";
+
+	metadata_fields[8] = "data";
+
+	return metadata_fields;
+}
+
+colt_datatype **colt_csv::meta_cells(int rec_num)
+{
+	if(metadata_cells != NULL)
+		return metadata_cells;
+
+//	metadata_cells = new *colt_datatype[COLT_CSV_NUM_COLUMN_HEADERS];
+	metadata_cells = (colt_datatype **) malloc( sizeof(colt_datatype *) * COLT_CSV_NUM_COLUMN_HEADERS);
+
+	metadata_cells[0] = new colt_datatype;
+	metadata_cells[0]->set_value(source_file_name());
+
+	metadata_cells[1] = new colt_datatype(COLT_DT_INTEGER);
+	metadata_cells[1]->set_value(&line_counter);
+
+	metadata_cells[2] = new colt_datatype(COLT_DT_INTEGER);
+	metadata_cells[2]->set_value(&col_count);
+
+	metadata_cells[3] = new colt_datatype(COLT_DT_INTEGER);
+	metadata_cells[3]->set_value(&curr_index);
+
+	metadata_cells[4] = new colt_datatype;
+	metadata_cells[4]->set_value(&column_sep_char);
+
+	metadata_cells[5] = new colt_datatype;
+	metadata_cells[5]->set_value(&quote_char);
+
+	metadata_cells[6] = new colt_datatype;
+	metadata_cells[6]->set_value(&end_of_line_sep_char);
+
+	metadata_cells[7] = new colt_datatype;
+	metadata_cells[7]->set_value((void *) "csv");
+
+	metadata_cells[8] = new colt_datatype(COLT_DT_SOURCE);
+	coltthru *tmp = new coltthru(*this);
+	tmp->set_begin_end_index(0, num_lines());
+	metadata_cells[8]->set_value(tmp);
+
+	return metadata_cells;
+}
+
+int colt_csv::get_meta_row(int rec_num)
+{
+	if(rec_num == 0)
+		return 1;
+	return 0;
+}
+
 
 int colt_csv::get_next_index(int curr_index, int size, char *buff)
 {

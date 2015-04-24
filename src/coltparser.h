@@ -53,8 +53,10 @@ public:
 	colt_tell			*tell();
 	colt_base			*output_expression();
 
+	colt_metadata		*meta();
 	colt_select 		*select();
 	colt_skip_limit		*skip_limit();
+	colt_index			*index();
 	colt_if				*ifx();
 	colt_add			*add();
 	colt_link			*link();

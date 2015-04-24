@@ -229,9 +229,39 @@ char colt_base::find_sep_char(char *row, char end_char)
 	return (char) max_index;
 }
 
+int	colt_base::meta_num_cols()
+{
+	return 0;
+}
+
+char *colt_base::meta_col_header(int n)
+{
+	return NULL;
+}
+
+char **colt_base::meta_col_headers()
+{
+	return NULL;
+}
+
+char **colt_base::meta_fields(int rec_num)
+{
+	return NULL;
+}
+
+colt_datatype **colt_base::meta_cells(int rec_num)
+{
+	return NULL;
+}
+
 int colt_base::get_next_row()
 {
 	COLT_TRACE("colt_base::get_next_row()")
+	return -1;
+}
+
+int colt_base::get_meta_row(int rec_num)
+{
 	return -1;
 }
 
@@ -271,7 +301,7 @@ void colt_base::process_all()
 		while((rec = get_next_row()) >= 0) {
 			process(rec);
 		}
-	} catch (colt_exception *e) {
+	} catch (char const *e) {
 
 	}
 

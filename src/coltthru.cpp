@@ -273,6 +273,49 @@ int *coltthru::read_config(int *base_ptr)
     return base_ptr + sizeof(ident)/sizeof(int);
 }
 
+
+int	coltthru::meta_num_cols()
+{
+	return operand->meta_num_cols();
+}
+
+char *coltthru::meta_col_header(int n)
+{
+	return operand->meta_col_header(n);
+}
+
+char **coltthru::meta_col_headers()
+{
+	return operand->meta_col_headers();
+}
+
+char **coltthru::meta_fields(int rec_num)
+{
+	char **retval = operand->meta_fields(rec_num);
+
+	retval[1] = new char[10];
+	sprintf(retval[1], "%d", num_lines());
+
+	retval[3] = new char[10];
+	sprintf(retval[1], "%d", iterate_count);
+
+	retval[7] = "thru";
+
+	return retval;
+}
+
+colt_datatype **coltthru::meta_cells(int rec_num)
+{
+	colt_datatype **retval = operand->meta_cells(rec_num);
+
+	return retval;
+}
+
+int	coltthru::get_meta_row(int rec_num)
+{
+	return operand->get_meta_row(rec_num);
+}
+
 int coltthru::to_string(char *x)
 {
 	COLT_TRACE("coltthru::to_string(char *x)")

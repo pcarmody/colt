@@ -404,7 +404,7 @@ colt_base *colt_parser::file_name()
 
 	if(file_name[0] == '^') {
 		if(!cells)
-			fatal_error("Cannot parse '&' column reference.\n");
+			fatal_error("Cannot parse '^' column reference.\n");
 
 		for(int j=0; j<num_cols; j++)
 			if(strcmp(file_name+1, col_headers[j] ) == 0)
@@ -459,6 +459,15 @@ colt_base *colt_parser::file_name()
 	return retval;
 }
 
+colt_metadata *colt_parser::meta()
+{
+	COLT_TRACE("colt_parser::meta()")
+	
+	consume_token("meta");
+
+	return new colt_metadata(*return_value);
+}
+
 colt_select *colt_parser::select()
 {
 	COLT_TRACE("*colt_parser::select()")
@@ -503,6 +512,20 @@ colt_skip_limit *colt_parser::skip_limit()
 	colt_skip_limit *retval= new colt_skip_limit(*return_value, limit, skip);
 
 	return retval;
+}
+
+colt_index *colt_parser::index()
+{
+	COLT_TRACE("*colt_parser::index()")
+	consume_token("index:");
+	int list[1000];
+	int count = 0;
+
+	list[count++] = consume_integer();
+	while(consume_token(","))
+		list[count++] = consume_integer();
+
+	return new colt_index(*return_value, count, list);
 }
 
 colt_if *colt_parser::ifx()
@@ -1180,6 +1203,8 @@ colt_base *colt_parser::unary_expression()
 		object = select();
 	else if(is_token("limit"))
 		object = skip_limit();
+	else if(is_token("index"))
+		object = index();
 	else if(is_token("if"))
 		object = ifx();
 	else if(is_token("sort"))
@@ -1228,6 +1253,8 @@ colt_base *colt_parser::unary_expression()
 		object = link();
 	else if(is_token("reduce"))
 		object = reduce();
+	else if(is_token("meta"))
+		object = meta();
 
 	consume_whitespace();
 

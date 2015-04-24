@@ -120,6 +120,13 @@ public:
 	virtual int compare(int a, int b, int c);
 	virtual int contains(int rec_num);
 
+	virtual int	meta_num_cols();
+	virtual char *meta_col_header(int n);
+	virtual char **meta_col_headers();
+	virtual char **meta_fields(int rec_num);
+	virtual colt_datatype **meta_cells(int rec_num);
+	virtual	int	get_meta_row(int rec_num);
+
 	virtual	void process_all();
 	virtual	int get_next_row();
 	virtual int preprocess();
