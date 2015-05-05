@@ -68,6 +68,7 @@ public:
 	colt_cthru			*cthru();
 	colt_range			*range();
 	coltbitmap			*bitmap();
+	colt_qthru			*qthru();
 	colt_each			*each();
 	colt_isin			*isin();
 	colt_cross			*cross();

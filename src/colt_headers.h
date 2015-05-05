@@ -17,6 +17,7 @@
 #include "coltask.h"
 #include "coltcsv.h"
 #include "coltsequentialcsv.h"
+#include "coltqueuethru.h"
 #include "coltoperator.h"
 #include "coltmetadata.h"
 #include "colttell.h"
@@ -25,6 +26,7 @@
 #include "coltsort.h"
 #include "coltkeyspace.h"
 #include "coltcthru.h"
+#include "coltqthru.h"
 #include "coltadd.h"
 #include "coltcexpression.h"
 #include "coltif.h"
@@ -40,7 +42,7 @@
 #include "coltpartition.h"
 #include "coltuniq.h"
 #include "coltshare.h"
-#include "coltcthru.h"
+//#include "coltcthru.h"
 
 #include <thread>
 #include "concurrentqueue.h"

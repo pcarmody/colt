@@ -922,6 +922,21 @@ coltbitmap *colt_parser::bitmap()
 	return retval;
 }
 
+colt_qthru *colt_parser::qthru()
+{
+	COLT_TRACE("*colt_parser::qthru()")
+
+	consume_token("qthru");
+
+	if(!consume_token(":"))
+		fatal_error("Expected ';' after qthru expression.");
+
+	char file_name[COLT_MAX_STRING_SIZE];
+	consume_keyword(file_name);
+
+	return new colt_qthru(*return_value, file_name);
+}
+
 colt_each *colt_parser::each()
 {
 	COLT_TRACE("*colt_parser::each()")
@@ -1217,6 +1232,8 @@ colt_base *colt_parser::unary_expression()
 		object = range();
 	else if(is_token("thru"))
 		object = thru();
+	else if(is_token("qthru"))
+		object = qthru();
 	else if(is_token("bitmap"))
 		object = bitmap();
 	else if(is_token("each"))

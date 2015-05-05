@@ -25,6 +25,7 @@ enum Colt_Class {
 	colt_class_html,
 	colt_class_out_vertical,
 	colt_class_to_json,
+	colt_class_qthru,
 
 	colt_class_counter,
 
@@ -57,6 +58,7 @@ enum Colt_Class {
 	colt_class_range,
 	colt_class_range_list,
 	colt_class_bitmap,
+	colt_class_queuethru,
 
 	// binary operations
 	colt_class_cross,
@@ -92,6 +94,7 @@ public:
 	virtual ~colt_base();
 
 	virtual int is_a(Colt_Class c);
+	virtual int is_a_thru();
 	virtual	colt_base *copy_expression(colt_base *op=NULL);
 	virtual colt_base *copy(colt_base *op=NULL);
 

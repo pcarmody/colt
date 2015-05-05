@@ -31,6 +31,12 @@ int colt_base::is_a(Colt_Class c)
 	return 0;
 }
 
+int colt_base::is_a_thru()
+{
+	COLT_TRACE("colt_base::is_a_thru")
+	return i_am >= colt_class_thru && i_am < colt_class_parser;
+}
+
 colt_base *colt_base::copy_expression(colt_base *op)
 {
 	COLT_TRACE("*colt_base::copy_expression(colt_base *op)")
