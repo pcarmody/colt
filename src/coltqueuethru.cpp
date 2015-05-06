@@ -25,6 +25,7 @@ colt_queuethru::~colt_queuethru() {
 
 int colt_queuethru::append_thru(colt_base *thru)
 {
+	COLT_TRACE("colt_queuethru::append_thru(colt_base *thru)")
 	FILE *append = fopen(file_name, "a");
 
 	if(thru->is_a(colt_class_queuethru))
@@ -47,15 +48,16 @@ int colt_queuethru::open_and_load()
 	if(colt_index_file_exists(file_name)) {
 		char index_file_name[COLT_MAX_STRING_SIZE];
 		sprintf(index_file_name, "%s.ndx", file_name);
-		remove(file_name);
+		remove(index_file_name);
 	}
 
 	int accumulator = 0;
 	int retval = colt_csv::open_and_load();
+	int lines = num_lines();
 
-	for(int i=0; i<num_lines(); i++) {
+	for(int i=0; i<lines; i++) {
 		colt_datatype tmp(COLT_DT_SOURCE);
-		tmp.set_value(fields(i)[0]);
+		tmp.parse_thru(colt_csv::fields(i)[0]);
 		colt_qthru_thru_struct *thru_struct = new colt_qthru_thru_struct;
 		thru_struct->thru = (colt_base *) tmp.get_value();
 		thru_struct->sum = accumulator;
@@ -68,32 +70,57 @@ int colt_queuethru::open_and_load()
 
 int colt_queuethru::num_lines()
 {
+	COLT_TRACE("colt_queuethru::num_lines()")
+	if(thru_list.size() == 0)
+		return colt_csv::num_lines();
+
 	colt_qthru_thru_struct *last = thru_list[thru_list.size()-1];
 	return last->sum + last->thru->num_lines();
 }
 
+int colt_queuethru::num_cols()
+{
+	if(thru_list.size() == 0)
+		return colt_csv::num_cols();
+
+	return thru_list[0]->thru->num_cols();
+}
+
 char **colt_queuethru::col_headers()
 {
+	COLT_TRACE("colt_queuethru::col_headers()")
 	return thru_list[0]->thru->col_headers();
 }
 
 char **colt_queuethru::fields(int rec_num)
 {
+	COLT_TRACE("colt_queuethru::fields(int rec_num)")
 	int i;
-	for(i = 0; i<thru_list.size() && thru_list[i]->sum < rec_num; i++);
+	int size = thru_list.size();
+	int thru_rec_num = rec_num;
 
-	int thru_rec_num = (i == 0)? rec_num : rec_num - thru_list[i-1]->sum;
+	for(i=0; i<size && thru_rec_num > thru_list[i]->thru->num_lines(); i++)
+		thru_rec_num -= thru_list[i]->thru->num_lines();
 
-	return thru_list[i]->thru->fields(rec_num);
+//	for(i = 0; i<size-1 && thru_list[i]->sum < rec_num; i++);
+//
+//	int thru_rec_num = (i == 0)? rec_num : rec_num - thru_list[i-1]->sum-1;
+
+	return thru_list[i]->thru->fields(thru_rec_num);
 }
 
 int colt_queuethru::process(int rec_num)
 {
+	COLT_TRACE("colt_queuethru::process(int rec_num)")
 	int rec = 0;
+
+	if(rec_num >= thru_list.size())
+		return 1;
 
 	while((rec = thru_list[rec_num]->thru->get_next_row()) >= 0) {
 		int index = thru_list[rec_num]->sum + rec;
-		process(index);
+//		cout << "qqq " << rec_num << ":" << index << ":" << thru_list[rec_num]->sum << ":" << rec << "\n";
+		colt_csv::process(index);
 	}
 
 	return 1;

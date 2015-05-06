@@ -29,6 +29,7 @@ public:
 	virtual int open_and_load();
 
 	virtual int num_lines();
+	virtual int num_cols();
 	virtual char **col_headers();
 	virtual char **fields(int rec_num);
 

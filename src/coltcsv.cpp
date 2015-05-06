@@ -93,10 +93,7 @@ char **colt_csv::fields(int rec_num)
 {
 	COLT_TRACE("**colt_csv::fields(int rec_num)")
 
-	int num_col = num_cols()+1;
-	for(int i=0; i<num_col; i++)
-		if(fields_retval[i])
-			delete fields_retval[i];
+	int num_col = num_cols();
 
 	char *b = record(rec_num+1);
 	char tmp_field[COLT_MAX_STRING_SIZE];
@@ -106,6 +103,8 @@ char **colt_csv::fields(int rec_num)
 	while(*b != end_of_line_sep_char) {
 		if(*b == column_sep_char) {
 			*a = '\0';
+//			if(fields_retval[col])
+//				delete fields_retval[col];
 			fields_retval[col] = new char[strlen(tmp_field) +1 ];
 			strcpy(fields_retval[col], tmp_field);
 			col++;

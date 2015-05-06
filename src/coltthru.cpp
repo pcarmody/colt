@@ -49,24 +49,25 @@ colt_base *colt_load_thru(char *file_name, int status)
 		return retval;
 	}
 
-	if(strcmp(extension, ".zsv") == 0) {
+//	if(strcmp(extension, ".zsv") == 0) {
+	if(strcmp(extension, ".thru") != 0) {
 		colt_zsv *retval = new colt_zsv(file_name, 1);
 		retval->open_and_load();
 		return retval;
 	}
 
-	if(strcmp(extension, ".csv") == 0) {
-		colt_csv *retval = new colt_csv(file_name, 1);
-		retval->open_and_load();
-		return retval;
-	}
-
-	if(strcmp(extension, ".thru") != 0) {
-		char error_msg[100];
-		sprintf(error_msg, "Unable to determine file type for '%s'.\n", file_name);
-		perror(error_msg);
-		return NULL;
-	}
+//	if(strcmp(extension, ".csv") == 0) {
+//		colt_csv *retval = new colt_csv(file_name, 1);
+//		retval->open_and_load();
+//		return retval;
+//	}
+//
+//	if(strcmp(extension, ".thru") != 0) {
+//		char error_msg[100];
+//		sprintf(error_msg, "Unable to determine file type for '%s'.\n", file_name);
+//		perror(error_msg);
+//		return NULL;
+//	}
 
 	struct stat sb;
 	int fd;
@@ -339,7 +340,7 @@ int	coltthru::get_meta_row(int rec_num)
 int coltthru::to_string(char *x)
 {
 	COLT_TRACE("coltthru::to_string(char *x)")
-	sprintf(x, "thru:%s", source_file_name());
+	sprintf(x, "thru:%s", colt_operator::source_file_name());
 	char tmp[20];
 
 	for(int i=0; i<index_count; i++) {
