@@ -49,10 +49,23 @@ colt_base *colt_load_thru(char *file_name, int status)
 		return retval;
 	}
 
-	if(strcmp(extension, ".thru") != 0) {
+	if(strcmp(extension, ".zsv") == 0) {
+		colt_zsv *retval = new colt_zsv(file_name, 1);
+		retval->open_and_load();
+		return retval;
+	}
+
+	if(strcmp(extension, ".csv") == 0) {
 		colt_csv *retval = new colt_csv(file_name, 1);
 		retval->open_and_load();
 		return retval;
+	}
+
+	if(strcmp(extension, ".thru") != 0) {
+		char error_msg[100];
+		sprintf(error_msg, "Unable to determine file type for '%s'.\n", file_name);
+		perror(error_msg);
+		return NULL;
 	}
 
 	struct stat sb;
@@ -362,6 +375,8 @@ char *coltthru::from_string(char *input)
 			count++;
 
 	index_list = (int *) malloc(count+1 * sizeof(int));
+	operand = colt_load_thru(file_name);
+    operand->out_object = this;
 
 	while(*input++ == ',') {
 		int index = atoi(input);
@@ -369,8 +384,6 @@ char *coltthru::from_string(char *input)
 		while(*input && *input != ',') input++;
 	}
 
-	operand = colt_load_thru(file_name);
-    operand->out_object = this;
     end_index = index_count-1;
 
 	return input;

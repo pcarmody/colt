@@ -50,6 +50,11 @@ void colt_skip_limit::fill_sequential(int start)
 //		push_back(i);
 }
 
+int colt_skip_limit::num_lines()
+{
+	return limit_to;
+}
+
 
 int colt_skip_limit::preprocess()
 {

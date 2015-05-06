@@ -184,7 +184,7 @@ int *coltbitmap::read_config(int *base_ptr)
 	if(match(ident.file_name, "thru$"))
 		operand = colt_load_thru(ident.file_name);
 	else
-		operand = new colt_csv(ident.file_name, 1);
+		operand = new colt_zsv(ident.file_name, 1);
 
 //	show();
 

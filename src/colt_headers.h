@@ -15,10 +15,11 @@
 
 #include "coltbase.h"
 #include "coltask.h"
+#include "coltzsv.h"
 #include "coltcsv.h"
 #include "coltsequentialcsv.h"
-#include "coltqueuethru.h"
 #include "coltoperator.h"
+#include "coltqueuethru.h"
 #include "coltmetadata.h"
 #include "colttell.h"
 #include "coltreduce.h"

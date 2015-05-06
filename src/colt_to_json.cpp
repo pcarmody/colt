@@ -16,7 +16,8 @@ using namespace std;
 
 colt_to_json::colt_to_json(colt_base &in, char* key):
 	colt_out(in, "</td><td>", "</td></tr>\n<tr><td>", ""),
-	key_col_index(0)
+	key_col_index(0),
+	key_col(NULL)
 {
 	i_am = colt_class_to_json;
 	if(key) {
@@ -62,26 +63,40 @@ int colt_to_json::preprocess()
 	return 1;
 }
 
-int colt_to_json::process(int i)
+int colt_to_json::process(int rec_num)
 {
 	COLT_TRACE("colt_to_json::process(int i)")
-	char **f = fields(i);
-	if(!f)
-		return 0;
-	if(key_col_index >= 0)
-		std::cout << '"' << extract_str(f[key_col_index]) << "\": [";
-	else
-		std::cout << "[";
+
+	colt_datatype **cell_objs = cells(rec_num);
+	char tmp_str[COLT_MAX_STRING_SIZE];
+
+	if(key_col_index >= 0) {
+		cell_objs[key_col_index]->format(tmp_str);
+//		if(cell_objs[key_col_index]->type == COLT_DT_INTEGER)
+//			std::cout << tmp_str << ": ";
+//		else
+			std::cout << '"' << tmp_str << "\": ";
+	}
+
+	std::cout << "{";
 
 	for(int j=0; j<num_cols(); j++) {
 		if(j != key_col_index) {
-			std::cout << "\n\t\"" << extract_str(col_header(j)) << "\": \"" << extract_str(f[j]) << "\"";
+			cell_objs[j]->format(tmp_str);
+			if(cell_objs[j]->type == COLT_DT_INTEGER)
+				std::cout << "\"" << extract_str(col_header(j)) << "\": " << tmp_str ;
+			else
+				std::cout << "\"" << extract_str(col_header(j)) << "\": \"" << tmp_str << "\"";
 			if(j<num_cols()-1)
 				std::cout << ",";
 		}
 	}
 
-	cout << "\n],\n";
+	if(rec_num < num_lines()-1)
+		cout << "},";
+	else
+		cout << "}";
+
 	return 1;
 }
 

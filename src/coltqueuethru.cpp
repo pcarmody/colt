@@ -10,16 +10,17 @@
 
 colt_queuethru::colt_queuethru(char *file_name, char col_sep, char eol_sep, char q_char):
 	colt_csv(file_name, col_sep, eol_sep, q_char),
-	thru_list(),
-	queue_index(0)
+	thru_list()
 {
 	// TODO Auto-generated constructor stub
 	i_am = colt_class_queuethru;
-
 }
 
 colt_queuethru::~colt_queuethru() {
 	// TODO Auto-generated destructor stub
+	for(int i=0; i<thru_list.size(); i++)
+		if(thru_list[i])
+			delete thru_list[i];
 }
 
 int colt_queuethru::append_thru(colt_base *thru)
@@ -38,116 +39,62 @@ int colt_queuethru::append_thru(colt_base *thru)
 	fclose(append);
 }
 
+extern int colt_index_file_exists(char *file_name);
+
 int colt_queuethru::open_and_load()
 {
-	COLT_TRACE("cotl_queuethru::open_load()")
-	colt_csv::open_and_load();
-
-	for(int i=0; i<lines.size(); i++) {
-		char *rec = record(i);
-		colt_datatype tmp(COLT_DT_SOURCE);
-		tmp.set_value(rec);
-		thru_list.push_back((colt_base *)tmp.get_value());
+	COLT_TRACE("colt_queuethru::open_and_load()")
+	if(colt_index_file_exists(file_name)) {
+		char index_file_name[COLT_MAX_STRING_SIZE];
+		sprintf(index_file_name, "%s.ndx", file_name);
+		remove(file_name);
 	}
+
+	int accumulator = 0;
+	int retval = colt_csv::open_and_load();
+
+	for(int i=0; i<num_lines(); i++) {
+		colt_datatype tmp(COLT_DT_SOURCE);
+		tmp.set_value(fields(i)[0]);
+		colt_qthru_thru_struct *thru_struct = new colt_qthru_thru_struct;
+		thru_struct->thru = (colt_base *) tmp.get_value();
+		thru_struct->sum = accumulator;
+		thru_list.push_back(thru_struct);
+		accumulator += thru_struct->thru->num_lines();
+	}
+
+	return retval;
 }
 
-int	colt_queuethru::find_sep_chars(int set_sep_chars)
+int colt_queuethru::num_lines()
 {
-	COLT_TRACE("colt_queuethru:: find_sep_chars(int set_sep_chars)")
-	return 1;
+	colt_qthru_thru_struct *last = thru_list[thru_list.size()-1];
+	return last->sum + last->thru->num_lines();
 }
 
-int  colt_queuethru::load_headers()
+char **colt_queuethru::col_headers()
 {
-	COLT_TRACE("colt_queuethru::load_headers()")
-
-	col_count = 1;
-	headers = (char **) malloc(sizeof(char*)*col_count);
-	headers[0] = base_ptr;
-
-	cell_objects = (colt_datatype **) malloc(sizeof(colt_datatype*)*col_count);
-	cell_objects[0] = new colt_datatype(COLT_DT_SOURCE);
-
-	return col_count;
+	return thru_list[0]->thru->col_headers();
 }
-
-int colt_queuethru::get_next_index(int curr_index, int size, char *buff)
-{
-	COLT_TRACE("colt_queuethru::get_next_index(int curr_index, int size, char *buff)")
-    while(curr_index < size && buff[curr_index] != '\n'){
-        curr_index++;
-    }
-
-    if(buff[curr_index] == '\n' && curr_index+1 < size) {
-    	return curr_index + 1;
-    }
-
-    return 0;
-}
-//
-//int colt_queuethru::get_next_row()
-//{
-//	COLT_TRACE("colt_queuethru::get_next_row()")
-//
-//	int tmp_index = queue_index;
-//
-//	int i;
-//	for(i=0; i < thru_list.size() && tmp_index > thru_list[i]->num_lines(); i++)
-//		tmp_index -= thru_list[e]->num_lines();
-////	if(preload) {
-////		++line_counter;
-////		if(line_counter >= num_lines())
-////			return -1;
-////		return line_counter;
-////	}
-////
-////	if((next_index = get_next_index(curr_index, file_size, base_ptr)) > 0) {
-////		lines.push_back(next_index);
-////		curr_index = next_index;
-////	}
-////
-////	++line_counter;
-////
-////	if(line_counter >= num_lines())
-////		return -1;
-////
-////	return line_counter;
-//}
-
-//char *colt_queuethru::record(int line_num);
-//char *colt_queuethru::col_header(int n);
-//char **colt_queuethru::col_headers();
-//int colt_queuethru::num_lines();
-//int colt_queuethru::num_cols();
-//int colt_queuethru::max_size();
-
 
 char **colt_queuethru::fields(int rec_num)
 {
-	COLT_TRACE("**colt_queuethru::fields(int rec_num)")
-//	if(fields_retval)
-//		free(fields_retval);
-	_trace.start() << " " << rec_num << ":" << num_lines() << ":" << file_name << "!\n";
+	int i;
+	for(i = 0; i<thru_list.size() && thru_list[i]->sum < rec_num; i++);
 
-	if(rec_num > num_lines())
-		rec_num = num_lines();
-	_trace.start() << " " << rec_num << "\n";
+	int thru_rec_num = (i == 0)? rec_num : rec_num - thru_list[i-1]->sum;
 
-	int i = 0;
-	fields_retval[0] = record(rec_num);
-	int number_of_cols = num_cols();
-	for(char *x = fields_retval[0]; i<number_of_cols; x++)
-		if(!*x) {
-			fields_retval[++i] = x+1;
-		}
-
-	return fields_retval;
+	return thru_list[i]->thru->fields(rec_num);
 }
 
+int colt_queuethru::process(int rec_num)
+{
+	int rec = 0;
 
-//int	colt_queuethru::meta_num_cols();
-//char *colt_queuethru::meta_col_header(int n);
-//char **colt_queuethru::meta_col_headers();
-//char **colt_queuethru::meta_fields(int rec_num);
-//colt_datatype **colt_queuethru::meta_cells(int rec_num);
-//int	colt_queuethru::get_meta_row(int rec_num);
+	while((rec = thru_list[rec_num]->thru->get_next_row()) >= 0) {
+		int index = thru_list[rec_num]->sum + rec;
+		process(index);
+	}
+
+	return 1;
+}

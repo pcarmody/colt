@@ -20,6 +20,7 @@ public:
 	virtual colt_base *copy(colt_base *op=NULL);
 
 	void fill_sequential(int start=0);
+	int num_lines();
 
 	int preprocess();
 //	char **fields(int rec);

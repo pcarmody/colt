@@ -111,6 +111,8 @@ public:
 	void set_buffer(char *x) {
 		if(type >= COLT_DT_SOURCE)
 			parse_thru(x);
+		else if(type == COLT_DT_INTEGER)
+			value_type = (value_type_t *) atol(x);
 		else
 			set_value(x);
 	};
@@ -136,7 +138,7 @@ public:
 			strcpy(x, value_type->str_val);
 			break;
 		case COLT_DT_INTEGER:
-			sprintf(x, "%ld", value_type->long_val);
+			sprintf(x, "%ld", value_type);
 			break;
 		case COLT_DT_SOURCE:
 		case COLT_DT_THRU:

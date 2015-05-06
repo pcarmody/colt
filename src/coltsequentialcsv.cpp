@@ -11,7 +11,7 @@
 #include <sys/stat.h>
 
 colt_sequential_csv::colt_sequential_csv(char *file_name, char col_sep, char eol_sep, char q_char):
-	colt_csv(file_name, col_sep, eol_sep, q_char)
+	colt_zsv(file_name, col_sep, eol_sep, q_char)
 {
 	i_am = colt_class_sequential_csv;
 	for(int i=0; i<COLT_MAX_STRING_SIZE; i++)
@@ -19,7 +19,7 @@ colt_sequential_csv::colt_sequential_csv(char *file_name, char col_sep, char eol
 }
 
 colt_sequential_csv::colt_sequential_csv(char *file_name, int pl):
-	colt_csv(file_name, pl)
+	colt_zsv(file_name, pl)
 {
 	i_am = colt_class_sequential_csv;
 	for(int i=0; i<COLT_MAX_STRING_SIZE; i++)
@@ -132,6 +132,6 @@ int colt_sequential_csv::preprocess()
 	if(!fields_retval)
 		fields_retval = (char **) malloc(sizeof(char *) * (num_cols() + 1));
 
-	return colt_csv::preprocess();
+	return colt_zsv::preprocess();
 }
 

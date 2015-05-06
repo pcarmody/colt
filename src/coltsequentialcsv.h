@@ -8,7 +8,7 @@
 #ifndef COLTSEQUENTIALCSV_H_
 #define COLTSEQUENTIALCSV_H_
 
-class colt_sequential_csv : public colt_csv {
+class colt_sequential_csv : public colt_zsv {
 	FILE	*fdesc_ptr;
 	char	sequential_file_buffer[COLT_MAX_STRING_SIZE];
 

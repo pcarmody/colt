@@ -429,7 +429,7 @@ colt_base *colt_parser::file_name()
 	} else
 		dtype_str[0] = '\0';
 
-	colt_csv *retval = NULL;
+	colt_zsv *retval = NULL;
 
 	char *a = file_name;
 	if(*a == '-')
@@ -440,9 +440,9 @@ colt_base *colt_parser::file_name()
 	else if(match(file_name, "thru$"))
 		return colt_load_thru(file_name);
 	else if(col_sep)
-			retval = new colt_csv(file_name, col_sep, eol_sep, quote_sep);
+			retval = new colt_zsv(file_name, col_sep, eol_sep, quote_sep);
 		else
-			retval = new colt_csv(file_name, 0);
+			retval = new colt_zsv(file_name, 0);
 
 	retval->open_and_load();
 

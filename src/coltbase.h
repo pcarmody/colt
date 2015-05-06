@@ -17,6 +17,7 @@ enum Colt_Class {
 	colt_class_operator,
 
 	// input sources
+	colt_class_zsv,
 	colt_class_csv,
 	colt_class_sequential_csv,
 
