@@ -109,6 +109,37 @@ char **colt_queuethru::fields(int rec_num)
 	return thru_list[i]->thru->fields(thru_rec_num);
 }
 
+
+int	colt_queuethru::meta_num_cols()
+{
+	return colt_csv::num_cols();
+}
+
+char *colt_queuethru::meta_col_header(int n)
+{
+	return colt_csv::col_header(n);
+}
+
+char **colt_queuethru::meta_col_headers()
+{
+	return colt_csv::col_headers();
+}
+
+char **colt_queuethru::meta_fields(int rec_num)
+{
+	return colt_csv::fields(rec_num);
+}
+
+colt_datatype **colt_queuethru::meta_cells(int rec_num)
+{
+	return colt_csv::cells(rec_num);
+}
+
+int	colt_queuethru::get_meta_row(int rec_num)
+{
+	return colt_csv::get_meta_row(rec_num);
+}
+
 int colt_queuethru::process(int rec_num)
 {
 	COLT_TRACE("colt_queuethru::process(int rec_num)")
@@ -119,7 +150,6 @@ int colt_queuethru::process(int rec_num)
 
 	while((rec = thru_list[rec_num]->thru->get_next_row()) >= 0) {
 		int index = thru_list[rec_num]->sum + rec;
-//		cout << "qqq " << rec_num << ":" << index << ":" << thru_list[rec_num]->sum << ":" << rec << "\n";
 		colt_csv::process(index);
 	}
 

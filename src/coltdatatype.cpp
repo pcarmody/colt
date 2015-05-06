@@ -23,6 +23,8 @@ int colt_datatype::format_thru(char *x)
 //	return strlen(x);
 }
 
+extern colt_base *colt_load_thru(char *file_name, int status);
+
 char *colt_datatype::parse_thru(char *x)
 {
 	coltthru *thru = NULL;
@@ -36,11 +38,15 @@ char *colt_datatype::parse_thru(char *x)
 //			return ((colt_sort *) value_type)->from_string(x);
 //		else if(strcmp("cthru:", x) == 0)
 //			return ((colt_cthru *) value_type)->from_string(x);
-		else if(strcmp("range:", x) == 0)
-			return ((colt_range *) value_type)->from_string(x);
+//		else if(strcmp("range:", x) == 0)
+//			return ((colt_range *) value_type)->from_string(x);
 //		else if(strcmp("bitmap:", x) == 0)
 //			return ((coltbitmap *) value_type)->from_string(x);
-
+		else {
+			colt_base *input = colt_load_thru(x);
+			value_type = (value_type_t *) input;
+			return x+strlen(x);
+		}
 
 		value_type = (value_type_t *) thru;
 	}
