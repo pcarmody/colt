@@ -10,7 +10,8 @@
 
 colt_queuethru::colt_queuethru(char *file_name, char col_sep, char eol_sep, char q_char):
 	colt_csv(file_name, col_sep, eol_sep, q_char),
-	thru_list()
+	thru_list(),
+	meta_headers(NULL)
 {
 	// TODO Auto-generated constructor stub
 	i_am = colt_class_queuethru;
@@ -65,6 +66,10 @@ int colt_queuethru::open_and_load()
 		accumulator += thru_struct->thru->num_lines();
 	}
 
+	meta_col_headers();	// does nothing but initial*ze the meta_col_headers
+	meta_fields(0);
+//	meta_cells(0);
+
 	return retval;
 }
 
@@ -112,32 +117,72 @@ char **colt_queuethru::fields(int rec_num)
 
 int	colt_queuethru::meta_num_cols()
 {
-	return colt_csv::num_cols();
+	return colt_csv::meta_num_cols() + colt_csv::num_cols();
 }
 
 char *colt_queuethru::meta_col_header(int n)
 {
-	return colt_csv::col_header(n);
+	int cols = colt_csv::meta_num_cols();
+	if(n > cols)
+		return colt_csv::meta_col_header(n);
+
+	return colt_csv::col_header(n-cols);
 }
 
 char **colt_queuethru::meta_col_headers()
 {
-	return colt_csv::col_headers();
+	if(!meta_headers) {
+		int old_size = colt_csv::meta_num_cols();
+		meta_headers = (char **) malloc( (old_size + colt_csv::num_cols()) * sizeof(char *));
+		char **old_headers = colt_csv::meta_col_headers();
+		for(int i=0; i<old_size; i++)
+			meta_headers[i] = old_headers[i];
+		old_headers = colt_csv::col_headers();
+		for(int j=0; j<colt_csv::num_cols(); j++)
+			meta_headers[old_size+j] = old_headers[j];
+	}
+	return meta_headers;
 }
 
 char **colt_queuethru::meta_fields(int rec_num)
 {
-	return colt_csv::fields(rec_num);
+	int old_size = colt_csv::meta_num_cols();
+
+	if(!metadata_fields) {
+		metadata_fields = (char **) malloc( (old_size + colt_csv::num_cols()) * sizeof(colt_datatype *));
+		char **old_fields = colt_csv::meta_fields(rec_num);
+		for(int i=0; i<old_size; i++)
+			metadata_fields[i] = old_fields[i];
+	}
+
+	char **old_fields = colt_csv::fields(rec_num);
+	for(int j=0; j<colt_csv::num_cols(); j++)
+		metadata_fields[old_size+j] = old_fields[j];
+
+	return metadata_fields;
 }
 
 colt_datatype **colt_queuethru::meta_cells(int rec_num)
 {
-	return colt_csv::cells(rec_num);
+	int old_size = colt_csv::meta_num_cols();
+
+	if(!metadata_cells) {
+		metadata_cells = (colt_datatype **) malloc( (old_size + colt_csv::num_cols()) * sizeof(colt_datatype *));
+		colt_datatype **old_cells = colt_csv::meta_cells(rec_num);
+		for(int i=0; i<old_size; i++)
+			metadata_cells[i] = old_cells[i];
+	}
+
+	colt_datatype **old_cells = colt_csv::cells(rec_num);
+	for(int j=0; j<colt_csv::num_cols(); j++)
+		metadata_cells[old_size+j] = old_cells[j];
+
+	return metadata_cells;
 }
 
 int	colt_queuethru::get_meta_row(int rec_num)
 {
-	return colt_csv::get_meta_row(rec_num);
+	return colt_csv::get_next_row();
 }
 
 int colt_queuethru::process(int rec_num)
