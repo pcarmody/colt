@@ -107,10 +107,12 @@ char **colt_queuethru::fields(int rec_num)
 	for(i=0; i<size && thru_rec_num > thru_list[i]->thru->num_lines(); i++)
 		thru_rec_num -= thru_list[i]->thru->num_lines();
 
-//	for(i = 0; i<size-1 && thru_list[i]->sum < rec_num; i++);
-//
-//	int thru_rec_num = (i == 0)? rec_num : rec_num - thru_list[i-1]->sum-1;
+	if(thru_list[i]->thru->num_lines() == thru_rec_num) {
+		i++;
+		thru_rec_num = 0;
+	}
 
+//	cout << "qqq " << rec_num << ":" << i << ":" << thru_rec_num << ":" << thru_list[i]->thru->num_lines() << "\n";
 	return thru_list[i]->thru->fields(thru_rec_num);
 }
 
@@ -182,7 +184,10 @@ colt_datatype **colt_queuethru::meta_cells(int rec_num)
 
 int	colt_queuethru::get_meta_row(int rec_num)
 {
-	return colt_csv::get_next_row();
+	if(rec_num+1 < colt_csv::num_lines())
+		return rec_num+1;
+	return -1;
+//	return colt_csv::get_next_row();
 }
 
 int colt_queuethru::process(int rec_num)

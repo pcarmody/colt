@@ -74,9 +74,10 @@ int colt_out_vertical::preprocess()
 	column_length = 0;
 
 	int k = 0;
+	char **headers = col_headers();
 
 	for(int j=0; j<num_cols(); j++) {
-		int len = strlen(col_header(j));
+		int len = strlen(headers[j]);
 		if(column_length < len)
 			column_length = len;
 	}
@@ -97,8 +98,10 @@ int colt_out_vertical::process(int i)
 	char col_sep = col_seperator;
 	if(!col_sep) col_sep = '\t';
 
+	char **headers = col_headers();
+
 	for(int j=0; j<num_cols(); j++) {
-		char *header = col_header(j);
+		char *header = headers[j];
 		int len = strlen(header);
 		cout << k++;
 		if(j<9)

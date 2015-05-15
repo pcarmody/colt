@@ -46,10 +46,10 @@ colt_datatype **colt_metadata::cells(int rec_num)
 
 int colt_metadata::process(int row)
 {
-	int meta_index = 0;
+	int meta_index = -1;
 
-	while(meta_index = operand->get_meta_row(meta_index))
-		out_object->process(row);
+	while((meta_index = operand->get_meta_row(meta_index)) >= 0)
+		out_object->process(meta_index);
 
 	throw "exiting metadata";
 

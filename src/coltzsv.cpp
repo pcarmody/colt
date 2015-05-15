@@ -200,16 +200,19 @@ char **colt_zsv::meta_fields(int rec_num)
 	sprintf(metadata_fields[2], "%d", col_count);
 
 	metadata_fields[3] = new char[10];
-	sprintf(metadata_fields[3], "%d", curr_index);
+	sprintf(metadata_fields[3], "%d", rec_num);
 
-	metadata_fields[4] = new char[2];
-	metadata_fields[4][0] = column_sep_char;
+	metadata_fields[4] = new char[4];
+	sprintf(metadata_fields[4], "%x", column_sep_char);
+//	metadata_fields[4][0] = column_sep_char;
 
-	metadata_fields[5] = new char[2];
-	metadata_fields[5][0] = quote_char;
+	metadata_fields[5] = new char[4];
+	sprintf(metadata_fields[5], "%x", quote_char);
+//	metadata_fields[5][0] = quote_char;
 
-	metadata_fields[6] = new char[2];
-	metadata_fields[6][0] = end_of_line_sep_char;
+	metadata_fields[6] = new char[4];
+	sprintf(metadata_fields[6], "%x", end_of_line_sep_char);
+//	metadata_fields[6][0] = end_of_line_sep_char;
 
 	metadata_fields[7] = "csv";
 
@@ -220,8 +223,10 @@ char **colt_zsv::meta_fields(int rec_num)
 
 colt_datatype **colt_zsv::meta_cells(int rec_num)
 {
-	if(metadata_cells == NULL)
-		metadata_cells = (colt_datatype **) malloc( sizeof(colt_datatype *) * COLT_ZSV_NUM_COLUMN_HEADERS);
+	if(metadata_cells != NULL)
+		return metadata_cells;
+
+	metadata_cells = (colt_datatype **) malloc( sizeof(colt_datatype *) * COLT_ZSV_NUM_COLUMN_HEADERS);
 
 	metadata_cells[0] = new colt_datatype;
 	metadata_cells[0]->set_value(source_file_name());
@@ -236,13 +241,16 @@ colt_datatype **colt_zsv::meta_cells(int rec_num)
 	metadata_cells[3]->set_value(&curr_index);
 
 	metadata_cells[4] = new colt_datatype;
-	metadata_cells[4]->set_value(&column_sep_char);
+//	metadata_cells[4]->set_value(&column_sep_char);
+	metadata_cells[4]->set_value((void *) "\0");
 
 	metadata_cells[5] = new colt_datatype;
-	metadata_cells[5]->set_value(&quote_char);
+//	metadata_cells[5]->set_value(&quote_char);
+	metadata_cells[4]->set_value((void *) "\0");
 
 	metadata_cells[6] = new colt_datatype;
-	metadata_cells[6]->set_value(&end_of_line_sep_char);
+//	metadata_cells[6]->set_value(&end_of_line_sep_char);
+	metadata_cells[6]->set_value((void *) "\n");
 
 	metadata_cells[7] = new colt_datatype;
 	metadata_cells[7]->set_value((void *) "csv");
@@ -259,7 +267,7 @@ int colt_zsv::get_meta_row(int rec_num)
 {
 	if(rec_num == 0)
 		return 1;
-	return 0;
+	return -1;
 }
 
 
