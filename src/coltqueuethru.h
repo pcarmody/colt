@@ -29,6 +29,7 @@ public:
 	virtual int append_thru(colt_base *thru);
 	virtual int open_and_load();
 
+	virtual char *source_file_name();
 	virtual int num_lines();
 	virtual int num_cols();
 	virtual char **col_headers();

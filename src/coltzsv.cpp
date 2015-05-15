@@ -190,7 +190,7 @@ char **colt_zsv::meta_fields(int rec_num)
 	if(metadata_fields == NULL)
 		metadata_fields = new char*[COLT_ZSV_NUM_COLUMN_HEADERS];
 
-	metadata_fields[0] = file_name;
+	metadata_fields[0] = source_file_name();
 
 	metadata_fields[1] = new char[10];
 	sprintf(metadata_fields[1], "%d", num_lines());

@@ -41,6 +41,14 @@ int colt_queuethru::append_thru(colt_base *thru)
 	fclose(append);
 }
 
+char *colt_queuethru::source_file_name()
+{
+	if(thru_list.size() > 0)
+		return thru_list[0]->thru->source_file_name();
+
+	return colt_csv::source_file_name();
+}
+
 extern int colt_index_file_exists(char *file_name);
 
 int colt_queuethru::open_and_load()
@@ -119,7 +127,9 @@ char **colt_queuethru::fields(int rec_num)
 
 int	colt_queuethru::meta_num_cols()
 {
-	return colt_csv::meta_num_cols() + colt_csv::num_cols();
+	int retval = colt_csv::meta_num_cols() + colt_csv::num_cols();
+//	cout << "qqq " << retval << "\n";
+	return retval;
 }
 
 char *colt_queuethru::meta_col_header(int n)
