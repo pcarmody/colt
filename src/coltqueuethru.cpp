@@ -15,6 +15,7 @@ colt_queuethru::colt_queuethru(char *file_name, char col_sep, char eol_sep, char
 {
 	// TODO Auto-generated constructor stub
 	i_am = colt_class_queuethru;
+	meta_file_type = "pthru";
 }
 
 colt_queuethru::~colt_queuethru() {
@@ -165,7 +166,10 @@ char **colt_queuethru::meta_fields(int rec_num)
 		char **old_fields = colt_csv::meta_fields(rec_num);
 		for(int i=0; i<old_size; i++)
 			metadata_fields[i] = old_fields[i];
+		metadata_fields[7] = "qthru";
 	}
+
+//	sprintf(metadata_fields[2], "%d", thru_list[0]->thru->num_cols());
 
 	char **old_fields = colt_csv::fields(rec_num);
 	for(int j=0; j<colt_csv::num_cols(); j++)

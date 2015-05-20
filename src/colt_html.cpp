@@ -22,49 +22,10 @@ colt_html::~colt_html() {
 	// TODO Auto-generated destructor stub
 }
 
-colt_base *colt_html::copy(colt_base *op)
+int colt_html::headers_out()
 {
-	return new colt_html(*op);
-}
+	COLT_TRACE("colt_out::headers_out()")
 
-void colt_html::fill_sequential()
-{
-	COLT_TRACE("colt_html::fill_sequential()")
-	cout << "<table>\n<thead>\n<tr><th>";
-
-//	colt_out::fill_sequential();
-	char out_string[1000];
-	out_string[0] = '\0';
-
-	int k = 0;
-	for(int j=0; j<operand->num_cols(); j++) {
-		if(k++ > 0)
-			strcat(out_string, "</th><th>");
-		strcat(out_string, extract_str(operand->col_header(j)));
-	}
-	strcat(out_string, "</th></tr>\n");
-	cout << out_string;
-	cout << "</thead>\n<tbody>\n";
-
-	for(int i=0; i<operand->num_lines(); i++) {
-		int k = 0;
-		out_string[0] = '\0';
-		//for(int j=operand->first_col(); j != operand->is_last_col(); j=operand->next_col()) {
-		for(int j=0; j<operand->num_cols(); j++) {
-			if(k++ > 0)
-				strcat(out_string, "</td><td>");
-			strcat(out_string, extract_str(operand->field_val(i, j)));
-		}
-//		strcat(out_string, end_of_line_sep_char);
-		cout << "<tr><td>" << out_string << "</td></tr>\n";
-	}
-	cout << "<tbody>\n</table>\n";
-}
-
-int colt_html::preprocess()
-{
-	COLT_TRACE("colt_html::preprocess()")
-	colt_operator::preprocess();
 	cout << "<table>\n<thead>\n<tr><th>";
 
 	char out_string[1000];
@@ -79,6 +40,28 @@ int colt_html::preprocess()
 	strcat(out_string, "</th></tr>\n");
 	cout << out_string;
 	cout << "</thead>\n<tbody>\n<tr><td>";
+
+	return 1;
+}
+
+int colt_html::preprocess()
+{
+	COLT_TRACE("colt_html::preprocess()")
+	colt_operator::preprocess();
+//	cout << "<table>\n<thead>\n<tr><th>";
+//
+//	char out_string[1000];
+//	out_string[0] = '\0';
+//
+//	int k = 0;
+//	for(int j=0; j<operand->num_cols(); j++) {
+//		if(k++ > 0)
+//			strcat(out_string, "</th><th>");
+//		strcat(out_string, extract_str(operand->col_header(j)));
+//	}
+//	strcat(out_string, "</th></tr>\n");
+//	cout << out_string;
+//	cout << "</thead>\n<tbody>\n<tr><td>";
 
 	return 1;
 }

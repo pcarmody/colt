@@ -31,6 +31,7 @@ public:
     int 	next_index;
     int		preload;
     char	**metadata_fields;
+    char	*meta_file_type;
     colt_datatype	**metadata_cells;
 
 	colt_zsv(char *file_name, char col_sep, char eol_sep, char q_char);

@@ -13,6 +13,7 @@ colt_csv::colt_csv(char *file_name, char col_sep, char eol_sep, char q_char):
 {
 	// TODO Auto-generated constructor stub
 	i_am = colt_class_csv;
+	meta_file_type = "csv";
 }
 
 colt_csv::~colt_csv() {

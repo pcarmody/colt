@@ -19,7 +19,7 @@ public:
 
 	colt_base *copy(colt_base *op);
 
-	int add_range(int low=0, int high=LONG_MAX);
+	int add_range(int low=0, int high=INT_MAX);
 	int process(int rec_num);
 };
 

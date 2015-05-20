@@ -138,7 +138,7 @@ public:
 			strcpy(x, value_type->str_val);
 			break;
 		case COLT_DT_INTEGER:
-			sprintf(x, "%ld", value_type);
+			sprintf(x, "%ld", (long int) value_type);
 			break;
 		case COLT_DT_SOURCE:
 		case COLT_DT_THRU:

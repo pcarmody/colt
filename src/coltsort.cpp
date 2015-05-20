@@ -205,13 +205,13 @@ void colt_sort::initialize()
 //
 
 int search_low = 0;
-int search_high = LONG_MAX;
+int search_high = INT_MAX;
 char *search_low_str = "x";
 char *search_high_str = "x";
 int search_low_str_len = 0;
 int search_high_str_len = 0;
 int result_low = 0;
-int result_high = LONG_MAX;
+int result_high = INT_MAX;
 
 int colt_sort::search(char *min, char *max, colt_range *retobj)
 {

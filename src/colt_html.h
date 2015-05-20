@@ -13,9 +13,8 @@ public:
 	colt_html(colt_base &in);
 	virtual ~colt_html();
 
-	virtual colt_base *copy(colt_base *op=NULL);
+	int headers_out();
 
-	void fill_sequential();
 	int preprocess();
 	void postprocess();
 	int process(int rec_num);

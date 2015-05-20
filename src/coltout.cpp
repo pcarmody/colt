@@ -22,13 +22,15 @@ colt_out::colt_out(colt_base &in, char *col, char *eol, char *quote):
 	i_am = colt_class_out;
 	if(col) {
 		column_sep_char = new char[strlen(col)+1];
-		strncpy(column_sep_char, col,1);
-		column_sep_char[1] = '\0';
+//		strncpy(column_sep_char, col,1);
+		strcpy(column_sep_char, col);
+//		column_sep_char[1] = '\0';
 	}
 	if(eol) {
 		end_of_line_sep_char = new char[strlen(eol)+1];
-		strncpy(end_of_line_sep_char, eol,1);
-		end_of_line_sep_char[1] = '\0';
+		strcpy(end_of_line_sep_char, eol);
+//		strncpy(end_of_line_sep_char, eol,1);
+//		end_of_line_sep_char[1] = '\0';
 	}
 	if(quote) {
 		quote_char = new char[strlen(quote)+1];
@@ -44,45 +46,6 @@ colt_out::~colt_out() {
 		delete end_of_line_sep_char;
 	if(quote_char)
 		delete quote_char;
-}
-
-colt_base *colt_out::copy(colt_base *operand)
-{
-	COLT_TRACE("*colt_out::copy(colt_base *operand)")
-	return new colt_out(*operand, column_sep_char, end_of_line_sep_char, quote_char);
-}
-
-void colt_out::fill_sequential()
-{
-	COLT_TRACE("colt_out::fill_sequential()")
-	char out_string[1000];
-	out_string[0] = '\0';
-
-	int k = 0;
-//	for(colt_counter *j=operand->get_col_counter(); !j->done(); j->next()) {
-	char **heads = col_headers();
-	for(int j=0; j<num_cols(); j++) {
-		if(k++ > 0)
-			strcat(out_string, column_sep_char);
-		strcat( out_string, extract_str( heads[j] ) );
-	}
-	strcat(out_string, end_of_line_sep_char);
-	cout << out_string;
-
-//	for(colt_counter *i=operand->get_row_counter(); !i->done(); i->next()) {
-	for(int i=0; i<num_lines(); i++) {
-		int k = 0;
-		out_string[0] = '\0';
-		char **fields_out = fields(i);
-		for(int j=0; j<num_cols(); j++) {
-//		for(colt_counter *j=operand->get_col_counter(); !j->done(); j->next()) {
-			if(k++ > 0)
-				strcat(out_string, column_sep_char);
-			strcat(out_string, extract_str(fields_out[j]));
-		}
-		strcat(out_string, end_of_line_sep_char);
-		cout << out_string;
-	}
 }
 
 int colt_out::headers_out()

@@ -174,6 +174,9 @@ colt_datatype **colt_cross::cells(int rec_num)
 
 int	colt_cross::preprocess()
 {
+	if(expression_object)
+		return 1;
+
 	if(!left_num_cols)
 		left_num_cols = colt_each::num_cols();
 	return colt_each::preprocess();
@@ -213,7 +216,8 @@ int colt_cross::process(int rec_num)
 	}
 //	destination->out_object = NULL;
 
-	expression_object->postprocess();
+//	expression_object->postprocess();
+
 
 	expression_object = NULL;
 	operand = tmp_op;

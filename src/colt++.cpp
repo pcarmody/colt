@@ -257,10 +257,13 @@ char *regex_sub(char *in, char *pattern, char *out)
 
     return out;
 }
-
+int test_colt_nested_cells();
 int main(int argc, char **argv)
 {
 	COLT_TRACE("main");
+
+	test_colt_nested_cells();
+	exit(1);
 	colt_base *base_obj = NULL;
 //	char out[COLT_MAX_STRING_SIZE];
 //	std::cout << regex_sub("/home/toto/FILE_mysymbol_EVENT.DAT", "/.*FILE_(\\w+)_(\\w+)\\.DAT.*/alpha \\1 beta \\2 gamma/", out);

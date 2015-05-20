@@ -72,30 +72,29 @@ int colt_to_json::process(int rec_num)
 
 	if(key_col_index >= 0) {
 		cell_objs[key_col_index]->format(tmp_str);
-//		if(cell_objs[key_col_index]->type == COLT_DT_INTEGER)
-//			std::cout << tmp_str << ": ";
-//		else
-			std::cout << '"' << tmp_str << "\": ";
+		std::cout << '"' << tmp_str << "\": ";
 	}
 
-	std::cout << "{";
+	if(!gen_headers) {
+		gen_headers = 1;
+	} else
+		std::cout << ",";
 
-	for(int j=0; j<num_cols(); j++) {
+	std::cout << "{";
+	int cols = num_cols();
+
+	for(int j=0; j<cols; j++) {
 		if(j != key_col_index) {
 			cell_objs[j]->format(tmp_str);
 			if(cell_objs[j]->type == COLT_DT_INTEGER)
 				std::cout << "\"" << extract_str(col_header(j)) << "\": " << tmp_str ;
 			else
 				std::cout << "\"" << extract_str(col_header(j)) << "\": \"" << tmp_str << "\"";
-			if(j<num_cols()-1)
+			if(j<cols-1)
 				std::cout << ",";
 		}
 	}
-
-	if(rec_num < num_lines()-1)
-		cout << "},";
-	else
-		cout << "}";
+	cout << "}";
 
 	return 1;
 }

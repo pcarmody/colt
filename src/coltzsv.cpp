@@ -64,6 +64,7 @@ colt_zsv::colt_zsv(char *fname, int pl)
 	cell_objects = NULL;
 	metadata_fields = NULL;
 	metadata_cells = NULL;
+	meta_file_type = "zsv";
 //	if(colt_index_file_exists(file_name))
 //		preload_data();
 //	elseconst int
@@ -214,7 +215,7 @@ char **colt_zsv::meta_fields(int rec_num)
 	sprintf(metadata_fields[6], "%x", end_of_line_sep_char);
 //	metadata_fields[6][0] = end_of_line_sep_char;
 
-	metadata_fields[7] = "csv";
+	metadata_fields[7] = meta_file_type;
 
 	metadata_fields[8] = "data";
 
