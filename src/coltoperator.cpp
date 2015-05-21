@@ -168,6 +168,12 @@ colt_datatype **colt_operator::cells(int rec_num)
 	return operand->cells(rec_num);
 }
 
+colt_nested_cells *colt_operator::nested_cells(int rec_num)
+{
+	COLT_TRACE("**colt_operator::nested_cells(int rec_num)")
+	return operand->nested_cells(rec_num);
+}
+
 int colt_operator::get_next_row()
 {
 	COLT_TRACE("colt_operator::get_next_row()")

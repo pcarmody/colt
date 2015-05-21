@@ -17,6 +17,7 @@
 #include <iostream>
 using namespace std;
 #include "coltdatatype.h"
+#include "coltnestedcells.h"
 #include "coltbase.h"
 #include "coltzsv.h"
 #include "colttrace.h"
@@ -65,6 +66,7 @@ colt_zsv::colt_zsv(char *fname, int pl)
 	metadata_fields = NULL;
 	metadata_cells = NULL;
 	meta_file_type = "zsv";
+	nested = NULL;
 //	if(colt_index_file_exists(file_name))
 //		preload_data();
 //	elseconst int
@@ -87,6 +89,7 @@ colt_zsv::colt_zsv(char *fname, char col_sep, char eol_sep, char q_char)
 	cell_objects = NULL;
 	metadata_fields = NULL;
 	metadata_cells = NULL;
+	nested = NULL;
 }
 
 int colt_zsv::open_and_load()
@@ -124,6 +127,9 @@ colt_zsv::~colt_zsv() {
 	for(int i=0; i<col_count; i++)
 		delete cell_objects[i];
 	free(cell_objects);
+
+	if(nested)
+		delete nested;
 //
 //	if(headers)
 //		free(headers);
@@ -628,6 +634,16 @@ colt_datatype **colt_zsv::cells(int rec_num)
 	_trace.start() << " cells filled\n";
 
 	return cell_objects;
+}
+
+colt_nested_cells *colt_zsv::nested_cells(int rec_num)
+{
+	if(!nested)
+		nested = new colt_nested_cells(fields(rec_num), num_cols(), col_headers(), source_file_name());
+	else
+		nested->cells = fields(rec_num);
+
+	return nested;
 }
 
 int colt_zsv::compare(int a, int b, int c)

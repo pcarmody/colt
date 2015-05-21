@@ -358,6 +358,23 @@ colt_out_cbf *colt_parser::cbf()
 	return retval;
 }
 
+colt_yml *colt_parser::yml()
+{
+	COLT_TRACE("*colt_parser::yml()")
+	colt_yml *retval;
+	char *in = input_buffer;
+	if(in[3] != ':')
+		retval = new colt_yml(*return_value, NULL);
+	else
+		retval = new colt_yml(*return_value, in+4);
+
+	while(*in != ' ' && *in != '\t' && *in != '\n') in++;
+
+	input_buffer = in;
+
+	return retval;
+}
+
 colt_ask *colt_parser::ask()
 {
 	COLT_TRACE("*colt_parser:colt_ask()")
@@ -1309,6 +1326,9 @@ colt_base *colt_parser::output_expression()
 
 	if(is_token("csv"))
 		return csv();
+
+	if(is_token("yml"))
+		return yml();
 
 	if(is_token("cbf"))
 		return cbf();

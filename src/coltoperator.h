@@ -38,6 +38,7 @@ public:
 	virtual char **fields(int rec_num);
 	virtual void set_coltype(int num, colt_datatype *x);
 	virtual	colt_datatype **cells(int rec_num);
+	virtual colt_nested_cells *nested_cells(int rec_num);
 	virtual char *source_file_name();
 	virtual	colt_base *get_datasource(int count=0);
 	virtual int reduce_to(int level, int rec_num);

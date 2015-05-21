@@ -12,6 +12,7 @@
 #include "AssocArray.h"
 
 #include "coltdatatype.h"
+#include "coltnestedcells.h"
 
 #include "coltbase.h"
 #include "coltask.h"
@@ -58,6 +59,7 @@
 #include "coltindex.h"
 #include "colt_select.h"
 #include "colt_to_json.h"
+#include "coltyml.h"
 #include "coltcounter.h"
 
 #include "colt_cross.h"

@@ -44,13 +44,23 @@ int test_colt_nested_cells()
 	colt_nested_cells out22(outer2, 4, head1, "Dates", &in3);
 	colt_nested_cells out23(outer2, 4, head1, "Dates", &in11);
 
+	colt_nested_cells out31(outer3, 4, head1, "Dates", &in2);
+	colt_nested_cells out32(outer3, 4, head1, "Dates", &in11);
+	colt_nested_cells out33(outer3, 4, head1, "Dates", &in4);
+
+	std::ofstream mine("mine.yml");
 //	out11.start();
-	out11.nested_output(NULL);
-	out11a.nested_output(&out11);
-	out12.nested_output(&out11);
-//	out13.nested_output(&out12);
-	out21.nested_output(&out12);
-//	out22.nested_output(&out21);
+	out11.nested_output(NULL, 0, &mine);
+	out11a.nested_output(&out11, 0, &mine);
+	out12.nested_output(&out11a, 0, &mine);
+
+	out23.nested_output(&out12, 0, &mine);
+	out21.nested_output(&out23, 0, &mine);
+	out22.nested_output(&out21, 0, &mine);
+
+	out31.nested_output(&out22, 0, &mine);
+	out32.nested_output(&out31, 0, &mine);
+	out33.nested_output(&out32, 0, &mine);
 
 //	out13.end(xxx+1);
 //	out11.end();
@@ -58,36 +68,42 @@ int test_colt_nested_cells()
 }
 
 //colt_nested_cells::colt_nested_cells(colt_datatype **c, int cols, char **heads, char *k):
-colt_nested_cells::colt_nested_cells(char **c, int cols, char **heads, char *k, colt_nested_cells *n):
+colt_nested_cells::colt_nested_cells(char **c, int cols, char **heads, char *k, colt_nested_cells *n, std::ostream *o):
 	cells(c),
 	num_cols(cols),
 	headers(heads),
 	key(k),
 	output_type(colt_nested_cells::json),
 	pretty(1),
-	next(n)
+	next(n),
+	out(o)
 {
 	// TODO Auto-generated constructor stub
-
+	if(!out)
+		out = &cout;
 }
 
 colt_nested_cells::~colt_nested_cells() {
 	// TODO Auto-generated destructor stub
 }
 
-int colt_nested_cells::nested_output(colt_nested_cells *old, int level)
+int colt_nested_cells::nested_output(colt_nested_cells *old, int level, std::ostream *o)
 {
+	if(o)
+		out = o;
+
 	if(!old) {
 		gen_connection(level);
-		std::cout << key << ":";
+		*out << key << ":";
 		gen_connection(level);
 		start();
 		return gen_row(level);
 	}
 
-	if(strcmp(key, old->key) == 0)
+//	if(strcmp(key, old->key) == 0)
+	if(cells == old->cells)
 		if(next)
-			return next->nested_output(old->next, level+1);
+			return next->nested_output(old->next, level+1, out);
 
 	gen_connection(level);
 	start();
@@ -103,31 +119,31 @@ void colt_nested_cells::gen_connection(int level)
 
 int colt_nested_cells::indent(int level)
 {
-	std::cout << "\n";
+	*out << "\n";
 	for(int i=0; i<level; i++)
-		std::cout << "  ";
+		*out << "  ";
 }
 
 int colt_nested_cells::gen_row(int level)
 {
 	char tmp_str[COLT_MAX_STRING_SIZE];
+	int retval = 1;
 
 	if(pretty)
 		indent(level+1);
 
 	for(int j=0; j<num_cols; j++) {
 
-		std::cout << headers[j] << ": " << cells[j];
+		*out << headers[j] << ": " << cells[j];
 
 		if(j<num_cols-1)
 			gen_connection(level+1);
 	}
 
-	if(next) {
-		return next->nested_output(NULL, level+1);
-	}
+	if(next)
+		retval = next->nested_output(NULL, level+1, out);
 
-	return 1;
+	return retval;
 }
 
 int colt_nested_cells::gen_close(int level)

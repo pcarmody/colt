@@ -27,6 +27,7 @@ enum Colt_Class {
 	colt_class_out_vertical,
 	colt_class_to_json,
 	colt_class_qthru,
+	colt_class_yml,
 
 	colt_class_counter,
 
@@ -114,6 +115,7 @@ public:
 	virtual	char **fields(int rec_num);
 	virtual void set_coltype(int num, colt_datatype *x);
 	virtual	colt_datatype **cells(int rec_num);
+	virtual colt_nested_cells *nested_cells(int rec_num);
 	virtual char *extract_str(char *in, char sep_char='\t', char eol_char='\n', char quote_char = '\0');
 	virtual char find_sep_char(char *row, char end_char='\n');
 	virtual char sep_char();

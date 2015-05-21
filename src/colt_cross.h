@@ -48,6 +48,7 @@ public:
 	virtual int compare(int a, int b, int c);
 	char **fields(int rec_num);
 	colt_datatype **cells(int rec_num);
+	colt_nested_cells *nested_cells(int rec_num);
 
 	int preprocess();
 	int process(int rec_num);

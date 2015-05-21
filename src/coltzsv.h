@@ -33,6 +33,7 @@ public:
     char	**metadata_fields;
     char	*meta_file_type;
     colt_datatype	**metadata_cells;
+    colt_nested_cells	*nested;
 
 	colt_zsv(char *file_name, char col_sep, char eol_sep, char q_char);
 	colt_zsv(char *file_name, int pl=1);
@@ -61,6 +62,7 @@ public:
 	virtual void set_coltype(int num, colt_datatype *x);
 	virtual void set_datatype(int i, int type);
 	virtual	colt_datatype **cells(int rec_num);
+	virtual colt_nested_cells *nested_cells(int rec_num);
 	virtual	bool sort_func(int i, int j);
 	virtual	int show_status(int indent_level=0);
 	virtual int compare(int a, int b, int c);

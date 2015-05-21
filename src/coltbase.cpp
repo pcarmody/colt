@@ -201,6 +201,12 @@ colt_datatype **colt_base::cells(int rec_num)
 	return NULL;
 }
 
+colt_nested_cells *colt_base::nested_cells(int rec_num)
+{
+	COLT_TRACE("**colt_base::nested_cells(int rec_num)")
+	return NULL;
+}
+
 void colt_base::set_coltype(int num, colt_datatype *x)
 {
 	COLT_TRACE("colt_base::set_coltype(int num, colt_datatype *x)")
@@ -274,6 +280,7 @@ int colt_base::get_meta_row(int rec_num)
 int colt_base::preprocess()
 {
 	COLT_TRACE("colt_base::preprocess()")
+			cout << "i_am " << i_am << "\n";
 	if(out_object)
 		return out_object->preprocess();
 
@@ -289,7 +296,7 @@ void colt_base::postprocess()
 
 int colt_base::process(int rec)
 {
-	COLT_TRACE("colt_base::process(int rec)")
+	COLT_TRACE("colt_base::process(int rec)");
 	if(out_object)
 		return out_object->process(rec);
 

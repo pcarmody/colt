@@ -18,6 +18,7 @@ public:
 	colt_nested_cells	*next;
 	int				output_type;
 	int				pretty;
+	std::ostream	*out;
 
 	enum {
 		xml,
@@ -28,14 +29,14 @@ public:
 	};
 
 //	colt_nested_cells(colt_datatype **c, int cols, char **headers, char *key);
-	colt_nested_cells(char **c, int cols, char **headers, char *key=NULL, colt_nested_cells *n=NULL);
+	colt_nested_cells(char **c, int cols, char **headers, char *key=NULL, colt_nested_cells *n=NULL, std::ostream *o=NULL);
 	virtual ~colt_nested_cells();
 
-	void start() { std::cout << "-";};
+	void start() { *out << "-";};
 	void end(int level) { for(int i=0; i<level; i++) std::cout << "\n]"; };
 
 	int indent(int level);
-	int nested_output(colt_nested_cells *old, int level=0);
+	int nested_output(colt_nested_cells *old, int level=0, std::ostream *o=NULL);
 	void gen_connection(int level);
 	int gen_row(int level);
 	int gen_close(int level);

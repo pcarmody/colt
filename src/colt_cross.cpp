@@ -172,6 +172,16 @@ colt_datatype **colt_cross::cells(int rec_num)
 	return cell_list;
 }
 
+colt_nested_cells *colt_cross::nested_cells(int rec_num)
+{
+	COLT_TRACE("*colt_cross:nested_cells(int rec_num)");
+
+	colt_nested_cells *local = colt_operator::nested_cells(current_rec_num);
+	local->next = expression_object->nested_cells(rec_num);
+
+	return local;
+}
+
 int	colt_cross::preprocess()
 {
 	if(expression_object)
