@@ -125,6 +125,50 @@ char **colt_queuethru::fields(int rec_num)
 	return thru_list[i]->thru->fields(thru_rec_num);
 }
 
+colt_datatype **colt_queuethru::cells(int rec_num)
+{
+	COLT_TRACE("colt_queuethru::cells(int rec_num)")
+	int i;
+	int size = thru_list.size();
+	int thru_rec_num = rec_num;
+
+	for(i=0; i<size && thru_rec_num > thru_list[i]->thru->num_lines(); i++)
+		thru_rec_num -= thru_list[i]->thru->num_lines();
+
+	if(thru_list[i]->thru->num_lines() == thru_rec_num) {
+		i++;
+		thru_rec_num = 0;
+	}
+
+//	cout << "qqq " << rec_num << ":" << i << ":" << thru_rec_num << ":" << thru_list[i]->thru->num_lines() << "\n";
+	return thru_list[i]->thru->cells(thru_rec_num);
+}
+
+colt_nested_cells *colt_queuethru::nested_cells(int rec_num)
+{
+
+	COLT_TRACE("colt_queuethru::nested_cells(int rec_num)")
+	int i;
+	int size = thru_list.size();
+	int thru_rec_num = rec_num;
+
+	for(i=0; i<size && thru_rec_num > thru_list[i]->thru->num_lines(); i++)
+		thru_rec_num -= thru_list[i]->thru->num_lines();
+
+	if(thru_list[i]->thru->num_lines() == thru_rec_num) {
+		i++;
+		thru_rec_num = 0;
+	}
+
+	if(!nested)
+		nested = new colt_nested_cells(NULL, 0, NULL, source_file_name());
+
+	nested->next = thru_list[i]->thru->nested_cells(thru_rec_num);
+//	nested->cells = colt_csv::fields(i);
+
+	return nested;
+}
+
 
 int	colt_queuethru::meta_num_cols()
 {

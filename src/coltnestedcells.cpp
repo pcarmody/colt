@@ -93,15 +93,17 @@ int colt_nested_cells::nested_output(colt_nested_cells *old, int level, std::ost
 		out = o;
 
 	if(!old) {
-		gen_connection(level);
-		*out << key << ":";
+		if(num_cols) {
+			gen_connection(level);
+			*out << key << ":";
+		}
 		gen_connection(level);
 		start();
 		return gen_row(level);
 	}
 
 //	if(strcmp(key, old->key) == 0)
-	if(cells == old->cells)
+	if(cells == old->cells && cells[0] == old->cells[0] && cells[0][0] == old->cells[0][0])
 		if(next)
 			return next->nested_output(old->next, level+1, out);
 
@@ -129,7 +131,7 @@ int colt_nested_cells::gen_row(int level)
 	char tmp_str[COLT_MAX_STRING_SIZE];
 	int retval = 1;
 
-	if(pretty)
+	if(num_cols && pretty)
 		indent(level+1);
 
 	for(int j=0; j<num_cols; j++) {

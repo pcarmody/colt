@@ -57,6 +57,7 @@ int colt_out::headers_out()
 	int k = 0;
 
 	char **heads = col_headers();
+	return 1;
 	int cols = num_cols();
 	for(int j=0; j<cols; j++) {
 		if(k++ > 0)
@@ -79,7 +80,18 @@ int colt_out::preprocess()
 
 int colt_out::process(int i)
 {
-	COLT_TRACE("colt_out::process(int i)")
+	COLT_TRACE("colt_out::process(int i)");
+	static colt_nested_cells *old;
+	colt_nested_cells *current = nested_cells(i);
+	int retval = current->nested_output(old, 0, &cout);
+	if(!old)
+		old = new colt_nested_cells(current->cells, current->num_cols, current->headers, current->key, current->next, current->out);
+	else {
+		old->cells = current->cells;
+		old->next = current->next;
+	}
+	cout << "qqq " << i << "\n";
+
 	if(!gen_headers)
 		gen_headers = headers_out();
 
@@ -91,6 +103,7 @@ int colt_out::process(int i)
 	out_string[0] = '\0';
 
 	int cals = num_cols();
+
 	for(int j=0; j<cals; j++) {
 		if(j > 0)
 			strcat(out_string, column_sep_char);

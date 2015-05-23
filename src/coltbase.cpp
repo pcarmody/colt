@@ -280,7 +280,6 @@ int colt_base::get_meta_row(int rec_num)
 int colt_base::preprocess()
 {
 	COLT_TRACE("colt_base::preprocess()")
-			cout << "i_am " << i_am << "\n";
 	if(out_object)
 		return out_object->preprocess();
 

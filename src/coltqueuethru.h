@@ -34,6 +34,8 @@ public:
 	virtual int num_cols();
 	virtual char **col_headers();
 	virtual char **fields(int rec_num);
+	virtual colt_datatype **cells(int rec_num);
+	virtual colt_nested_cells *nested_cells(int rec_num);
 
 	virtual int	meta_num_cols();
 	virtual char *meta_col_header(int n);
