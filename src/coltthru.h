@@ -72,6 +72,8 @@ public:
 
 	char **fields(int rec_num);
 	colt_datatype **cells(int rec_num);
+	colt_nested_cells *nested_cells(int rec_num);
+
 	int get_next_row();
 	void process_all();
 	int preprocess();

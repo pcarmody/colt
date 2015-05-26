@@ -45,9 +45,20 @@ int colt_yml::preprocess()
 
 int colt_yml::process(int rec_num)
 {
+//	colt_nested_cells *current = nested_cells(rec_num);
+////	int retval = current->nested_output(old, 0, out);
+//	old = current;
+//	num_cols();
 	colt_nested_cells *current = nested_cells(rec_num);
-//	int retval = current->nested_output(old, 0, out);
-	old = current;
-	num_cols();
+	int retval = current->nested_output(old, 0, out);
+	if(!old)
+		old = new colt_nested_cells(current->cells, current->num_cols, current->headers, current->key, current->next, current->out);
+	else {
+		old->cells = current->cells;
+		old->next = current->next;
+	}
+
+	old->index = current->index;
+
 	return 1;
 }

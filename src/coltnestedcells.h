@@ -19,6 +19,7 @@ public:
 	int				output_type;
 	int				pretty;
 	std::ostream	*out;
+	int				index;
 
 	enum {
 		xml,
@@ -37,8 +38,11 @@ public:
 
 	int indent(int level);
 	int nested_output(colt_nested_cells *old, int level=0, std::ostream *o=NULL);
+	int yml_output(colt_nested_cells *old, int level=0, std::ostream *o=NULL);
+	int json_output(colt_nested_cells *old, int level=0, std::ostream *o=NULL);
 	void gen_connection(int level);
-	int gen_row(int level);
+	int gen_yml(int level);
+	int gen_json(int level);
 	int gen_close(int level);
 };
 

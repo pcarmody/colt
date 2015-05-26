@@ -73,10 +73,11 @@ colt_nested_cells::colt_nested_cells(char **c, int cols, char **heads, char *k, 
 	num_cols(cols),
 	headers(heads),
 	key(k),
-	output_type(colt_nested_cells::json),
+	output_type(colt_nested_cells::yml),
 	pretty(1),
 	next(n),
-	out(o)
+	out(o),
+	index(-1)
 {
 	// TODO Auto-generated constructor stub
 	if(!out)
@@ -89,6 +90,79 @@ colt_nested_cells::~colt_nested_cells() {
 
 int colt_nested_cells::nested_output(colt_nested_cells *old, int level, std::ostream *o)
 {
+	if(output_type == yml)
+		return yml_output(old, level, o);
+	else if(output_type == json)
+		return json_output(old, level, o);
+}
+
+int colt_nested_cells::json_output(colt_nested_cells *old, int level, std::ostream *o)
+{
+	if(o)
+		out = o;
+
+	if(!old) {
+		if(num_cols) {
+//			gen_connection(level);
+			*out << key << ":";
+		}
+//		gen_connection(level);
+		*out << "[";
+		return gen_json(level+1);
+	}
+
+	if(index != old->index)
+		*out << "]";
+	else
+		if(next)
+			return next->json_output(old->next, level+1, out);
+
+	gen_connection(level);
+//	start();
+
+	return gen_json(level);
+}
+
+int colt_nested_cells::gen_json(int level)
+{
+	char tmp_str[COLT_MAX_STRING_SIZE];
+	int retval = 1;
+
+	if(!num_cols)
+		if(next)
+			return next->json_output(NULL, level+1, out);
+		else
+			return 1;
+
+	if(num_cols && pretty)
+		indent(level+1);
+
+	*out << "{";
+
+	if(pretty)
+		indent(level+1);
+
+	for(int j=0; j<num_cols; j++) {
+
+		*out << "\"" << headers[j] << "\": \"" << cells[j] << "\"";
+
+		if(j<num_cols-1)
+			gen_connection(level+2);
+	}
+
+	if(next)
+		retval = next->json_output(NULL, level+1, out);
+
+	if(pretty)
+		indent(level+1);
+
+	*out << "}";
+
+	return retval;
+}
+
+int colt_nested_cells::yml_output(colt_nested_cells *old, int level, std::ostream *o)
+{
 	if(o)
 		out = o;
 
@@ -99,22 +173,24 @@ int colt_nested_cells::nested_output(colt_nested_cells *old, int level, std::ost
 		}
 		gen_connection(level);
 		start();
-		return gen_row(level);
+		return gen_yml(level);
 	}
 
-//	if(strcmp(key, old->key) == 0)
-	if(cells == old->cells && cells[0] == old->cells[0] && cells[0][0] == old->cells[0][0])
+	if(index == old->index)
 		if(next)
-			return next->nested_output(old->next, level+1, out);
+			return next->yml_output(old->next, level+1, out);
 
 	gen_connection(level);
 	start();
 
-	return gen_row(level);
+	return gen_yml(level);
 }
 
 void colt_nested_cells::gen_connection(int level)
 {
+	if(output_type == json)
+		*out << ",";
+
 	if(pretty)
 		indent(level);
 }
@@ -126,7 +202,7 @@ int colt_nested_cells::indent(int level)
 		*out << "  ";
 }
 
-int colt_nested_cells::gen_row(int level)
+int colt_nested_cells::gen_yml(int level)
 {
 	char tmp_str[COLT_MAX_STRING_SIZE];
 	int retval = 1;
@@ -143,7 +219,7 @@ int colt_nested_cells::gen_row(int level)
 	}
 
 	if(next)
-		retval = next->nested_output(NULL, level+1, out);
+		retval = next->yml_output(NULL, level+1, out);
 
 	return retval;
 }

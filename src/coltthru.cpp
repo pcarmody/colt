@@ -494,6 +494,12 @@ colt_datatype **coltthru::cells(int rec_num)
 	return operand->cells(index_list[rec_num]);
 }
 
+colt_nested_cells *coltthru::nested_cells(int rec_num)
+{
+	COLT_TRACE("**coltthru::fields(int rec_num)")
+	return operand->nested_cells(index_list[rec_num]);
+}
+
 int coltthru::get_next_row()
 {
 	COLT_TRACE("coltthru::get_next_row()")

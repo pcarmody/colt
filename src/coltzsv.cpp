@@ -49,7 +49,8 @@ int colt_index_file_exists(char *file_name)
 	return (stat(index_file_name, &buffer) == 0);
 }
 
-colt_zsv::colt_zsv(char *fname, int pl)
+colt_zsv::colt_zsv(char *fname, int pl):
+	colt_base()
 {
 	i_am = colt_class_zsv;
 	preload = pl;
@@ -73,7 +74,8 @@ colt_zsv::colt_zsv(char *fname, int pl)
 //		open_file(1);
 }
 
-colt_zsv::colt_zsv(char *fname, char col_sep, char eol_sep, char q_char)
+colt_zsv::colt_zsv(char *fname, char col_sep, char eol_sep, char q_char):
+	colt_base()
 {
 	i_am = colt_class_zsv;
 	preload = 0;
@@ -642,6 +644,8 @@ colt_nested_cells *colt_zsv::nested_cells(int rec_num)
 		nested = new colt_nested_cells(fields(rec_num), num_cols(), col_headers(), source_file_name());
 	else
 		nested->cells = fields(rec_num);
+
+	nested->index = rec_num;
 
 	return nested;
 }

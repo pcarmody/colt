@@ -175,9 +175,10 @@ colt_datatype **colt_cross::cells(int rec_num)
 colt_nested_cells *colt_cross::nested_cells(int rec_num)
 {
 	COLT_TRACE("*colt_cross:nested_cells(int rec_num)");
+	colt_cross_xrefs *xref = xrefs[rec_num];
 
-	colt_nested_cells *local = colt_operator::nested_cells(current_rec_num);
-	local->next = expression_object->nested_cells(rec_num);
+	colt_nested_cells *local = colt_operator::nested_cells(xref->left);
+	local->next = expression_object->nested_cells(xref->right);
 
 	return local;
 }

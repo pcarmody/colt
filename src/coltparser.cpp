@@ -322,22 +322,22 @@ colt_to_json *colt_parser::json()
 colt_out *colt_parser::csv()
 {
 	COLT_TRACE("*colt_parser::csv()")
-	char col_sep = ',';
-	char line_sep = '\n';
-	char quote = '\0';
+	char *col_sep = ",";
+	char *line_sep = "\n";
+	char *quote = "\0";
 
 	consume_token("csv");
 
 	if(consume_token(":")) {
-		col_sep = *input_buffer++;
+		col_sep = input_buffer++;
 		if(consume_token(":")) {
-			line_sep = *input_buffer++;
+			line_sep = input_buffer++;
 			if(consume_token(":"))
-				quote = *input_buffer++;
+				quote = input_buffer++;
 		}
 	}
 
-	return new colt_out(*return_value, &col_sep, &line_sep, &quote);
+	return new colt_out(*return_value, col_sep, line_sep, quote);
 }
 
 colt_out_cbf *colt_parser::cbf()
@@ -946,7 +946,7 @@ colt_qthru *colt_parser::qthru()
 	consume_token("qthru");
 
 	if(!consume_token(":"))
-		fatal_error("Expected ';' after qthru expression.");
+		fatal_error("Expected ':' after qthru expression.");
 
 	char file_name[COLT_MAX_STRING_SIZE];
 	consume_keyword(file_name);
