@@ -27,6 +27,8 @@ enum Colt_Class {
 	colt_class_out_vertical,
 	colt_class_to_json,
 	colt_class_qthru,
+	colt_class_partthru
+	colt_class_pthru,
 	colt_class_yml,
 
 	colt_class_counter,

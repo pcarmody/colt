@@ -15,7 +15,7 @@ colt_queuethru::colt_queuethru(char *file_name, char col_sep, char eol_sep, char
 {
 	// TODO Auto-generated constructor stub
 	i_am = colt_class_queuethru;
-	meta_file_type = "pthru";
+	meta_file_type = "qthru";
 }
 
 colt_queuethru::~colt_queuethru() {

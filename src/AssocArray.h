@@ -27,6 +27,7 @@ template <class T, class S> class Generic_Assoc_Array {
 	  };
 	  AVLtree<Data>	tree;
 	  vector<T> 	stack;
+	  vector<S>		keys;
   public:
 	  long Size()
 	  {
@@ -55,6 +56,7 @@ template <class T, class S> class Generic_Assoc_Array {
 		  d.rec_num = stack.size();
 		  stack.push_back(data);
 		  tree.add(d);
+		  keys.push_back(name);
 		  return true;
 	  }
 
@@ -123,6 +125,10 @@ template <class T, class S> class Generic_Assoc_Array {
 		  return stack[index];
 	  }
 
+	  vector<S> &get_keys()
+	  {
+		  return keys;
+	  }
 };
 
 template <class T> class AssocArray : public Generic_Assoc_Array<T, string> {};

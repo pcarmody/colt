@@ -42,6 +42,7 @@
 
 #include "coltlink.h"
 #include "coltpartition.h"
+#include "coltpthru.h"
 #include "coltuniq.h"
 #include "coltshare.h"
 //#include "coltcthru.h"

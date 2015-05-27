@@ -1090,6 +1090,40 @@ colt_partition *colt_parser::partition()
 	return retval;
 }
 
+colt_pthru *colt_parser::pthru()
+{
+	COLT_TRACE("*colt_parser::pthru()")
+
+	if(!consume_token("pthru:"))
+		fatal_error("pthru expected a key and a colt expression.\n");
+
+	char key[100];
+
+	if(!consume_keyword(key))
+		fatal_error("pthru expected a key value.\n");
+
+	if(!consume_token(","))
+		fatal_error("Expected comma after key in part expression.\n");
+
+	char exp[COLT_MAX_STRING_SIZE];
+	if(!consume_colt_expression(exp))
+		fatal_error("pthru expected an expression: pthru:key,[expression],file.");
+
+	char filename[COLT_MAX_STRING_SIZE];
+
+	colt_pthru *retval = NULL;
+
+	if(consume_token(","))
+		if(!consume_keyword(filename))
+			fatal_error("pthru expected a filename;");
+		else
+			retval = new colt_pthru(*return_value, exp, key, filename);
+	else
+		retval = new colt_pthru(*return_value, exp, key);
+
+	return retval;
+}
+
 colt_expand *colt_parser::expand()
 {
 	COLT_TRACE("*colt_parser::expand()")
@@ -1265,6 +1299,8 @@ colt_base *colt_parser::unary_expression()
 		object = race();
 	else if(is_token("part"))
 		object = partition();
+	else if(is_token("pthru"))
+		object = pthru();
 	else if(is_token("expand"))
 		object = expand();
 	else if(is_token("onchange"))

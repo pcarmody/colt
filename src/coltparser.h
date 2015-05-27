@@ -75,6 +75,7 @@ public:
 	colt_cross			*cross();
 	colt_race			*race();
 	colt_partition		*partition();
+	colt_pthru			*pthru();
 	colt_expand			*expand();
 	colt_reduce			*reduce();
 	colt_onchange		*onchange();

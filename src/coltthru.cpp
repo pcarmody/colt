@@ -49,6 +49,12 @@ colt_base *colt_load_thru(char *file_name, int status)
 		return retval;
 	}
 
+	if(strcmp(extension, ".pthru") == 0) {
+		colt_partthru *retval = new colt_partthru(file_name);
+		retval->open_and_load();
+		return retval;
+	}
+
 //	if(strcmp(extension, ".zsv") == 0) {
 	if(strcmp(extension, ".thru") != 0) {
 		colt_zsv *retval = new colt_zsv(file_name, 1);
