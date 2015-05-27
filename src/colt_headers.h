@@ -21,6 +21,7 @@
 #include "coltsequentialcsv.h"
 #include "coltoperator.h"
 #include "coltqueuethru.h"
+#include "coltpartthru.h"
 #include "coltmetadata.h"
 #include "colttell.h"
 #include "coltreduce.h"
