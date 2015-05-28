@@ -110,6 +110,7 @@ char **colt_csv::fields(int rec_num)
 			strcpy(fields_retval[col], tmp_field);
 			col++;
 			a = tmp_field;
+			b++;
 		}
 		*a++ = *b++;
 	}

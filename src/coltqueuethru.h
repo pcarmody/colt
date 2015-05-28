@@ -19,10 +19,10 @@ class colt_queuethru : public colt_csv {
 		{};
 		~colt_qthru_thru_struct() {};
 	};
+public:
 	vector<colt_qthru_thru_struct *>		thru_list;
 	char **meta_headers;
 
-public:
 	colt_queuethru(char *file_name, char col_sep='\t', char eol_sep='\n', char q_char='\0');
 	virtual ~colt_queuethru();
 

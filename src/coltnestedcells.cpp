@@ -167,22 +167,33 @@ int colt_nested_cells::yml_output(colt_nested_cells *old, int level, std::ostrea
 		out = o;
 
 	if(!old) {
-		if(num_cols) {
+		if(key) {
 			gen_connection(level);
 			*out << key << ":";
+			level++;
 		}
 		gen_connection(level);
 		start();
 		return gen_yml(level);
 	}
 
-	if(index == old->index)
+	if(index != old->index) {
+		if(key) {
+			gen_connection(level-1);
+			start();
+			gen_connection(level);
+			*out << key << ":";
+		}
+		level++;
+	} else
 		if(next)
-			return next->yml_output(old->next, level+1, out);
+			if(key)
+				return next->yml_output(old->next, level+2, out);
+			else
+				return next->yml_output(old->next, level+1, out);
 
 	gen_connection(level);
 	start();
-
 	return gen_yml(level);
 }
 

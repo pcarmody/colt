@@ -96,6 +96,8 @@ void colt_pthru::postprocess()
 
 	FILE *append = fopen(filename, "w");
 
+	fprintf(append, "%s\tkey\n", operand->source_file_name());
+
 	vector<string> keys = end_of_list.get_keys();
 	std::sort(keys.begin(), keys.end());
 
