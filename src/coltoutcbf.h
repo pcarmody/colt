@@ -9,8 +9,9 @@
 #define COLTOUTCBF_H_
 
 class colt_out_cbf : public colt_operator {
-	char 	*file_name;
-	FILE	*fileptr;
+	colt_cbf	cbf;
+	int			init;
+
 public:
 	colt_out_cbf(colt_base &in, char *fname=NULL);
 	virtual ~colt_out_cbf();

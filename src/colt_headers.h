@@ -19,6 +19,8 @@
 #include "coltzsv.h"
 #include "coltcsv.h"
 #include "coltsequentialcsv.h"
+#include "coltcbf.h"
+
 #include "coltoperator.h"
 #include "coltqueuethru.h"
 #include "coltpartthru.h"
@@ -30,6 +32,7 @@
 #include "coltkeyspace.h"
 #include "coltcthru.h"
 #include "coltqthru.h"
+
 #include "coltadd.h"
 #include "coltcexpression.h"
 #include "coltif.h"

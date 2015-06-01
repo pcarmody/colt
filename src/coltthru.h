@@ -20,6 +20,7 @@ typedef struct {
 #define colt_range_version 300
 #define colt_bitmap_version 400
 #define colt_keyspace_version 500
+#define colt_cbf_version 600
 
 colt_base *colt_load_thru(char *file_name, int status=0);
 int match(const char *string, char *pattern);

@@ -344,16 +344,15 @@ colt_out_cbf *colt_parser::cbf()
 {
 	COLT_TRACE("*colt_parser::cbf()")
 	colt_out_cbf *retval;
-	char *in = input_buffer;
 
-	if(in[3] != ':')
-		retval = new colt_out_cbf(*return_value);
-	else
-		retval = new colt_out_cbf(*return_value, in+4);
+	consume_token("cbf:");
 
-	while(*in != ' ' && *in != '\t' && *in != '\n') in++;
+	consume_token(",");
 
-	input_buffer = in;
+	char file_name[COLT_MAX_STRING_SIZE];
+
+	consume_keyword(file_name);
+	retval = new colt_out_cbf(*return_value, file_name);
 
 	return retval;
 }
@@ -454,7 +453,7 @@ colt_base *colt_parser::file_name()
 			retval = new colt_sequential_csv(a+1, col_sep, eol_sep, quote_sep);
 		else
 			retval = new colt_sequential_csv(a+1, 1);
-	else if(match(file_name, "thru$"))
+	else if(match(file_name, "thru$") || match(file_name, "cbf$"))
 		return colt_load_thru(file_name);
 	else if(col_sep)
 			retval = new colt_zsv(file_name, col_sep, eol_sep, quote_sep);

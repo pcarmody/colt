@@ -43,6 +43,12 @@ colt_base *colt_load_thru(char *file_name, int status)
 
 	char *extension = strrchr(file_name, '.');
 
+	if(strcmp(extension, ".cbf") == 0) {
+		colt_cbf *retval = new colt_cbf(file_name);
+		retval->open_and_load();
+		return retval;
+	}
+
 	if(strcmp(extension, ".qthru") == 0) {
 		colt_queuethru *retval = new colt_queuethru(file_name);
 		retval->open_and_load();

@@ -42,6 +42,24 @@ public:
 	{
 		value_type = (value_type_t *) val;
 	}
+	int size()
+	{
+		switch(type) {
+		case COLT_DATATYPE:
+			return strlen(value_type->str_val)+1;
+			break;
+		case COLT_DT_INTEGER:
+			return sizeof(long);
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			perror("size of thru hasn't been implemented.\n");
+			exit(1);
+		}
+	}
 	void operator =(char *str) {
 		switch(type) {
 		case COLT_DATATYPE:
