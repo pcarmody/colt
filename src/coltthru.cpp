@@ -402,6 +402,31 @@ char *coltthru::from_string(char *input)
 	return input;
 }
 
+int coltthru::generate(void *x)
+{
+	int len = 0;
+	FILE *file_descr = (FILE *) x;
+
+	int thru_type = colt_thru_version;
+	fwrite(&thru_type, sizeof(thru_type), 1, file_descr);
+	len += sizeof(thru_type);
+
+	fwrite(&index_count, sizeof(index_count), 1, file_descr);
+	len += sizeof(index_count);
+
+	for(int i=0; i<index_count; i++) {
+		fwrite(&index_list[i], sizeof(index_list[i]), 1, file_descr);
+		len += sizeof(index_list[i]);
+	}
+
+	return len;
+}
+
+int coltthru::consume(void *x)
+{
+
+}
+
 void coltthru::save(char *file_name)
 {
 	COLT_TRACE("coltthru::save(char *file_name)")

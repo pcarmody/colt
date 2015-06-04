@@ -129,9 +129,10 @@ public:
 	void set_buffer(char *x) {
 		if(type >= COLT_DT_SOURCE)
 			parse_thru(x);
-		else if(type == COLT_DT_INTEGER)
-			value_type = (value_type_t *) atol(x);
-		else
+		else if(type == COLT_DT_INTEGER) {
+			tmp_value.long_val = atol(x);
+			value_type = &tmp_value ;
+		} else
 			set_value(x);
 	};
 	char *parse_thru(char *x);
@@ -156,7 +157,7 @@ public:
 			strcpy(x, value_type->str_val);
 			break;
 		case COLT_DT_INTEGER:
-			sprintf(x, "%ld", (long int) value_type);
+			sprintf(x, "%ld", value_type->long_val);
 			break;
 		case COLT_DT_SOURCE:
 		case COLT_DT_THRU:
@@ -190,7 +191,7 @@ public:
 		memcpy(x, value_type, len);
 		return len;
 	};
-	int generate_thru(char *x);
+	int generate_thru(void *x);
 	char *consume(char *x, int t=-1) {
 		if(t>0)
 			type = t;
@@ -214,7 +215,7 @@ public:
 		x += len;
 		return x;
 	};
-	char *consume_thru(char *x);
+	char *consume_thru(void *x);
 	int gen_header(char *x){
 		memcpy(x, &type, sizeof(type));
 

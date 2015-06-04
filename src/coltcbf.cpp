@@ -151,38 +151,20 @@ int colt_cbf::open_and_load()
 
 	memcpy(&config, base_ptr, sizeof(config));
 
-//	cout << "qqq file_type" << config.file_type << "\n";
-//	cout << "qqq num_cols" << config.num_cols << "\n";
-//	cout << "qqq num_rows" << config.num_rows << "\n";
-//	cout << "qqq data_offset" << config.data_offset << "\n";
-//	cout << "qqq lookup_offset" << config.lookup_offset << "\n";
-
 	coltypes = (int *) ((char *) base_ptr + sizeof(config));
 
 	headers = (char **) malloc(sizeof(char *) * config.num_cols);
 	int i=0;
 	int j =0;
-	char *heads = (char *) base_ptr + sizeof(config) + sizeof(coltypes);
+	char *heads = (char *) base_ptr + sizeof(config) + sizeof(char) * config.num_cols;
 	headers[i++] = heads;
 	while(i < config.num_cols) {
 		if(!*heads++)
 			headers[i++] = heads;
 	}
-//
-//	for(int k=0; k<config.num_cols; k++)
-//		cout << "qqq header " << k << ":" << headers[k] << "\n";
 
-//	lookup = (int *) (((char*) base_ptr) + config.lookup_offset);
 	lookup = ((int *)  base_ptr) + config.lookup_offset/sizeof(int);
 	data_blob = ((char*) base_ptr) + config.data_offset;
-
-//	for(int n=0; n<config.num_rows; n++) {
-//		for(int m=0; m<config.num_cols; m++) {
-////			cout << n << ":" << m << ":" << lookup[LOC(n,m)] << " " << (char *) data_blob + lookup[LOC(n,m)] - *lookup  << "\t";
-//			cout << n << ":" << m << ":" << lookup[LOC(n,m)] << " " << (char *) data_ptr(n,m) << "\t";
-//		}
-//		cout << "\n";
-//	}
 
 	my_cells = new colt_datatype[config.num_cols];
 
@@ -210,12 +192,13 @@ char **colt_cbf::fields(int rec_num)
 	cells(rec_num);
 
 	for(int i=0; i<config.num_cols; i++) {
-//		if(my_cells[i].type == COLT_DATATYPE)
+		if(my_cells[i].type == COLT_DT_INTEGER) {
+			if(my_fields[i])
+				delete my_fields[i];
+			my_fields[i] = new char[10];
+			my_cells[i].format(my_fields[i]);
+		} else
 			my_fields[i] = (char *) my_cells[i].value_type;
-//		cout << "qqqf " << my_fields[i] << "\n";
-//		else {
-//			1;
-//		}
 	}
 
 	return my_fields;

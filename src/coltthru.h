@@ -57,6 +57,8 @@ public:
 	virtual int *read_config(int *);
 	virtual int to_string(char *x);
 	virtual char *from_string(char *input);
+	virtual int	generate(void *x);
+	virtual	int	consume(void *x);
 //	virtual int index(int i);
 	virtual void set_begin_end_index(int beg, int end=-1);
 	virtual int show_status(char *baseptr, int indent=0);

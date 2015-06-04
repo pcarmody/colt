@@ -56,16 +56,18 @@ char *colt_datatype::parse_thru(char *x)
 }
 
 
-int colt_datatype::generate_thru(char *x)
+int colt_datatype::generate_thru(void *x)
 {
 	coltthru *thru = (coltthru *) value_type;
 
-	return 0;
+	return thru->generate(x);
 }
 
-char *colt_datatype::consume_thru(char *x)
+char *colt_datatype::consume_thru(void *x)
 {
 	coltthru *thru = (coltthru *) value_type;
+
+	thru->consume(x);
 
 	return NULL;
 }
