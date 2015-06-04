@@ -26,6 +26,8 @@ public:
 	int 	current_offset;
 	void 	*base_ptr;
 	colt_datatype *my_cells;
+	char	**my_fields;
+	int		current_row;
 
 	colt_cbf(char *fname);
 	virtual ~colt_cbf();
@@ -34,13 +36,15 @@ public:
 
 	int num_cols();
 	int num_rows();
-	char **get_headers();
+	char **col_headers();
 	char **fields(int rec_num);
 	colt_datatype **cells(int rec_num);
+	int get_next_row();
 
 	int start_build(int rows, int cols, char **h, char *types);
 	int write_cells(colt_datatype **d);
 	int finish_build();
+	void *data_ptr(int n, int m);
 };
 
 #endif /* COLTCBF_H_ */
