@@ -40,7 +40,19 @@ public:
 
 	void set_value(void *val, int init=0)
 	{
-		value_type = (value_type_t *) val;
+		switch(type) {
+		case COLT_DATATYPE:
+		case COLT_DT_INTEGER:
+			value_type = (value_type_t *) val;
+			break;
+		case COLT_DT_SOURCE:
+		case COLT_DT_THRU:
+		case COLT_DT_SORT:
+		case COLT_DT_CTHRU:
+		case COLT_DT_RANGE:
+		case COLT_DT_BITMAP:
+			consume_thru(val);
+		}
 	}
 	int size()
 	{
@@ -175,7 +187,8 @@ public:
 		int len=0;
 		switch(type) {
 		case COLT_DATATYPE:
-			len=strlen(value_type->str_val);
+			len = size();
+//			len=strlen(value_type->str_val);
 			break;
 		case COLT_DT_INTEGER:
 			len=sizeof(int);
@@ -188,7 +201,8 @@ public:
 		case COLT_DT_BITMAP:
 			return generate_thru(x);
 		}
-		memcpy(x, value_type, len);
+		fwrite(value_type, len, 1, (FILE *) x);
+//		memcpy(x, value_type, len);
 		return len;
 	};
 	int generate_thru(void *x);

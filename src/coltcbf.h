@@ -18,7 +18,7 @@ public:
 		int		lookup_offset;
 	} config;
 	char	**headers;
-	int		*coltypes;
+	char	*coltypes;
 	int		*lookup;
 	void	*data_blob;
 	char	*file_name;

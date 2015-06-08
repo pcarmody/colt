@@ -44,21 +44,25 @@ colt_cbf::~colt_cbf() {
 
 int colt_cbf::num_cols()
 {
+	COLT_TRACE("int colt_cbf::num_cols()")
 	return config.num_cols;
 }
 
 int colt_cbf::num_rows()
 {
+	COLT_TRACE("int colt_cbf::num_rows()")
 	return config.num_rows;
 }
 
 char **colt_cbf::col_headers()
 {
+	COLT_TRACE("int colt_cbf::col_headers()")
 	return headers;
 }
 
 int colt_cbf::start_build(int rows, int cols, char **h, char *types)
 {
+	COLT_TRACE("int colt_cbf::start_build(int rows, int cols, char **h, char *types)")
 	file_descr = fopen(file_name, "wb");
 
 	config.file_type = colt_cbf_version;
@@ -91,10 +95,16 @@ int colt_cbf::start_build(int rows, int cols, char **h, char *types)
 
 int colt_cbf::write_cells(colt_datatype **d)
 {
+	COLT_TRACE("int colt_cbf::write_cells(colt_datatype **d)")
 	for(int i=0; i<config.num_cols; i++) {
 		lookup[LOC(config.num_rows, i)] = current_offset;
-		int len = d[i]->size();
-		fwrite(d[i]->value_type, len, 1, file_descr);
+		int len = 0;
+//		if(d[i]->type >= COLT_DT_THRU)
+			len = d[i]->generate((char *) file_descr);
+//		else {
+//			len = d[i]->size();
+//			fwrite(d[i]->value_type, len, 1, file_descr);
+//		}
 		current_offset += len;
 	}
 
@@ -105,6 +115,7 @@ int colt_cbf::write_cells(colt_datatype **d)
 
 int colt_cbf::finish_build()
 {
+	COLT_TRACE("int colt_cbf::finish_build()")
 	config.lookup_offset = current_offset;
 
 	for(int i=0; i<config.num_rows; i++)
@@ -126,6 +137,7 @@ int colt_cbf::finish_build()
 
 int colt_cbf::open_and_load()
 {
+	COLT_TRACE("int colt_cbf::open_and_load()")
 	struct stat sb;
 	int fd = open (file_name, O_RDONLY);
 	if (fd == -1) {
@@ -151,7 +163,7 @@ int colt_cbf::open_and_load()
 
 	memcpy(&config, base_ptr, sizeof(config));
 
-	coltypes = (int *) ((char *) base_ptr + sizeof(config));
+	coltypes = (char *) base_ptr + sizeof(config);
 
 	headers = (char **) malloc(sizeof(char *) * config.num_cols);
 	int i=0;
@@ -176,6 +188,7 @@ int colt_cbf::open_and_load()
 
 int colt_cbf::get_next_row()
 {
+	COLT_TRACE("int colt_cbf::get_next_row()")
 	if(current_row == config.num_rows)
 		return -1;
 	return current_row++;
@@ -183,6 +196,7 @@ int colt_cbf::get_next_row()
 
 char **colt_cbf::fields(int rec_num)
 {
+	COLT_TRACE("int colt_cbf::fields(int rec_num)")
 	if(!my_fields) {
 		my_fields = (char **) malloc( sizeof(char *) * config.num_cols);
 		for(int i=0; i<config.num_cols; i++)
@@ -192,7 +206,7 @@ char **colt_cbf::fields(int rec_num)
 	cells(rec_num);
 
 	for(int i=0; i<config.num_cols; i++) {
-		if(my_cells[i].type == COLT_DT_INTEGER) {
+		if(my_cells[i].type != COLT_DATATYPE) {
 			if(my_fields[i])
 				delete my_fields[i];
 			my_fields[i] = new char[10];
@@ -206,11 +220,17 @@ char **colt_cbf::fields(int rec_num)
 
 void *colt_cbf::data_ptr(int n, int m)
 {
-	return (char *) data_blob + lookup[LOC(n,m)] - *lookup;
+	COLT_TRACE("int colt_cbf::data_ptr(int n, int m)");
+	int base = *lookup;
+	int offset = lookup[LOC(n,m)];
+	cout << "qqq " << base << ":" << offset << "\n";
+	return (char *) data_blob + offset - base;
+//	return (char *) data_blob + lookup[LOC(n,m)] - *lookup;
 }
 
 colt_datatype **colt_cbf::cells(int rec_num)
 {
+	COLT_TRACE("int colt_cbf::cells(int rec_num)")
 	for(int i=0; i<config.num_cols; i++) {
 		my_cells[i].set_value( data_ptr(rec_num, i) );
 	}

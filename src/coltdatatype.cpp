@@ -65,9 +65,21 @@ int colt_datatype::generate_thru(void *x)
 
 char *colt_datatype::consume_thru(void *x)
 {
-	coltthru *thru = (coltthru *) value_type;
+	coltthru *thru=NULL;
+
+	int *thru_type = (int *) x;
+
+	if(*thru_type == colt_thru_version)
+		thru = new coltthru();
+//	else if(thru_type == colt_cthru_version)
+//	else if(thru_type == colt_range_version)
+//	else if(thru_type == colt_bitmap_version)
+//	else if(thru_type == colt_keyspace_version)
+//	else if(thru_type == colt_cbf_version)
 
 	thru->consume(x);
+
+	value_type = (value_type_t *) thru;
 
 	return NULL;
 }

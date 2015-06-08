@@ -404,6 +404,7 @@ char *coltthru::from_string(char *input)
 
 int coltthru::generate(void *x)
 {
+	COLT_TRACE("coltthru::generate(void *x)")
 	int len = 0;
 	FILE *file_descr = (FILE *) x;
 
@@ -411,9 +412,14 @@ int coltthru::generate(void *x)
 	fwrite(&thru_type, sizeof(thru_type), 1, file_descr);
 	len += sizeof(thru_type);
 
+	char *fname = colt_operator::source_file_name();
+	fwrite(fname, strlen(fname)+1, 1, file_descr);
+	len += strlen(fname)+1;
+
 	fwrite(&index_count, sizeof(index_count), 1, file_descr);
 	len += sizeof(index_count);
 
+//	fwrite(index_list, sizeof(int), index_count, file_descr);
 	for(int i=0; i<index_count; i++) {
 		fwrite(&index_list[i], sizeof(index_list[i]), 1, file_descr);
 		len += sizeof(index_list[i]);
@@ -424,7 +430,28 @@ int coltthru::generate(void *x)
 
 int coltthru::consume(void *x)
 {
+	COLT_TRACE("coltthru::consume(void *x)");
+	int len = sizeof(int);
+	char *fname = (char *) x + len;
+	operand = colt_load_thru(fname);
+	operand->out_object = this;
 
+	len += strlen(fname)+1;
+	char *tmp = (char *)x + len;
+	index_count = *(int *) tmp;
+//	index_count = *(int *) x + len/sizeof(int);
+	cout << "qqq " << index_count << "\n";
+
+	len += sizeof(index_count);
+	tmp = (char *)x + len;
+	index_list = (int *) tmp;
+
+	for(int i=0; i<index_count; i++)
+		cout << "  qqq " << index_list[i] << "\n";
+
+	len += sizeof(int) * index_count;
+
+	return len;
 }
 
 void coltthru::save(char *file_name)
