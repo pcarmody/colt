@@ -1170,6 +1170,18 @@ colt_reduce *colt_parser::reduce()
 	return new colt_reduce(*return_value, filename);
 }
 
+colt_reduce_thru *colt_parser::reduce_thru()
+{
+	COLT_TRACE("*colt_parser::reduce_thru()");
+	char file_name[COLT_MAX_STRING_SIZE];
+	consume_token("reduce_thru");
+	if(!consume_token(":"))
+		fatal_error("Expected file name in reduce_thru.\n");
+
+	consume_keyword(file_name);
+	return new colt_reduce_thru(*return_value, file_name);
+}
+
 colt_onchange *colt_parser::onchange()
 {
 	COLT_TRACE("*colt_parser::onchange()")
@@ -1322,6 +1334,8 @@ colt_base *colt_parser::unary_expression()
 		object = link();
 	else if(is_token("reduce"))
 		object = reduce();
+	else if(is_token("reduce_thru"))
+		object = reduce_thru();
 	else if(is_token("meta"))
 		object = meta();
 

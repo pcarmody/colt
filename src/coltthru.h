@@ -57,6 +57,7 @@ public:
 	virtual int *read_config(int *);
 	virtual int to_string(char *x);
 	virtual char *from_string(char *input);
+	virtual int format_size();
 	virtual int	generate(void *x);
 	virtual	int	consume(void *x);
 //	virtual int index(int i);

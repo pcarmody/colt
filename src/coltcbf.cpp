@@ -209,7 +209,7 @@ char **colt_cbf::fields(int rec_num)
 		if(my_cells[i].type != COLT_DATATYPE) {
 			if(my_fields[i])
 				delete my_fields[i];
-			my_fields[i] = new char[10];
+			my_fields[i] = new char[my_cells[i].size()];
 			my_cells[i].format(my_fields[i]);
 		} else
 			my_fields[i] = (char *) my_cells[i].value_type;
@@ -223,7 +223,6 @@ void *colt_cbf::data_ptr(int n, int m)
 	COLT_TRACE("int colt_cbf::data_ptr(int n, int m)");
 	int base = *lookup;
 	int offset = lookup[LOC(n,m)];
-	cout << "qqq " << base << ":" << offset << "\n";
 	return (char *) data_blob + offset - base;
 //	return (char *) data_blob + lookup[LOC(n,m)] - *lookup;
 }

@@ -363,6 +363,11 @@ int coltthru::to_string(char *x)
 	return strlen(x);
 }
 
+int coltthru::format_size()
+{
+	return strlen(colt_operator::source_file_name())+1 + 6*index_count;
+}
+
 char *coltthru::from_string(char *input)
 {
 	COLT_TRACE("coltthru::from_string(char *input)")
@@ -388,6 +393,7 @@ char *coltthru::from_string(char *input)
 			count++;
 
 	index_list = (int *) malloc(count+1 * sizeof(int));
+	index_count = 0;
 	operand = colt_load_thru(file_name);
     operand->out_object = this;
 
@@ -440,14 +446,10 @@ int coltthru::consume(void *x)
 	char *tmp = (char *)x + len;
 	index_count = *(int *) tmp;
 //	index_count = *(int *) x + len/sizeof(int);
-	cout << "qqq " << index_count << "\n";
 
 	len += sizeof(index_count);
 	tmp = (char *)x + len;
 	index_list = (int *) tmp;
-
-	for(int i=0; i<index_count; i++)
-		cout << "  qqq " << index_list[i] << "\n";
 
 	len += sizeof(int) * index_count;
 

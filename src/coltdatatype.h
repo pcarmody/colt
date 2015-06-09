@@ -42,8 +42,12 @@ public:
 	{
 		switch(type) {
 		case COLT_DATATYPE:
-		case COLT_DT_INTEGER:
 			value_type = (value_type_t *) val;
+			break;
+		case COLT_DT_INTEGER:
+//			cout << "qqq " << (long) val <<":"<< *(int *) val << "\n";
+			tmp_value.long_val = *(int *) val;
+			value_type = &tmp_value;
 			break;
 		case COLT_DT_SOURCE:
 		case COLT_DT_THRU:
@@ -61,17 +65,19 @@ public:
 			return strlen(value_type->str_val)+1;
 			break;
 		case COLT_DT_INTEGER:
-			return sizeof(long);
+			return 10;
 		case COLT_DT_SOURCE:
 		case COLT_DT_THRU:
 		case COLT_DT_SORT:
 		case COLT_DT_CTHRU:
 		case COLT_DT_RANGE:
 		case COLT_DT_BITMAP:
-			perror("size of thru hasn't been implemented.\n");
-			exit(1);
+			return thru_size();
+//			perror("size of thru hasn't been implemented.\n");
+//			exit(1);
 		}
 	}
+	int thru_size();
 	void operator =(char *str) {
 		switch(type) {
 		case COLT_DATATYPE:
@@ -169,7 +175,8 @@ public:
 			strcpy(x, value_type->str_val);
 			break;
 		case COLT_DT_INTEGER:
-			sprintf(x, "%ld", value_type->long_val);
+			tmp_value = *value_type;
+			sprintf(x, "%ld", tmp_value.long_val);
 			break;
 		case COLT_DT_SOURCE:
 		case COLT_DT_THRU:

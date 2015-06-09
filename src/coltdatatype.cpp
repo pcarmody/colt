@@ -23,6 +23,11 @@ int colt_datatype::format_thru(char *x)
 //	return strlen(x);
 }
 
+int colt_datatype::thru_size()
+{
+	return ((coltthru *) value_type)->format_size();
+}
+
 extern colt_base *colt_load_thru(char *file_name, int status);
 
 char *colt_datatype::parse_thru(char *x)

@@ -78,6 +78,7 @@ public:
 	colt_pthru			*pthru();
 	colt_expand			*expand();
 	colt_reduce			*reduce();
+	colt_reduce_thru	*reduce_thru();
 	colt_onchange		*onchange();
 	colt_uniq			*uniq();
 	colt_share			*share();

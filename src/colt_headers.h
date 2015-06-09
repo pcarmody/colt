@@ -27,6 +27,7 @@
 #include "coltmetadata.h"
 #include "colttell.h"
 #include "coltreduce.h"
+#include "coltreducethru.h"
 #include "coltthru.h"
 #include "coltsort.h"
 #include "coltkeyspace.h"
