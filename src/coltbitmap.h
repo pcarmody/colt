@@ -31,7 +31,7 @@ public:
 	coltbitmap(colt_base &in, char *low, char *high, int all_bits = 0);
 	coltbitmap(colt_base &in, char *destination_file_name=NULL, int all_bits = 0);
 	coltbitmap(colt_base &b, char *file, char *low, char *high, int all_bits = 0);
-	coltbitmap(char *fname);
+	coltbitmap(char *fname=NULL);
 	~coltbitmap();
 
 	int is_set(long val) {

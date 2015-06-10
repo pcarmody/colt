@@ -386,7 +386,7 @@ int	colt_zsv:: find_sep_chars(int set_sep_chars)
 	  int test[127];
 	  for(int i=0; i<127; i++) test[i] = '\0';
 	  column_sep_char = 0;
-	  int line_count = 1;
+	  int line_count = 0;
 	  for(char *x=base_ptr; *x; x++) {
 		  if(*x == '\n')
 			  if(!--line_count)

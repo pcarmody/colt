@@ -76,6 +76,8 @@ char *colt_datatype::consume_thru(void *x)
 
 	if(*thru_type == colt_thru_version)
 		thru = new coltthru();
+	else if(*thru_type == colt_bitmap_version)
+		thru = new coltbitmap();
 //	else if(thru_type == colt_cthru_version)
 //	else if(thru_type == colt_range_version)
 //	else if(thru_type == colt_bitmap_version)

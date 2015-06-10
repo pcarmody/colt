@@ -178,10 +178,13 @@ int colt_cbf::open_and_load()
 	lookup = ((int *)  base_ptr) + config.lookup_offset/sizeof(int);
 	data_blob = ((char*) base_ptr) + config.data_offset;
 
-	my_cells = new colt_datatype[config.num_cols];
+//	my_cells = new colt_datatype[config.num_cols];
+	my_cells = (colt_datatype **) malloc (sizeof(colt_datatype *) * config.num_cols);
 
-	for(int i=0; i<config.num_cols; i++)
-		my_cells[i].type = coltypes[i];
+	for(int i=0; i<config.num_cols; i++) {
+		my_cells[i] = new colt_datatype;
+		my_cells[i]->type = coltypes[i];
+	}
 
 	current_row = 0;
 }
@@ -206,13 +209,13 @@ char **colt_cbf::fields(int rec_num)
 	cells(rec_num);
 
 	for(int i=0; i<config.num_cols; i++) {
-		if(my_cells[i].type != COLT_DATATYPE) {
+		if(my_cells[i]->type != COLT_DATATYPE) {
 			if(my_fields[i])
 				delete my_fields[i];
-			my_fields[i] = new char[my_cells[i].size()];
-			my_cells[i].format(my_fields[i]);
+			my_fields[i] = new char[my_cells[i]->size()];
+			my_cells[i]->format(my_fields[i]);
 		} else
-			my_fields[i] = (char *) my_cells[i].value_type;
+			my_fields[i] = (char *) my_cells[i]->value_type;
 	}
 
 	return my_fields;
@@ -231,8 +234,8 @@ colt_datatype **colt_cbf::cells(int rec_num)
 {
 	COLT_TRACE("int colt_cbf::cells(int rec_num)")
 	for(int i=0; i<config.num_cols; i++) {
-		my_cells[i].set_value( data_ptr(rec_num, i) );
+		my_cells[i]->set_value( data_ptr(rec_num, i) );
 	}
 
-	return &my_cells;
+	return my_cells;
 }

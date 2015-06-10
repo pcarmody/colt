@@ -423,8 +423,9 @@ colt_base *colt_parser::file_name()
 			fatal_error("Cannot parse '^' column reference.\n");
 
 		for(int j=0; j<num_cols; j++)
-			if(strcmp(file_name+1, col_headers[j] ) == 0)
+			if(strcmp(file_name+1, col_headers[j] ) == 0) {
 				return (colt_base *) cells[j]->get_value();
+			}
 
 		fatal_error("There is no column matching the column reference.\n");
 	}

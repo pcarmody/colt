@@ -392,6 +392,8 @@ char *coltthru::from_string(char *input)
 		if(*a++ == ',')
 			count++;
 
+//	buffer_size = count+1;
+
 	index_list = (int *) malloc(count+1 * sizeof(int));
 	index_count = 0;
 	operand = colt_load_thru(file_name);
@@ -403,7 +405,7 @@ char *coltthru::from_string(char *input)
 		while(*input && *input != ',') input++;
 	}
 
-    end_index = index_count-1;
+    end_index = count;
 
 	return input;
 }
@@ -452,6 +454,9 @@ int coltthru::consume(void *x)
 	index_list = (int *) tmp;
 
 	len += sizeof(int) * index_count;
+	end_index = index_count;
+	buffer_size = sizeof(int) * index_count;
+	preload = 1;
 
 	return len;
 }
@@ -588,8 +593,10 @@ void coltthru::process_all()
 int coltthru::preprocess()
 {
 	COLT_TRACE("coltthru::preprocess()")
-	if(index_list)
+	if(index_list) {
+//		end_index = index_count;
 		return colt_operator::preprocess();
+	}
 
 	index_count = 0;
 

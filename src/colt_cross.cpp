@@ -85,11 +85,14 @@ char **colt_cross::col_headers()
 
 	char **left_headers = colt_operator::col_headers();
 
-	if(right_num_cols == 0)
+	if(!expression_object || right_num_cols == 0)
 		return left_headers;
 
-	if(!expression_object)
-		expression_object = xrefs.nth(xrefs.Size()-1)->expression;
+//	if(!expression_object) {
+//		cout << "qqq " << xrefs.Size() << "\n";
+//		cout << "qqq " <<  xrefs.nth(xrefs.Size()) << "\n";
+//		expression_object = xrefs.nth(xrefs.Size()-1)->expression;
+//	}
 
 	char **right_headers = expression_object->col_headers();
 

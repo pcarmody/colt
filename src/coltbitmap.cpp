@@ -202,7 +202,7 @@ int coltbitmap::to_string(char *x)
 	tmp[0] = '\0';
 
 	for(int i=0; i<num_elements; i++) {
-		sprintf(tmp2, "%04x", map[i]);
+		sprintf(tmp2, "%04x,", map[i]);
 		strcat(tmp, tmp2);
 	}
 
@@ -224,11 +224,20 @@ char *coltbitmap::from_string(char *input)
 
 	sscanf(input, "thru:%s,", file_name);
 
+	input += strlen(file_name)+1;
+
+	min_value = atoi(input);
+	while(*input && *input != ',') input++;
+	max_value = atoi(++input);
 	while(*input && *input != ',') input++;
 
 	while(*input == ',') {
 		*input++;
-		push_back(atoi(input));
+		if(!*input)
+			break;
+//		push_back(atoi(input));
+		cout << "qqq " << strtol(input, NULL, 16) << "\n";
+		push_back(strtol(input, NULL, 16));
 		while(*input && *input != ',') input++;
 	}
 

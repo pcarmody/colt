@@ -25,7 +25,7 @@ public:
 	FILE	*file_descr;
 	int 	current_offset;
 	void 	*base_ptr;
-	colt_datatype *my_cells;
+	colt_datatype **my_cells;
 	char	**my_fields;
 	int		current_row;
 
