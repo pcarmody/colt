@@ -107,7 +107,7 @@ int colt_cbf::write_cells(colt_datatype **d)
 //		}
 		current_offset += len;
 	}
-
+cout << "qqq write_cells " << current_offset << "\n";
 	config.num_rows++;
 
 	return current_offset;

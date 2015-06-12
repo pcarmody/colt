@@ -202,7 +202,7 @@ int coltbitmap::to_string(char *x)
 	tmp[0] = '\0';
 
 	for(int i=0; i<num_elements; i++) {
-		sprintf(tmp2, "%04x,", map[i]);
+		sprintf(tmp2, "%08x,", map[i]);
 		strcat(tmp, tmp2);
 	}
 
@@ -222,26 +222,136 @@ char *coltbitmap::from_string(char *input)
 	COLT_TRACE("coltbitmap::from_string(char *intpu)")
 	char file_name[COLT_MAX_STRING_SIZE];
 
-	sscanf(input, "thru:%s,", file_name);
+	while(*input && *input != ':') input++;
+	char *a = file_name;
+	input++;
+	while(*input && *input != ',') *a++ = *input++;
+	*a = '\0';
 
-	input += strlen(file_name)+1;
+	operand = colt_load_thru(file_name);
+    operand->out_object = this;
+    out_object = NULL;
+//	sscanf(input, "bitmap:%s,", file_name);
 
-	min_value = atoi(input);
+//	input += strlen(file_name)+1;
+
+//	while(*input && *input != ',') input++;
+	min_value = atoi(++input);
 	while(*input && *input != ',') input++;
 	max_value = atoi(++input);
 	while(*input && *input != ',') input++;
+
+	buffer_size = (max_value - min_value) / (sizeof(int)*8) + 1;
+	int minv = min_value / COLT_MAP_BITS_IN_ELEM;
+    initial_disp = minv * COLT_MAP_BITS_IN_ELEM;
+	int maxv = (max_value / COLT_MAP_BITS_IN_ELEM) + 1;
+	num_elements = maxv-minv;
+
+	if(index_list)
+		free( index_list );
+
+	index_list = (int *) malloc( buffer_size );
+	map = (long *) malloc( buffer_size);
+	int i = 0;
 
 	while(*input == ',') {
 		*input++;
 		if(!*input)
 			break;
-//		push_back(atoi(input));
-		cout << "qqq " << strtol(input, NULL, 16) << "\n";
-		push_back(strtol(input, NULL, 16));
+		long val = strtol(input, NULL, 16);
+		map[i++] = val;
+		push_back(val);
 		while(*input && *input != ',') input++;
 	}
 
+	iterate_count = 0;
+	end_index = max_value;
+
 	return input;
+}
+
+int coltbitmap::format_size()
+{
+	return strlen(colt_operator::source_file_name())+1 +
+			10 + // min_value digits
+			10 + // max_value digits
+			num_elements*8; // map digits
+}
+
+int coltbitmap::generate(void *x)
+{
+	COLT_TRACE("coltbitmap::generate(void *x)")
+	int len = 0;
+	FILE *file_descr = (FILE *) x;
+
+	int thru_type = colt_bitmap_version;
+	fwrite(&thru_type, sizeof(thru_type), 1, file_descr);
+	len += sizeof(thru_type);
+
+	char *fname = colt_operator::source_file_name();
+	fwrite(fname, strlen(fname)+1, 1, file_descr);
+	len += strlen(fname)+1;
+
+//	cout << "  qqq min_value=" << min_value << "\n";
+	fwrite(&min_value, sizeof(min_value), 1, file_descr);
+	len += sizeof(min_value);
+
+//	cout << "  qqq max_value=" << max_value << "\n";
+	fwrite(&max_value, sizeof(max_value), 1, file_descr);
+	len += sizeof(max_value);
+
+//	cout << "  qqq num_elements=" << num_elements << "\n";
+	fwrite(map, sizeof(map[0])*num_elements, 1, file_descr);
+	len += sizeof(map[0])*num_elements;
+//	for(int i=0; i<num_elements; i++) {
+//		fwrite(&map[i], sizeof(map[i]), 1, file_descr);
+//		len += sizeof(map[i]);
+//	}
+
+
+	return len;
+}
+
+int coltbitmap::consume(void *x)
+{
+	COLT_TRACE("coltbitmap::consume(void *x)");
+	int len = sizeof(int);
+	char *fname = (char *) x + len;
+	operand = colt_load_thru(fname);
+	operand->out_object = this;
+
+	len += strlen(fname)+1;
+	char *tmp = (char *)x + len;
+	min_value = *(long *) tmp;
+
+	len += sizeof(min_value);
+	tmp = (char *)x + len;
+	max_value = *(long *) tmp;
+	len += sizeof(max_value);
+
+	buffer_size = (max_value - min_value) / (sizeof(int)*8) + 1;
+//	cout << "qqq fname=" << fname << "\n";
+//	cout << "qqq min_value=" << min_value << "\n";
+//	cout << "qqq max_value=" << max_value << "\n";
+//	cout << "qqq buffer_size=" << buffer_size << "\n";
+	int minv = min_value / COLT_MAP_BITS_IN_ELEM;
+    initial_disp = minv * COLT_MAP_BITS_IN_ELEM;
+	int maxv = (max_value / COLT_MAP_BITS_IN_ELEM) + 1;
+	num_elements = maxv-minv;
+
+	tmp = (char *)x + len;
+
+	map = (long *) tmp;
+//	for(int i=0; i<num_elements; i++)
+//		cout << "  qqq " << map[i] << "\n";
+
+	len += num_elements * sizeof(map[0]);
+//	index_list = (int *) tmp;
+//	map = (long *) malloc( buffer_size);
+//	index_count = *(int *) x + len/sizeof(int);
+	preload = 1;
+
+	return len;
 }
 
 int coltbitmap::contains(int rec_num)
@@ -286,6 +396,20 @@ void coltbitmap::set_begin_end_index(int beg, int end)
 char **coltbitmap::fields(int rec_num)
 {
 	return operand->fields(rec_num);
+}
+
+int coltbitmap::get_next_row()
+{
+	COLT_TRACE("coltbitmap::get_next_row()");
+
+	while(iterate_count <= end_index && iterate_count <= max_value) {
+		if(is_set(iterate_count))
+			return iterate_count++;
+		else
+			iterate_count++;
+	}
+
+	return -1;
 }
 
 void coltbitmap::process_all()

@@ -424,10 +424,18 @@ colt_base *colt_parser::file_name()
 
 		for(int j=0; j<num_cols; j++)
 			if(strcmp(file_name+1, col_headers[j] ) == 0) {
+				if(cells[j]->type != COLT_DT_SOURCE) {
+					char msg[100];
+					sprintf(msg, "'%s' is not a data source.\n", col_headers[j]);
+					fatal_error(msg);
+				}
 				return (colt_base *) cells[j]->get_value();
 			}
 
-		fatal_error("There is no column matching the column reference.\n");
+		char msg[100];
+
+		sprintf(msg, "'%s' is not a valid column header.\n", file_name+1);
+		fatal_error(msg);
 	}
 
 	if(consume_token(":")) {
