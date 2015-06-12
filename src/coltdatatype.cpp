@@ -8,9 +8,9 @@
 #include "colt_headers.h"
 #include "coltdatatype.h"
 
-colt_datatype *new_datatype(int type)
+colt_datatype *new_datatype(int type, char *h)
 {
-	return new colt_datatype(type);
+	return new colt_datatype(type, h);
 }
 
 int colt_datatype::format_thru(char *x)

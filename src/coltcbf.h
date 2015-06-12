@@ -28,6 +28,9 @@ public:
 	colt_datatype **my_cells;
 	char	**my_fields;
 	int		current_row;
+    char	**metadata_fields;
+    char	*meta_file_type;
+    colt_datatype	**metadata_cells;
 
 	colt_cbf(char *fname);
 	virtual ~colt_cbf();
@@ -35,11 +38,19 @@ public:
 	int open_and_load();
 
 	int num_cols();
-	int num_rows();
+	int num_lines();
 	char **col_headers();
 	char **fields(int rec_num);
 	colt_datatype **cells(int rec_num);
 	int get_next_row();
+	char *source_file_name();
+
+	virtual int	meta_num_cols();
+	virtual char *meta_col_header(int n);
+	virtual char **meta_col_headers();
+	virtual char **meta_fields(int rec_num);
+	virtual colt_datatype **meta_cells(int rec_num);
+	virtual	int	get_meta_row(int rec_num);
 
 	int start_build(int rows, int cols, char **h, char *types);
 	int write_cells(colt_datatype **d);

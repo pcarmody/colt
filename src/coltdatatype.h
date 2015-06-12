@@ -34,8 +34,9 @@ public:
 //		colt_dt_bitmap_val bitmap_val;
 	} *value_type, tmp_value;
 	short	type;
+	char	*header;
 
-	colt_datatype(int t=COLT_DATATYPE) { type = t; value_type = NULL; };
+	colt_datatype(int t=COLT_DATATYPE, char *h=NULL) { type = t; value_type = NULL; header = h; };
 	~colt_datatype() {};
 
 	void set_value(void *val, int init=0)
@@ -266,6 +267,6 @@ public:
 	}
 };
 
-colt_datatype *new_datatype(int t);
+colt_datatype *new_datatype(int t, char *h=NULL);
 
 #endif /* COLTDATATYPE_H_ */

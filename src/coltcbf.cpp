@@ -18,6 +18,17 @@
 
 #define LOC(X,Y) X*num_cols() + Y
 
+const char *COLT_CBF_COLUMN_HEADERS[] = {
+	"source_file_name",
+	"num_lines",
+	"num_cols",
+	"current_index",
+	"type",
+	"data"
+};
+
+#define COLT_CBF_NUM_COLUMN_HEADERS 6
+
 colt_cbf::colt_cbf(char *fname):
 	colt_base(),
 	headers(NULL),
@@ -35,6 +46,10 @@ colt_cbf::colt_cbf(char *fname):
 
 	file_name = new char[strlen(fname)+1];
 	strcpy(file_name, fname);
+
+	meta_file_type = "cbf";
+	metadata_fields = NULL;
+	metadata_cells = NULL;
 }
 
 colt_cbf::~colt_cbf() {
@@ -48,10 +63,15 @@ int colt_cbf::num_cols()
 	return config.num_cols;
 }
 
-int colt_cbf::num_rows()
+int colt_cbf::num_lines()
 {
 	COLT_TRACE("int colt_cbf::num_rows()")
 	return config.num_rows;
+}
+
+char *colt_cbf::source_file_name()
+{
+	return file_name;
 }
 
 char **colt_cbf::col_headers()
@@ -238,4 +258,80 @@ colt_datatype **colt_cbf::cells(int rec_num)
 	}
 
 	return my_cells;
+}
+
+int	colt_cbf::meta_num_cols()
+{
+	return COLT_CBF_NUM_COLUMN_HEADERS;
+}
+
+char *colt_cbf::meta_col_header(int n)
+{
+	return (char *) COLT_CBF_COLUMN_HEADERS[n];
+}
+
+char **colt_cbf::meta_col_headers()
+{
+	return (char **) COLT_CBF_COLUMN_HEADERS;
+}
+
+char **colt_cbf::meta_fields(int rec_num)
+{
+	if(metadata_fields == NULL)
+		metadata_fields = new char*[COLT_CBF_NUM_COLUMN_HEADERS];
+
+	metadata_fields[0] = source_file_name();
+
+	metadata_fields[1] = new char[10];
+	sprintf(metadata_fields[1], "%d", num_lines());
+
+
+	metadata_fields[2] = new char[10];
+	sprintf(metadata_fields[2], "%d", config.num_cols);
+
+	metadata_fields[3] = new char[10];
+	sprintf(metadata_fields[3], "%d", rec_num);
+
+	metadata_fields[4] = meta_file_type;
+
+	metadata_fields[5] = "data";
+
+	return metadata_fields;
+}
+
+colt_datatype **colt_cbf::meta_cells(int rec_num)
+{
+	if(metadata_cells != NULL)
+		return metadata_cells;
+
+	metadata_cells = (colt_datatype **) malloc( sizeof(colt_datatype *) * COLT_CBF_NUM_COLUMN_HEADERS);
+
+	metadata_cells[0] = new colt_datatype;
+	metadata_cells[0]->set_value(source_file_name());
+
+	metadata_cells[1] = new colt_datatype(COLT_DT_INTEGER);
+	metadata_cells[1]->set_value(&config.num_rows);
+
+	metadata_cells[2] = new colt_datatype(COLT_DT_INTEGER);
+	metadata_cells[2]->set_value(&config.num_cols);
+
+	metadata_cells[3] = new colt_datatype(COLT_DT_INTEGER);
+	metadata_cells[3]->set_value(0);
+
+	metadata_cells[4] = new colt_datatype;
+	metadata_cells[4]->set_value((void *) "cbf");
+
+	metadata_cells[5] = new colt_datatype(COLT_DT_SOURCE);
+	coltthru *tmp = new coltthru(*this);
+	tmp->set_begin_end_index(0, num_lines());
+	metadata_cells[5]->set_value(tmp);
+
+	return metadata_cells;
+}
+
+int	colt_cbf::get_meta_row(int rec_num)
+{
+	if(rec_num == 0)
+		return 1;
+	return -1;
 }
