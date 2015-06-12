@@ -44,7 +44,9 @@ void colt_operator::set_destination(colt_base *obj, int bothways)
 
 char *colt_operator::source_file_name()
 {
-	COLT_TRACE("*colt_operator::source_file_name()")
+	COLT_TRACE("*colt_operator::source_file_name()");
+	if(!operand)
+		return "";
 	return operand->source_file_name();
 }
 

@@ -396,8 +396,11 @@ char *coltthru::from_string(char *input)
 
 	index_list = (int *) malloc(count+1 * sizeof(int));
 	index_count = 0;
-	operand = colt_load_thru(file_name);
-    operand->out_object = this;
+
+	if(file_name[0]) {
+		operand = colt_load_thru(file_name);
+		operand->out_object = this;
+	}
 
 	while(*input++ == ',') {
 		int index = atoi(input);
@@ -441,8 +444,11 @@ int coltthru::consume(void *x)
 	COLT_TRACE("coltthru::consume(void *x)");
 	int len = sizeof(int);
 	char *fname = (char *) x + len;
-	operand = colt_load_thru(fname);
-	operand->out_object = this;
+
+	if(fname[0]) {
+		operand = colt_load_thru(fname);
+		operand->out_object = this;
+	}
 
 	len += strlen(fname)+1;
 	char *tmp = (char *)x + len;

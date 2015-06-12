@@ -228,9 +228,11 @@ char *coltbitmap::from_string(char *input)
 	while(*input && *input != ',') *a++ = *input++;
 	*a = '\0';
 
-	operand = colt_load_thru(file_name);
-    operand->out_object = this;
-    out_object = NULL;
+	if(file_name[0]) {
+		operand = colt_load_thru(file_name);
+		operand->out_object = this;
+		out_object = NULL;
+	}
 //	sscanf(input, "bitmap:%s,", file_name);
 
 //	input += strlen(file_name)+1;
@@ -317,8 +319,11 @@ int coltbitmap::consume(void *x)
 	COLT_TRACE("coltbitmap::consume(void *x)");
 	int len = sizeof(int);
 	char *fname = (char *) x + len;
-	operand = colt_load_thru(fname);
-	operand->out_object = this;
+
+	if(fname[0]) {
+		operand = colt_load_thru(fname);
+		operand->out_object = this;
+	}
 
 	len += strlen(fname)+1;
 	char *tmp = (char *)x + len;
