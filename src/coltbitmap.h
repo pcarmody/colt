@@ -97,6 +97,7 @@ public:
 	int consume(void *x);
 	int contains(int rec_num);
 
+	int num_lines();
 	void set_begin_end_index(int beg, int end=-1);
 	int get_next_row();
 	char **fields(int rec_num);

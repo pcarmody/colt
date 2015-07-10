@@ -388,6 +388,19 @@ int coltbitmap::show_status(char *baseptr, int indent)
 	 return 1;
 }
 
+int __builtin_popcount (unsigned int x);
+
+int coltbitmap::num_lines()
+{
+	int retval = 0;
+
+	for(int i=0; i<num_elements; i++) {
+		retval += __builtin_popcount(map[i]);
+	}
+
+	return retval;
+}
+
 void coltbitmap::set_begin_end_index(int beg, int end)
 {
 	COLT_TRACE("coltbitmap::set_begin_end_index(int beg, int end)")
